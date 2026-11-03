@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pasidu Eshan - Personal Portfolio">
+    <title>Pasidu Eshan | Portfolio</title>
+    <link rel="stylesheet" href="pasiyaofc.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+    <div class="noise"></div>
+
+    <!-- Top bar -->
+    <header class="top-bar">
+        <a class="top-name" href="#home">Pasidu Eshan</a>
+        <div class="top-time" id="liveTime">Loading time...</div>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span></span><span></span><span></span><b>Menu</b>
+        </button>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <aside class="side-menu" id="sideMenu" aria-hidden="true">
+        <div class="side-menu-head">
+            <div><small>WELCOME</small><strong>Menu</strong></div>
+            <button class="close-menu" id="closeMenu" type="button" aria-label="Close menu">×</button>
+        </div>
+        <nav class="menu-links">
+            <a href="#home"><i class="fa-solid fa-house"></i> Home <span>↗</span></a>
+            <a href="#links"><i class="fa-solid fa-link"></i> Contact / Projects <span>↗</span></a>
+            <a href="#skills"><i class="fa-solid fa-code"></i> My Skills <span>↗</span></a>
+            <a href="#comments"><i class="fa-solid fa-comments"></i> Comments <span>↗</span></a>
+        </nav>
+    </aside>
+
+    <main class="container">
+        <!-- Hero -->
+        <section class="profile reveal" id="home">
+            <div class="photo-wrap">
+                <div class="photo-ring"></div>
+                <img src="https://files.catbox.moe/8w0kfb.png" alt="Pasidu Eshan" class="profile-photo" onerror="this.style.display='none';this.parentElement.classList.add('photo-fallback')">
+                <div class="photo-fallback-icon"><i class="fa-solid fa-user"></i></div>
+            </div>
+            <div class="status-pill"><span></span> Available for projects</div>
+            <h1>Pasidu Eshan</h1>
+            <div class="typing-line"><span id="typingText">Web Developer</span><span class="cursor">|</span></div>
+            <p class="intro">Welcome to my personal website. I build websites, software projects and digital experiences while exploring new technologies.</p>
+            <a href="#links" class="scroll-hint"><span>Explore my work</span><i class="fa-solid fa-arrow-down"></i></a>
+        </section>
+
+        <!-- Contact / Projects -->
+        <section class="links-section reveal" id="links">
+            <div class="section-heading">
+                <span class="line"></span><h2>Connect With Me</h2><span class="line"></span>
+            </div>
+            <div class="link-grid">
+                <a class="link-card" href="https://wa.me/94741500792" target="_blank" rel="noopener"><span class="icon"><i class="fa-solid fa-phone"></i></span><span><small>CONTACT</small>Contact Me</span><span class="arrow">↗</span></a>
+                <a class="link-card" href="https://wa.me/94741500792" target="_blank" rel="noopener"><span class="icon whatsapp"><i class="fa-brands fa-whatsapp"></i></span><span><small>SOCIAL</small>WhatsApp</span><span class="arrow">↗</span></a>
+                <a class="link-card" href="#" target="_blank" rel="noopener"><span class="icon"><i class="fa-solid fa-book-open"></i></span><span><small>EDUCATION</small>Past Papers</span><span class="arrow">↗</span></a>
+                <a class="link-card" href="#" target="_blank" rel="noopener"><span class="icon"><i class="fa-solid fa-robot"></i></span><span><small>PROJECT</small>WhatsApp Bot</span><span class="arrow">↗</span></a>
+                <a class="link-card wide" href="#" target="_blank" rel="noopener"><span class="icon ai"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span><small>PROJECT</small>AI Bot</span><span class="arrow">↗</span></a>
+                <a class="link-card wide" href="https://qr-code-editor.lumi.ing" target="_blank" rel="noopener"><span class="icon ai"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span><small>PROJECT</small>QR editer</span><span class="arrow">↗</span></a>
+            </div>
+        </section>
+
+        <!-- About strip -->
+        <section class="about-card reveal">
+            <div class="about-icon"><i class="fa-solid fa-terminal"></i></div>
+            <div><small>WHAT I DO</small><h3>Code. Create. Learn. Build.</h3><p>Turning ideas into clean, modern and useful digital projects.</p></div>
+        </section>
+
+        <!-- Skills -->
+        <section class="skills-section reveal" id="skills">
+            <div class="section-heading"><span class="line"></span><h2>My Skills</h2><span class="line"></span></div>
+            <p class="section-subtitle">Technologies I use to bring my ideas to life.</p>
+            <div class="skills">
+                <div class="skill"><i class="fa-brands fa-html5"></i><div><b>HTML</b><small>Structure</small></div></div>
+                <div class="skill"><i class="fa-brands fa-css3-alt"></i><div><b>CSS</b><small>Design</small></div></div>
+                <div class="skill"><i class="fa-brands fa-php"></i><div><b>PHP</b><small>Backend</small></div></div>
+                <div class="skill"><i class="fa-solid fa-database"></i><div><b>MySQL</b><small>Database</small></div></div>
+                <div class="skill"><i class="fa-brands fa-python"></i><div><b>Python</b><small>Programming</small></div></div>
+                <div class="skill"><i class="fa-brands fa-js"></i><div><b>JavaScript</b><small>Interaction</small></div></div>
+            </div>
+        </section>
+
+        <!-- Comments -->
+        <section class="comments-section reveal" id="comments">
+            <div class="section-heading"><span class="line"></span><h2>Comments</h2><span class="line"></span></div>
+            <div class="comment-box">
+                <input id="commentName" type="text" maxlength="40" placeholder="Your name">
+                <textarea id="commentText" maxlength="250" rows="4" placeholder="Write a comment..."></textarea>
+                <div class="comment-footer"><span id="charCount">0 / 250</span><button id="commentBtn" type="button">Post Comment <i class="fa-solid fa-paper-plane"></i></button></div>
+            </div>
+            <div id="commentsList" class="comments-list"></div>
+        </section>
+
+        <footer>© 2026 · Designed & Built by <strong>Pasidu Eshan</strong></footer>
+    </main>
+
+    <!-- Scroll progress / back to top -->
+    <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="19"></circle><circle class="progress" id="scrollProgress" cx="22" cy="22" r="19"></circle></svg><i class="fa-solid fa-arrow-up"></i></button>
+
+    <script src="pasiyaofc.js"></script>
+</body>
+</html>
