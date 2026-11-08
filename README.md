@@ -26,7 +26,7 @@ Backend: api/ai-chat.js, api/ai-image.js, api/ai-video.js
 
 Vercel > Settings > Environment Variables:
 - GEMINI_API_KEY   (required)
-- AI_MODEL         text/code model (default gemini-2.5-flash) - latest model nama meka danna
+- AI_MODEL         text/code model (default gemini-flash-lite-latest)
 - IMAGE_MODEL      default gemini-2.5-flash-image
 - VIDEO_MODEL      default veo-3.0-generate-001  (Google billing oni wenna puluwan)
 - AI_MAX_TOKENS    optional (default 24000)

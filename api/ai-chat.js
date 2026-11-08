@@ -3,10 +3,10 @@
 //
 // Vercel > Settings > Environment Variables:
 //   GEMINI_API_KEY   (oya dena key eka)
-//   AI_MODEL         (optional) text/coding model nama, default gemini-2.5-flash. Latest model ekak oni nam meke nama danna.
+//   AI_MODEL         (optional) text/coding model nama, default gemini-flash-lite-latest. Latest model ekak oni nam meke nama danna.
 //   AI_MAX_TOKENS    (optional) default 24000
 //   AI_PASSCODE      (optional) dunnoth access code eka dannawunta witharai wada karanawa (key eka anunta use karanna nowena widiyata)
-// ANTHROPIC_API_KEY ho (key nathnam) free fallback ekakuth thiyenawa.
+// Chat saha code dekatama Gemini witharai use karanne.
 
 export const config = { runtime: "edge" };
 
@@ -97,9 +97,8 @@ export default async function handler(request) {
 
   const maxTokens = parseInt(env.AI_MAX_TOKENS, 10) || 24000;
   try {
-    if (env.GEMINI_API_KEY) return await gemini(env, msgs, maxTokens);
-    if (env.ANTHROPIC_API_KEY) return textRes(await anthropic(env, msgs, Math.min(maxTokens, 8000)));
-    return textRes(await fallback(msgs));
+    if (!env.GEMINI_API_KEY) return json({ error: "GEMINI_API_KEY is not set on the server." }, 500);
+    return await gemini(env, msgs, maxTokens);
   } catch (e) {
     return json({ error: (e && e.userMessage) || "PASIYA AI is busy right now. Please try again in a moment." }, 502);
   }
@@ -115,7 +114,7 @@ function niceError(status, j) {
 }
 
 async function gemini(env, msgs, maxTokens) {
-  const model = env.AI_MODEL || "gemini-2.5-flash";
+  const model = env.AI_MODEL || "gemini-flash-lite-latest";
   const r = await fetch(
     "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":streamGenerateContent?alt=sse",
     {
@@ -159,26 +158,4 @@ async function gemini(env, msgs, maxTokens) {
     },
   });
   return textRes(stream);
-}
-
-async function anthropic(env, msgs, maxTokens) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: env.AI_MODEL || "claude-haiku-5-5", max_tokens: maxTokens, system: SYSTEM, messages: msgs }),
-  });
-  const j = await r.json();
-  if (!r.ok) throw niceError(r.status, j);
-  return (j.content || []).map((c) => c.text || "").join("").trim() || "(No answer came back.)";
-}
-
-async function fallback(msgs) {
-  const r = await fetch("https://text.pollinations.ai/openai", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ model: "openai", messages: [{ role: "system", content: SYSTEM }, ...msgs] }),
-  });
-  if (!r.ok) throw niceError(r.status, {});
-  const j = await r.json();
-  return ((j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || "").trim() || "(No answer came back.)";
 }
