@@ -1,0 +1,17 @@
+{
+  "name": "pasiya-ofc",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  }
+
+  // OPTIONAL (recommended): workers.dev project walata "service binding" danna.
+  // service = ee worker eke nama. Eka karama ee workers.dev links off karanna puluwan.
+  // , "services": [
+  //   { "binding": "API_ORIGIN",        "service": "pasiya-api-server-2" },
+  //   { "binding": "PASTPAPERS_ORIGIN", "service": "pastpaper-pro" }
+  // ]
+}
