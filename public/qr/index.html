@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Editor | Pasidu Eshan</title>
-    <meta name="description" content="Free QR code editor: links, Wi-Fi, contacts, files. Custom colors, shapes and logo. Uploads go to catbox.moe.">
+    <meta name="description" content="Free QR code editor: links, Wi-Fi, contacts, files and videos. Custom colors, shapes and logo.">
     <meta name="theme-color" content="#020608">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -26,7 +26,7 @@
     <main class="wrap">
         <header class="hero">
             <h1>QR Editor</h1>
-            <p>Create, style and share QR codes. Files you upload are stored on catbox.moe.</p>
+            <p>Create, style and share QR codes. Turn links, files, photos and videos into a QR code.</p>
         </header>
 
         <div class="layout">
@@ -36,7 +36,7 @@
                     <h2><span class="num">1</span> Content</h2>
                     <div class="tabs" id="typeTabs" role="tablist">
                         <button type="button" class="tab active" data-type="text">Link / Text</button>
-                        <button type="button" class="tab" data-type="file">File / Image</button>
+                        <button type="button" class="tab" data-type="file">File / Video</button>
                         <button type="button" class="tab" data-type="wifi">Wi-Fi</button>
                         <button type="button" class="tab" data-type="vcard">Contact</button>
                         <button type="button" class="tab" data-type="whatsapp">WhatsApp</button>
@@ -53,10 +53,10 @@
 
                     <div class="pane" data-pane="file">
                         <label class="drop" id="dropZone">
-                            <input type="file" id="f-file" hidden>
+                            <input type="file" id="f-file" accept="image/*,video/*,audio/*,.pdf,.zip,.txt,.doc,.docx,.apk" hidden>
                             <i>⬆</i>
-                            <b id="dropTitle">Choose a file or image</b>
-                            <small>It uploads to catbox.moe and the QR points to the link (max 3.5 MB)</small>
+                            <b id="dropTitle">Choose a file, image or video</b>
+                            <small>It uploads and the QR points to the link</small>
                         </label>
                         <div class="status" id="fileStatus" hidden></div>
                     </div>
@@ -137,7 +137,7 @@
 
                     <div class="row3">
                         <label>Dot shape
-                            <select id="o-dot"><option value="square">Square</option><option value="rounded">Rounded</option><option value="dots">Dots</option><option value="diamond">Diamond</option></select>
+                            <select id="o-dot"><option value="square">Square</option><option value="rounded">Rounded</option><option value="dots">Dots</option><option value="diamond">Diamond</option><option value="small">Small dots</option><option value="classy">Classy</option><option value="bars-h">Bars (horizontal)</option><option value="bars-v">Bars (vertical)</option><option value="plus">Plus</option></select>
                         </label>
                         <label>Eye shape
                             <select id="o-eyeShape"><option value="square">Square</option><option value="rounded">Rounded</option><option value="circle">Circle</option></select>
@@ -182,7 +182,7 @@
                     <div class="actions">
                         <button type="button" class="btn primary" id="dlPng">Download PNG</button>
                         <button type="button" class="btn" id="dlSvg">Download SVG</button>
-                        <button type="button" class="btn catbox" id="upQr">Upload QR to catbox.moe</button>
+                        <button type="button" class="btn wide" id="upQr">Upload QR &amp; get link</button>
                     </div>
                     <div class="status" id="upStatus" hidden></div>
                 </div>

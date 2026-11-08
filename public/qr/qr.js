@@ -1,9 +1,11 @@
-/* PASIYA QR Editor - generator, styling, download and catbox.moe upload */
+/* PASIYA QR Editor - generator, styling, download and file upload */
 (function () {
   "use strict";
 
   var $ = function (id) { return document.getElementById(id); };
-  var MAX_BYTES = 3.5 * 1024 * 1024;
+  var MAX_BYTES = 3.5 * 1024 * 1024;      /* through our server */
+  var MAX_DIRECT = 200 * 1024 * 1024;     /* straight from the browser */
+  var DIRECT_URL = "https://catbox.moe/user/api.php";
   var HIST_KEY = "pasiya_qr_uploads";
   var state = { type: "text", fileUrl: "", logo: "", svg: "", busy: false };
 
@@ -99,14 +101,26 @@
       return x + 1 > lx && x < lx + box && y + 1 > lx && y < lx + box;
     }
 
-    var d = "";
+    var d = "", barH = o.dot === "bars-h", barV = o.dot === "bars-v";
+    function on(r, c) { return r >= 0 && c >= 0 && r < n && c < n && qr.isDark(r, c) && !finder(r, c) && !hidden(r, c); }
     for (var r = 0; r < n; r++) {
       for (var c = 0; c < n; c++) {
-        if (!qr.isDark(r, c) || finder(r, c) || hidden(r, c)) continue;
+        if (!on(r, c)) continue;
         var x = m + c, y = m + r;
-        if (o.dot === "square") d += "M" + x + " " + y + "h1v1h-1z";
+        if (barH) {
+          if (on(r, c - 1)) continue;
+          var len = 1; while (on(r, c + len)) len++;
+          d += rr(x + 0.04, y + 0.08, len - 0.08, 0.84, 0.42);
+        } else if (barV) {
+          if (on(r - 1, c)) continue;
+          var hh = 1; while (on(r + hh, c)) hh++;
+          d += rr(x + 0.08, y + 0.04, 0.84, hh - 0.08, 0.42);
+        } else if (o.dot === "square") d += "M" + x + " " + y + "h1v1h-1z";
         else if (o.dot === "rounded") d += rr(x + 0.03, y + 0.03, 0.94, 0.94, 0.3);
         else if (o.dot === "dots") d += rr(x + 0.04, y + 0.04, 0.92, 0.92, 0.46);
+        else if (o.dot === "small") d += rr(x + 0.17, y + 0.17, 0.66, 0.66, 0.33);
+        else if (o.dot === "classy") d += "M" + f(x + 0.5) + " " + y + "h0.5v0.5a0.5 0.5 0 0 1-0.5 0.5H" + x + "v-0.5a0.5 0.5 0 0 1 0.5-0.5z";
+        else if (o.dot === "plus") d += "M" + f(x + 0.34) + " " + y + "h0.32v0.34h0.34v0.32h-0.34v0.34h-0.32v-0.34h-0.34v-0.32h0.34z";
         else d += "M" + f(x + 0.5) + " " + f(y - 0.08) + "l0.58 0.58-0.58 0.58-0.58-0.58z";
       }
     }
@@ -221,7 +235,13 @@
   }
 
   /* ---------- catbox.moe upload (through /api/qr-upload) ---------- */
-  function upload(blob, name) {
+  var directOk = null; /* does the browser reach the storage service directly? */
+  function probe() {
+    if (directOk !== null) return Promise.resolve(directOk);
+    var fd = new FormData(); fd.append("reqtype", "fileupload");
+    return fetch(DIRECT_URL, { method: "POST", body: fd }).then(function () { return (directOk = true); }, function () { return (directOk = false); });
+  }
+  function viaServer(blob, name) {
     var fd = new FormData();
     fd.append("file", blob, name);
     return fetch("/api/qr-upload", { method: "POST", body: fd }).then(function (res) {
@@ -229,6 +249,24 @@
         if (!res.ok || !j.url) throw new Error(j.error || "Upload failed.");
         return j.url;
       });
+    });
+  }
+  function direct(blob, name) {
+    var fd = new FormData();
+    fd.append("reqtype", "fileupload");
+    fd.append("fileToUpload", blob, name);
+    return fetch(DIRECT_URL, { method: "POST", body: fd }).then(function (r) { return r.text(); }).then(function (t) {
+      t = t.trim();
+      if (!/^https:\/\/files\.catbox\.moe\/\S+$/.test(t)) throw new Error(t.slice(0, 150) || "Upload failed.");
+      return t;
+    });
+  }
+  function upload(blob, name) {
+    if (blob.size > MAX_DIRECT) return Promise.reject(new Error("File is too big. The limit is 200 MB."));
+    if (blob.size <= MAX_BYTES) return viaServer(blob, name);
+    return probe().then(function (ok) {
+      if (!ok) throw new Error("Files over 3.5 MB can't be uploaded from this browser. Try a smaller file.");
+      return direct(blob, name);
     });
   }
 
@@ -297,10 +335,9 @@
   function handleFile(file) {
     if (!file) return;
     var st = $("fileStatus");
-    say(st, "", [spinner(), "Uploading " + file.name + " to catbox.moe..."]);
+    say(st, "", [spinner(), "Uploading " + file.name + "..."]);
     $("dropTitle").textContent = file.name;
     fitImage(file).then(function (ff) {
-      if (ff.size > MAX_BYTES) throw new Error("File is too big. The limit is 3.5 MB.");
       return upload(ff, ff.name);
     }).then(function (url) {
       state.fileUrl = url;
@@ -372,7 +409,7 @@
   $("upQr").addEventListener("click", function () {
     var o = opts(), st = $("upStatus");
     state.busy = true; setActions(true);
-    say(st, "", [spinner(), "Uploading QR to catbox.moe..."]);
+    say(st, "", [spinner(), "Uploading QR..."]);
     svgToPng(buildSvg(o, o.size), o.size).then(function (b) {
       if (b.size <= MAX_BYTES) return b;
       var half = Math.max(512, Math.round(o.size / 2));

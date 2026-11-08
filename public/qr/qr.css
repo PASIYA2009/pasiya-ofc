@@ -70,7 +70,7 @@ output{color:var(--cyan);font-weight:800}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.primary{border:0;color:#001013;font-weight:800;background:linear-gradient(90deg,var(--cyan),var(--green));box-shadow:0 8px 24px rgba(0,229,255,.18)}
 .btn.primary:hover:not(:disabled){filter:brightness(1.08)}
-.btn.catbox{grid-column:1/-1;border-color:rgba(0,255,200,.4)}
+.btn.wide{grid-column:1/-1;border-color:rgba(0,255,200,.4)}
 .btn.ghost{padding:10px 14px}
 .link-btn{margin-top:10px;border:0;background:none;color:var(--muted);font:600 12px "Inter",sans-serif;cursor:pointer}
 .link-btn:hover{color:var(--cyan)}

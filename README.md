@@ -19,3 +19,16 @@ yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public
 
 ## Google login (API site)
 Google OAuth settings walata aluth domain eka authorized origin / redirect URI widiyata add karanna.
+
+## PASIYA AI (/ai)
+Chat & Code (projects + ZIP + bug fix), Image (generate/edit), Video (Veo)
+Backend: api/ai-chat.js, api/ai-image.js, api/ai-video.js
+
+Vercel > Settings > Environment Variables:
+- GEMINI_API_KEY   (required)
+- AI_MODEL         text/code model (default gemini-2.5-flash) - latest model nama meka danna
+- IMAGE_MODEL      default gemini-2.5-flash-image
+- VIDEO_MODEL      default veo-3.0-generate-001  (Google billing oni wenna puluwan)
+- AI_MAX_TOKENS    optional (default 24000)
+- AI_PASSCODE      optional access code (key eka anunta use karanna nowena widiyata)
+Env wenas kalama Redeploy karanna.
