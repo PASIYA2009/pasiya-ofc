@@ -16,6 +16,7 @@ const APPS = {
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
     title: "PASIYA API",
+    keepIcon: true, // origin site eke thibuna "P" icon eka thiyaganna (portfolio photo eka danne na)
     theme: true, // portfolio theme eka inject karanawa
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
   },
@@ -23,23 +24,29 @@ const APPS = {
     prefix: "/pastpapers",
     origin: "https://pastpaper-pro.eshandinujaya86.workers.dev",
     title: "Past Papers",
+    autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
+    keepIcon: true,
     theme: true, // project eka kharab wenawa nam false karanna
   },
   bot: {
     prefix: "/bot",
     origin: "https://pasiya-md-mini-production.up.railway.app",
     title: "WhatsApp Bot",
+    autoTheme: true,
+    keepIcon: true,
     theme: true,
   },
   qr: {
     prefix: "/qr",
     origin: "https://qr-code-editor.lumi.ing",
     title: "QR Editor",
+    keepIcon: true,
     theme: true,
   },
 };
 
-const PHOTO_URL = "https://files.catbox.moe/8w0kfb.png";
+const FALLBACK_ICON =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e5ff"/><stop offset="1" stop-color="#4db8ff"/></linearGradient></defs><path d="M32 4.5 55.5 18v28L32 59.5 8.5 46V18z" fill="#061218" stroke="url(#g)" stroke-width="4.5" stroke-linejoin="round"/><path d="M26.5 44.5v-25h8.5a7.6 7.6 0 0 1 0 15.2h-8.5" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON = "/_pasiya/photo.png";
 const COOKIE = "ps_app";
 const isText = (t) =>
@@ -64,17 +71,18 @@ export default async function handler(request) {
 
   // 1) /project-name (entry point)
   const hit = matchPrefix(p);
+  if (hit && url.searchParams.has("__debug")) return debugInfo(request, hit);
   if (hit) return proxy(request, url, search, hit.name, hit.path, true);
 
-  // 2) photo / favicon
-  if (p === ICON || p === "/favicon.ico") {
-    const img = await fetch(PHOTO_URL);
-    return new Response(img.body, {
-      status: img.status,
-      headers: {
-        "Content-Type": img.headers.get("Content-Type") || "image/png",
-        "Cache-Control": "public, max-age=86400",
-      },
+  // 2) favicon.ico: project eke icon eka thiyenawa nam eka, nathnam portfolio eke "P" icon eka
+  if (p === "/favicon.ico" || p === ICON) {
+    const n = appFromReferer(request, url) || appFromCookie(request);
+    if (n && APPS[n].keepIcon) {
+      const r = await proxy(request, url, search, n, "/favicon.ico", false);
+      if (r.status < 400) return r;
+    }
+    return new Response(FALLBACK_ICON, {
+      headers: { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=3600" },
     });
   }
 
@@ -192,7 +200,7 @@ async function proxy(request, inUrl, search, name, path, entry) {
 
   let body = await res.text();
   body = swap(body, ORIGIN, inUrl.origin).split(ORIGIN_HOST).join(inUrl.host);
-  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home, app.title);
+  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home, app.title, app.keepIcon, app.autoTheme);
   out.delete("ETag");
   return new Response(body, { status: res.status, headers: out });
 }
@@ -205,13 +213,14 @@ function swap(str, from, to) {
 }
 
 // back button (hama project ekakatama) + theme (theme:true walata withrai)
-function inject(html, theme, home, title) {
-  html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
+function inject(html, theme, home, title, keepIcon, autoTheme) {
+  if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
-    `<link rel="icon" type="image/png" href="${ICON}"><link rel="apple-touch-icon" href="${ICON}">` +
+    (keepIcon ? "" : `<link rel="icon" type="image/png" href="${ICON}"><link rel="apple-touch-icon" href="${ICON}">`) +
     '<link rel="stylesheet" href="/_pasiya/pill.css"><link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
-    (home ? homeGuard(home) : "");
+    (home ? homeGuard(home) : "") +
+    (autoTheme ? '<script defer src="/_pasiya/autotheme.js"></script>' : "");
   const bar =
     '<a class="ps-home" href="/" aria-label="Back to portfolio"><span>←</span> Pasidu Eshan</a>';
   const loader = loaderHtml(title);
@@ -247,4 +256,23 @@ function loaderHtml(title) {
     "setTimeout(function(){e.classList.add('ps-hide');setTimeout(function(){e.remove()},700)},w)}" +
     "if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,4000)})();</script>"
   );
+}
+
+// /qr?__debug  ->  origin site eka Vercel eken baladdi mokakda wenne kiyala text widiyata penawa
+async function debugInfo(request, hit) {
+  const app = APPS[hit.name];
+  const target = app.origin + hit.path;
+  const lines = ["target: " + target];
+  try {
+    const r = await fetch(target, { headers: { "User-Agent": request.headers.get("User-Agent") || "" }, redirect: "manual" });
+    const body = await r.text();
+    lines.push("status: " + r.status);
+    for (const k of ["content-type", "content-length", "content-encoding", "location", "server", "cf-ray", "content-security-policy", "x-frame-options"]) {
+      if (r.headers.get(k)) lines.push(k + ": " + r.headers.get(k).slice(0, 200));
+    }
+    lines.push("body length: " + body.length, "", body.slice(0, 700));
+  } catch (e) {
+    lines.push("fetch error: " + (e && e.message));
+  }
+  return new Response(lines.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" } });
 }
