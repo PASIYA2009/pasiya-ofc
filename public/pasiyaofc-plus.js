@@ -20,3 +20,14 @@ document.querySelectorAll(".link-card.soon").forEach(a=>a.addEventListener("clic
   // back button eken enakota loader eka nathi wenna
   addEventListener("pageshow",function(e){if(e.persisted){var l=document.getElementById("ps-loader");if(l)l.classList.add("ps-hide")}});
 })();
+
+// card ekak uda hover / touch karama project eka kalin "wake up" karanawa (Railway wage ewa nidimath unoth) -> click karama ikmanata open wenawa
+(function(){
+  var warmed={};
+  function warm(e){
+    var a=e.target.closest&&e.target.closest('.link-card[href^="/"]');
+    if(!a)return;var h=a.getAttribute("href");if(warmed[h])return;warmed[h]=1;
+    try{fetch(h,{credentials:"same-origin",priority:"low"}).catch(function(){})}catch(_){}}
+  document.addEventListener("pointerover",warm,{passive:true});
+  document.addEventListener("touchstart",warm,{passive:true});
+})();

@@ -25,3 +25,6 @@
 @keyframes ps-slide{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
 @keyframes ps-dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
 @media(prefers-reduced-motion:reduce){.ps-orb i,.ps-orb b,.ps-brand,.ps-bar span,.ps-sub::after{animation:none!important}.ps-loader{transition:none}}
+/* JS block unath (CSP wage) seconds 7kin passe loader eka auto ain wenawa */
+.ps-loader.ps-auto{animation:ps-auto .4s ease 7s forwards}
+@keyframes ps-auto{to{opacity:0;visibility:hidden;pointer-events:none}}

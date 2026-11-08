@@ -174,6 +174,18 @@ async function proxy(request, inUrl, search, name, path, entry) {
     out.set("Access-Control-Allow-Origin", inUrl.origin);
 
   const type = out.get("Content-Type") || "";
+  if (/text\/html/i.test(type)) {
+    out.delete("Content-Security-Policy");
+    out.delete("Content-Security-Policy-Report-Only");
+  }
+  // static files (js/css/img/font) CDN eke cache karanawa -> ilaga parak wegayen. (prefix path walata withrai)
+  if (
+    entry && request.method === "GET" && res.status === 200 && !cookies.length &&
+    /\.(js|css|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf)$/i.test(path) &&
+    !/no-store|private/i.test(out.get("Cache-Control") || "")
+  ) {
+    out.set("Cache-Control", "public, max-age=120, s-maxage=3600, stale-while-revalidate=86400");
+  }
   if (request.method === "HEAD" || [204, 304].includes(res.status) || !isText(type)) {
     return new Response(res.body, { status: res.status, headers: out });
   }
@@ -227,11 +239,12 @@ function homeGuard(home) {
 // loading animation (project eka load wela iwara wenakan penawa)
 function loaderHtml(title) {
   return (
-    '<div class="ps-loader" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div>' +
+    '<div class="ps-loader ps-auto" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div>' +
     '<div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Opening ' + (title || "page") + '</div>' +
     '<div class="ps-bar"><span></span></div></div>' +
-    "<script>(function(){var l=document.getElementById('ps-loader'),t=Date.now();" +
-    "function h(){if(!l)return;var w=Math.max(0,650-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide');setTimeout(function(){l.remove()},700)},w);l=null}" +
-    "if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,9000)})();</script>"
+    "<script>(function(){var l=document.getElementById('ps-loader'),t=Date.now(),d=0;" +
+    "function h(){if(d||!l)return;d=1;var e=l,w=Math.max(0,350-(Date.now()-t));" +
+    "setTimeout(function(){e.classList.add('ps-hide');setTimeout(function(){e.remove()},700)},w)}" +
+    "if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,4000)})();</script>"
   );
 }
