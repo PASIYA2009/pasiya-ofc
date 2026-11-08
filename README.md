@@ -13,7 +13,7 @@ yourdomain.com/qr          -> QR Editor
 3. Deploy. Custom domain: Project > Settings > Domains
 
 ## Aluth project ekak danna
-1. api/__ps.js eke APPS walata line ekak (prefix + origin)
+1. api/pasiya-proxy.js eke APPS walata line ekak (prefix + origin)
 2. public/index.html eke Projects section eke card ekak: href="/ee-nama"
 3. Redeploy
 

@@ -1,6 +1,6 @@
 {
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/:path*", "destination": "/api/__ps?__p=/:path*" }
+    { "source": "/:path*", "destination": "/api/pasiya-proxy?__p=/:path*" }
   ]
 }
