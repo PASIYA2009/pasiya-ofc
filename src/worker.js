@@ -12,7 +12,7 @@ const APPS = {
     prefix: "/api",
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
-    theme: true, // portfolio theme eka inject karanawa
+    theme: false, // true karoth portfolio theme (_pasiya/theme.css) inject wenawa
     binding: "API_ORIGIN", // optional service binding
   },
   pastpapers: {

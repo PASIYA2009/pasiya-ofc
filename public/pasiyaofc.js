@@ -1,31 +1,37 @@
-const commentName=document.getElementById("commentName"),commentText=document.getElementById("commentText"),commentBtn=document.getElementById("commentBtn"),commentsList=document.getElementById("commentsList"),charCount=document.getElementById("charCount");
-const STORAGE_KEY="pasiduEshanComments";
-function updateCounter(){charCount.textContent=`${commentText.value.length} / 250`}
-function getComments(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch{return[]}}
-function saveComments(c){localStorage.setItem(STORAGE_KEY,JSON.stringify(c))}
-function renderComments(){commentsList.innerHTML="";getComments().slice().reverse().forEach(c=>{const card=document.createElement("article");card.className="comment";const n=document.createElement("div");n.className="comment-name";n.textContent=c.name;const t=document.createElement("div");t.className="comment-text";t.textContent=c.text;const d=document.createElement("div");d.className="comment-date";d.textContent=c.date;card.append(n,t,d);commentsList.appendChild(card)})}
-commentText.addEventListener("input",updateCounter);
-commentBtn.addEventListener("click",()=>{const name=commentName.value.trim(),text=commentText.value.trim();if(!name||!text){alert("Please enter your name and comment.");return}const c=getComments();c.push({name:name.slice(0,40),text:text.slice(0,250),date:new Date().toLocaleString()});saveComments(c);commentName.value="";commentText.value="";updateCounter();renderComments()});
-updateCounter();renderComments();
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 
-// Menu
-const menuBtn=document.getElementById("menuBtn"),closeMenu=document.getElementById("closeMenu"),sideMenu=document.getElementById("sideMenu"),menuOverlay=document.getElementById("menuOverlay");
-function setMenu(open){sideMenu.classList.toggle("open",open);menuOverlay.classList.toggle("open",open);document.body.classList.toggle("menu-open",open);menuBtn.setAttribute("aria-expanded",String(open));sideMenu.setAttribute("aria-hidden",String(!open))}
-menuBtn.addEventListener("click",()=>setMenu(true));closeMenu.addEventListener("click",()=>setMenu(false));menuOverlay.addEventListener("click",()=>setMenu(false));document.querySelectorAll(".menu-links a").forEach(a=>a.addEventListener("click",()=>setMenu(false)));document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
+// menu (mobile sidebar)
+const sidebar=$("#sidebar"),overlay=$("#overlay"),menuBtn=$("#menuBtn");
+function setMenu(o){sidebar.classList.toggle("open",o);overlay.classList.toggle("open",o);document.body.classList.toggle("lock",o);menuBtn.setAttribute("aria-expanded",String(o))}
+menuBtn.addEventListener("click",()=>setMenu(!sidebar.classList.contains("open")));
+overlay.addEventListener("click",()=>setMenu(false));
+$$(".sidebar a").forEach(a=>a.addEventListener("click",()=>setMenu(false)));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
+
+// active section in sidebar
+const links=[...$$('.side-group a[href^="#"]')];
+const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle("active",l.getAttribute("href")==="#"+e.target.id))}}),{rootMargin:"-35% 0px -55% 0px"});
+$$("main section[id]").forEach(s=>spy.observe(s));
 
 // Sri Lanka live time
-const liveTime=document.getElementById("liveTime");
-function updateLiveTime(){liveTime.textContent=new Intl.DateTimeFormat("en-LK",{timeZone:"Asia/Colombo",weekday:"short",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(new Date())}
-updateLiveTime();setInterval(updateLiveTime,1000);
+const t=$("#liveTime"),d=$("#liveDate");
+function tick(){const n=new Date();t.textContent=new Intl.DateTimeFormat("en-LK",{timeZone:"Asia/Colombo",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(n);d.textContent=new Intl.DateTimeFormat("en-LK",{timeZone:"Asia/Colombo",weekday:"long",day:"2-digit",month:"short",year:"numeric"}).format(n)}
+tick();setInterval(tick,1000);
 
-// Typing animation
-const typingText=document.getElementById("typingText"),words=["Web Developer","Software Creator","Python Developer","Tech Enthusiast"];let wi=0,ci=0,deleting=false;
-function typeLoop(){const word=words[wi];typingText.textContent=deleting?word.slice(0,ci--):word.slice(0,ci++);let delay=deleting?55:90;if(!deleting&&ci>word.length){delay=1300;deleting=true}else if(deleting&&ci<0){deleting=false;wi=(wi+1)%words.length;ci=0;delay=350}setTimeout(typeLoop,delay)}typeLoop();
+// typing
+const tt=$("#typingText"),words=["Web Developer","Software Creator","Python Developer","Tech Enthusiast"];let wi=0,ci=0,del=false;
+(function loop(){const w=words[wi];tt.textContent=del?w.slice(0,ci--):w.slice(0,ci++);let dl=del?55:90;if(!del&&ci>w.length){dl=1300;del=true}else if(del&&ci<0){del=false;wi=(wi+1)%words.length;ci=0;dl=350}setTimeout(loop,dl)})();
 
-// Reveal animations
-const revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.12});document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+// reveal + card spotlight
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});
+$$(".page-head,.stats,.block").forEach(el=>{el.classList.add("reveal");ro.observe(el)});
+document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest(".card");if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty("--mx",e.clientX-r.left+"px");c.style.setProperty("--my",e.clientY-r.top+"px")},{passive:true});
+$$(".soon").forEach(c=>c.addEventListener("click",e=>e.preventDefault()));
 
-// Scroll progress + back to top button
-const toTop=document.getElementById("toTop"),progress=document.getElementById("scrollProgress"),circ=2*Math.PI*19;
-function updateScroll(){const max=document.documentElement.scrollHeight-window.innerHeight;const percent=max>0?window.scrollY/max:0;progress.style.strokeDashoffset=circ-(circ*percent);toTop.classList.toggle("show",window.scrollY>280)}
-window.addEventListener("scroll",updateScroll,{passive:true});updateScroll();toTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+// comments (saved in this browser)
+const cn=$("#commentName"),ct=$("#commentText"),cb=$("#commentBtn"),cl=$("#commentsList"),cc=$("#charCount"),KEY="pasiduEshanComments";
+const get=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}};
+function render(){cl.innerHTML="";get().slice().reverse().forEach(c=>{const a=document.createElement("article");a.className="comment";[["comment-name",c.name],["comment-text",c.text],["comment-date",c.date]].forEach(([k,v])=>{const x=document.createElement("div");x.className=k;x.textContent=v;a.appendChild(x)});cl.appendChild(a)})}
+ct.addEventListener("input",()=>cc.textContent=ct.value.length+" / 250");
+cb.addEventListener("click",()=>{const n=cn.value.trim(),x=ct.value.trim();if(!n||!x){alert("Please enter your name and comment.");return}const c=get();c.push({name:n.slice(0,40),text:x.slice(0,250),date:new Date().toLocaleString()});try{localStorage.setItem(KEY,JSON.stringify(c))}catch{}cn.value="";ct.value="";cc.textContent="0 / 250";render()});
+render();

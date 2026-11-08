@@ -22,3 +22,8 @@ wrangler.jsonc eke `services` uncomment karanna. Ee workers walata "workers_dev"
 
 ## Google login (API site)
 Google OAuth settings walata aluth domain eka authorized origin / redirect URI widiyata add karanna.
+
+## UI
+Portfolio eka PASIYA API site eke layout pattern eka (top bar, sidebar, WORKSPACE sections, caps labels, status pills) ekata hadala thiyenne.
+API page eka dan eke original UI ekamai penne. Portfolio theme eka API/ anith project walata inject karanna ona nam
+src/worker.js eke ee app eke `theme: true` karanna.
