@@ -16,6 +16,7 @@ const APPS = {
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
     theme: true, // portfolio theme eka inject karanawa
+    home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
   },
   pastpapers: {
     prefix: "/pastpapers",
@@ -131,11 +132,11 @@ async function proxy(request, inUrl, search, name, path, entry) {
     res = await fetch(target, {
       method: request.method,
       headers: h,
-      body: hasBody ? request.body : undefined,
+      body: hasBody ? await request.arrayBuffer() : undefined,
       redirect: "manual",
     });
   } catch (e) {
-    return new Response("Bad gateway: " + ORIGIN_HOST + " ekata connect wenna bari una", { status: 502 });
+    return new Response("Bad gateway (" + ORIGIN_HOST + "): " + (e && e.message), { status: 502 });
   }
 
   const out = new Headers(res.headers);
@@ -144,7 +145,17 @@ async function proxy(request, inUrl, search, name, path, entry) {
   out.delete("Transfer-Encoding");
 
   const loc = out.get("Location");
-  if (loc) out.set("Location", loc.split(ORIGIN).join(inUrl.origin));
+  if (loc) {
+    let l = swap(loc, ORIGIN, inUrl.origin);
+    if (app.home) {
+      // login/register passe origin eka "/" ekata redirect karanawa -> portfolio ekata nowa project ekatama
+      if (l === "/") l = app.home;
+      else if (l.startsWith("/?")) l = app.home + l.slice(1);
+      else if (l === inUrl.origin + "/") l = inUrl.origin + app.home;
+      else if (l.startsWith(inUrl.origin + "/?")) l = inUrl.origin + app.home + l.slice(inUrl.origin.length + 1);
+    }
+    out.set("Location", l);
+  }
 
   const cookies = res.headers.getSetCookie ? res.headers.getSetCookie() : [];
   out.delete("Set-Cookie");
@@ -161,22 +172,45 @@ async function proxy(request, inUrl, search, name, path, entry) {
   }
 
   let body = await res.text();
-  body = body.split(ORIGIN).join(inUrl.origin).split(ORIGIN_HOST).join(inUrl.host);
-  if (/text\/html/i.test(type)) body = inject(body, app.theme);
+  body = swap(body, ORIGIN, inUrl.origin).split(ORIGIN_HOST).join(inUrl.host);
+  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home);
   out.delete("ETag");
   return new Response(body, { status: res.status, headers: out });
 }
 
+// origin url eka (plain + url-encoded, oauth redirect_uri wage ewa walata) wenas karanawa
+function swap(str, from, to) {
+  return str
+    .split(from).join(to)
+    .split(encodeURIComponent(from)).join(encodeURIComponent(to));
+}
+
 // back button (hama project ekakatama) + theme (theme:true walata withrai)
-function inject(html, theme) {
+function inject(html, theme, home) {
   html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     `<link rel="icon" type="image/png" href="${ICON}"><link rel="apple-touch-icon" href="${ICON}">` +
     '<link rel="stylesheet" href="/_pasiya/pill.css">' +
-    (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "");
+    (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
+    (home ? homeGuard(home) : "");
   const bar =
     '<a class="ps-home" href="/" aria-label="Back to portfolio"><span>←</span> Pasidu Eshan</a>';
   html = /<\/head>/i.test(html) ? html.replace(/<\/head>/i, () => css + "</head>") : css + html;
   html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, () => bar + "</body>") : html + bar;
   return html;
+}
+
+// project eke JS eken location.href="/" kalama portfolio ekata yanna nathuwa project ekatama yawanna
+// (back pill eka click karanawa nam withrai portfolio ekata yanne)
+function homeGuard(home) {
+  return (
+    "<script>(function(){var H=" + JSON.stringify(home) + ",pill=false;" +
+    'document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".ps-home"))pill=true},true);' +
+    "if(!window.navigation)return;" +
+    'navigation.addEventListener("navigate",function(e){' +
+    "if(!e.cancelable||e.hashChange||e.downloadRequest!==null||pill)return;" +
+    "var u=new URL(e.destination.url);" +
+    'if(u.origin===location.origin&&u.pathname==="/"){e.preventDefault();location.replace(H+u.search)}' +
+    "})})();</script>"
+  );
 }
