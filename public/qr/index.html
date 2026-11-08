@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Editor | Pasidu Eshan</title>
+    <meta name="description" content="Free QR code editor: links, Wi-Fi, contacts, files. Custom colors, shapes and logo. Uploads go to catbox.moe.">
+    <meta name="theme-color" content="#020608">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/_pasiya/pill.css">
+    <link rel="stylesheet" href="/_pasiya/loader.css">
+    <link rel="stylesheet" href="/qr/qr.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="ps-loader ps-auto" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Opening QR Editor</div><div class="ps-bar"><span></span></div></div>
+    <script>(function(){var l=document.getElementById('ps-loader'),t=Date.now(),d=0;function h(){if(d||!l)return;d=1;var w=Math.max(0,350-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide');setTimeout(function(){l.remove()},700)},w)}if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,4000)})();</script>
+
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+
+    <main class="wrap">
+        <header class="hero">
+            <h1>QR Editor</h1>
+            <p>Create, style and share QR codes. Files you upload are stored on catbox.moe.</p>
+        </header>
+
+        <div class="layout">
+            <!-- LEFT: controls -->
+            <div class="controls">
+                <section class="card">
+                    <h2><span class="num">1</span> Content</h2>
+                    <div class="tabs" id="typeTabs" role="tablist">
+                        <button type="button" class="tab active" data-type="text">Link / Text</button>
+                        <button type="button" class="tab" data-type="file">File / Image</button>
+                        <button type="button" class="tab" data-type="wifi">Wi-Fi</button>
+                        <button type="button" class="tab" data-type="vcard">Contact</button>
+                        <button type="button" class="tab" data-type="whatsapp">WhatsApp</button>
+                        <button type="button" class="tab" data-type="email">Email</button>
+                        <button type="button" class="tab" data-type="sms">SMS</button>
+                        <button type="button" class="tab" data-type="tel">Phone</button>
+                    </div>
+
+                    <div class="pane active" data-pane="text">
+                        <label>Link or text
+                            <textarea id="f-text" rows="3" placeholder="https://example.com or any text"></textarea>
+                        </label>
+                    </div>
+
+                    <div class="pane" data-pane="file">
+                        <label class="drop" id="dropZone">
+                            <input type="file" id="f-file" hidden>
+                            <i>⬆</i>
+                            <b id="dropTitle">Choose a file or image</b>
+                            <small>It uploads to catbox.moe and the QR points to the link (max 3.5 MB)</small>
+                        </label>
+                        <div class="status" id="fileStatus" hidden></div>
+                    </div>
+
+                    <div class="pane" data-pane="wifi">
+                        <div class="row2">
+                            <label>Network name (SSID)<input id="w-ssid" type="text" autocomplete="off"></label>
+                            <label>Password<input id="w-pass" type="text" autocomplete="off"></label>
+                        </div>
+                        <div class="row2">
+                            <label>Security
+                                <select id="w-enc"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">None</option></select>
+                            </label>
+                            <label class="check"><input id="w-hidden" type="checkbox"> Hidden network</label>
+                        </div>
+                    </div>
+
+                    <div class="pane" data-pane="vcard">
+                        <div class="row2">
+                            <label>First name<input id="v-first" type="text"></label>
+                            <label>Last name<input id="v-last" type="text"></label>
+                        </div>
+                        <div class="row2">
+                            <label>Phone<input id="v-tel" type="tel"></label>
+                            <label>Email<input id="v-mail" type="email"></label>
+                        </div>
+                        <div class="row2">
+                            <label>Company<input id="v-org" type="text"></label>
+                            <label>Website<input id="v-url" type="text"></label>
+                        </div>
+                    </div>
+
+                    <div class="pane" data-pane="whatsapp">
+                        <label>Number (with country code)<input id="a-num" type="tel" placeholder="94741500792"></label>
+                        <label>Message (optional)<textarea id="a-msg" rows="2"></textarea></label>
+                    </div>
+
+                    <div class="pane" data-pane="email">
+                        <label>To<input id="e-to" type="email"></label>
+                        <label>Subject<input id="e-sub" type="text"></label>
+                        <label>Message<textarea id="e-body" rows="2"></textarea></label>
+                    </div>
+
+                    <div class="pane" data-pane="sms">
+                        <label>Number<input id="s-num" type="tel"></label>
+                        <label>Message<textarea id="s-msg" rows="2"></textarea></label>
+                    </div>
+
+                    <div class="pane" data-pane="tel">
+                        <label>Phone number<input id="t-num" type="tel" placeholder="+94741500792"></label>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2><span class="num">2</span> Style</h2>
+
+                    <div class="swatches" id="presets" aria-label="Color presets">
+                        <button type="button" data-fg="#000000" data-bg="#ffffff" data-grad="" title="Classic"><i style="background:linear-gradient(135deg,#000 50%,#fff 50%)"></i></button>
+                        <button type="button" data-fg="#00778a" data-bg="#ffffff" data-grad="#008a6a" title="Cyan on white"><i style="background:linear-gradient(135deg,#00778a,#008a6a)"></i></button>
+                        <button type="button" data-fg="#00e5ff" data-bg="#061218" data-grad="#00ffc8" title="Pasiya neon"><i style="background:linear-gradient(135deg,#00e5ff,#00ffc8);outline:2px solid #061218;outline-offset:-2px"></i></button>
+                        <button type="button" data-fg="#0a2a33" data-bg="#e8fdff" data-grad="" title="Deep teal"><i style="background:linear-gradient(135deg,#0a2a33 50%,#e8fdff 50%)"></i></button>
+                        <button type="button" data-fg="#7c3aed" data-bg="#ffffff" data-grad="#ec4899" title="Violet pink"><i style="background:linear-gradient(135deg,#7c3aed,#ec4899)"></i></button>
+                    </div>
+
+                    <div class="row3">
+                        <label>Dots<input id="o-fg" type="color" value="#000000"></label>
+                        <label>Background<input id="o-bg" type="color" value="#ffffff"></label>
+                        <label>Eyes<input id="o-eye" type="color" value="#000000"></label>
+                    </div>
+                    <div class="row2">
+                        <label class="check"><input id="o-gradOn" type="checkbox"> Gradient dots</label>
+                        <label class="check"><input id="o-eyeOn" type="checkbox"> Custom eye color</label>
+                    </div>
+                    <div class="row2">
+                        <label>Gradient end<input id="o-grad" type="color" value="#00b894"></label>
+                        <label class="check"><input id="o-transp" type="checkbox"> Transparent background</label>
+                    </div>
+
+                    <div class="row3">
+                        <label>Dot shape
+                            <select id="o-dot"><option value="square">Square</option><option value="rounded">Rounded</option><option value="dots">Dots</option><option value="diamond">Diamond</option></select>
+                        </label>
+                        <label>Eye shape
+                            <select id="o-eyeShape"><option value="square">Square</option><option value="rounded">Rounded</option><option value="circle">Circle</option></select>
+                        </label>
+                        <label>Error correction
+                            <select id="o-ecc"><option value="L">Low 7%</option><option value="M" selected>Medium 15%</option><option value="Q">Quartile 25%</option><option value="H">High 30%</option></select>
+                        </label>
+                    </div>
+                    <div class="row2">
+                        <label><span>Quiet zone <output id="o-marginV">4</output></span>
+                            <input id="o-margin" type="range" min="0" max="8" value="4">
+                        </label>
+                        <label><span>Download size <output id="o-sizeV">1024</output> px</span>
+                            <input id="o-size" type="range" min="256" max="2048" step="128" value="1024">
+                        </label>
+                    </div>
+                    <p class="hint">Square shapes scan in every app. Rounded, circle and dot styles look nicer, so test with your phone before printing.</p>
+                </section>
+
+                <section class="card">
+                    <h2><span class="num">3</span> Logo <small>optional</small></h2>
+                    <div class="logo-row">
+                        <label class="btn ghost" for="o-logo">Choose logo image</label>
+                        <input id="o-logo" type="file" accept="image/*" hidden>
+                        <button type="button" class="btn ghost" id="logoClear" hidden>Remove</button>
+                    </div>
+                    <div class="row2" id="logoOpts" hidden>
+                        <label><span>Logo size <output id="o-logoSizeV">22</output>%</span>
+                            <input id="o-logoSize" type="range" min="10" max="30" value="22">
+                        </label>
+                        <label class="check"><input id="o-logoRound" type="checkbox" checked> Round logo</label>
+                    </div>
+                    <p class="hint" id="logoHint" hidden>Error correction is raised to High so the QR stays scannable with a logo.</p>
+                </section>
+            </div>
+
+            <!-- RIGHT: preview -->
+            <aside class="preview-col">
+                <div class="card preview-card">
+                    <div class="preview" id="preview"></div>
+                    <div class="warn" id="warn" hidden></div>
+                    <div class="actions">
+                        <button type="button" class="btn primary" id="dlPng">Download PNG</button>
+                        <button type="button" class="btn" id="dlSvg">Download SVG</button>
+                        <button type="button" class="btn catbox" id="upQr">Upload QR to catbox.moe</button>
+                    </div>
+                    <div class="status" id="upStatus" hidden></div>
+                </div>
+
+                <div class="card" id="historyCard" hidden>
+                    <h2>Recent uploads</h2>
+                    <ul class="history" id="history"></ul>
+                    <button type="button" class="link-btn" id="historyClear">Clear list</button>
+                </div>
+            </aside>
+        </div>
+
+        <footer>© 2026 · Designed &amp; Built by <strong>Pasidu Eshan</strong></footer>
+    </main>
+
+    <a class="ps-home" href="/" aria-label="Back to portfolio"><span>←</span> Pasidu Eshan</a>
+
+    <script src="/qr/qrcore.js"></script>
+    <script src="/qr/qr.js"></script>
+</body>
+</html>

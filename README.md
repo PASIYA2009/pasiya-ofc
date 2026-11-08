@@ -4,7 +4,7 @@ yourdomain.com             -> portfolio
 yourdomain.com/api         -> PASIYA API   (theme eka match karala)
 yourdomain.com/pastpapers  -> Past Papers
 yourdomain.com/bot         -> WhatsApp Bot
-yourdomain.com/qr          -> QR Editor
+yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public/qr, uploads -> catbox.moe via api/qr-upload.js)
 
 ## Deploy
 1. GitHub ekata push karanna (ho `npm i -g vercel && vercel --prod`)

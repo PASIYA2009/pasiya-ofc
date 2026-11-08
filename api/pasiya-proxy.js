@@ -3,7 +3,7 @@
 // yourdomain.com/api         -> PASIYA API
 // yourdomain.com/pastpapers  -> Past Papers
 // yourdomain.com/bot         -> WhatsApp Bot
-// yourdomain.com/qr          -> QR Editor
+// yourdomain.com/qr          -> QR Editor (own page: public/qr, not proxied)
 //
 // Aluth project ekak danna one nam APPS walata line ekak add karanna.
 // (vercel.json eke rewrite eka hamathissema meka wetama enawa, aluth deyak oni na)
@@ -30,13 +30,6 @@ const APPS = {
     prefix: "/bot",
     origin: "https://pasiya-md-mini-production.up.railway.app",
     title: "WhatsApp Bot",
-    autoTheme: true,
-    theme: true,
-  },
-  qr: {
-    prefix: "/qr",
-    origin: "https://qr-code-editor.lumi.ing",
-    title: "QR Editor",
     autoTheme: true,
     theme: true,
   },

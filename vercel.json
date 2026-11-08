@@ -1,6 +1,7 @@
 {
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/qr", "destination": "/qr/index.html" },
     { "source": "/:path*", "destination": "/api/pasiya-proxy?__p=/:path*" }
   ]
 }
