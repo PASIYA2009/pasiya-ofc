@@ -15,20 +15,27 @@ const APPS = {
     prefix: "/api",
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
+    title: "PASIYA API",
     theme: true, // portfolio theme eka inject karanawa
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
   },
   pastpapers: {
     prefix: "/pastpapers",
     origin: "https://pastpaper-pro.eshandinujaya86.workers.dev",
+    title: "Past Papers",
+    theme: true, // project eka kharab wenawa nam false karanna
   },
   bot: {
     prefix: "/bot",
     origin: "https://pasiya-md-mini-production.up.railway.app",
+    title: "WhatsApp Bot",
+    theme: true,
   },
   qr: {
     prefix: "/qr",
     origin: "https://qr-code-editor.lumi.ing",
+    title: "QR Editor",
+    theme: true,
   },
 };
 
@@ -173,7 +180,7 @@ async function proxy(request, inUrl, search, name, path, entry) {
 
   let body = await res.text();
   body = swap(body, ORIGIN, inUrl.origin).split(ORIGIN_HOST).join(inUrl.host);
-  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home);
+  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home, app.title);
   out.delete("ETag");
   return new Response(body, { status: res.status, headers: out });
 }
@@ -186,15 +193,17 @@ function swap(str, from, to) {
 }
 
 // back button (hama project ekakatama) + theme (theme:true walata withrai)
-function inject(html, theme, home) {
+function inject(html, theme, home, title) {
   html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     `<link rel="icon" type="image/png" href="${ICON}"><link rel="apple-touch-icon" href="${ICON}">` +
-    '<link rel="stylesheet" href="/_pasiya/pill.css">' +
+    '<link rel="stylesheet" href="/_pasiya/pill.css"><link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (home ? homeGuard(home) : "");
   const bar =
     '<a class="ps-home" href="/" aria-label="Back to portfolio"><span>←</span> Pasidu Eshan</a>';
+  const loader = loaderHtml(title);
+  html = /<body[^>]*>/i.test(html) ? html.replace(/<body[^>]*>/i, (m) => m + loader) : html;
   html = /<\/head>/i.test(html) ? html.replace(/<\/head>/i, () => css + "</head>") : css + html;
   html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, () => bar + "</body>") : html + bar;
   return html;
@@ -212,5 +221,17 @@ function homeGuard(home) {
     "var u=new URL(e.destination.url);" +
     'if(u.origin===location.origin&&u.pathname==="/"){e.preventDefault();location.replace(H+u.search)}' +
     "})})();</script>"
+  );
+}
+
+// loading animation (project eka load wela iwara wenakan penawa)
+function loaderHtml(title) {
+  return (
+    '<div class="ps-loader" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div>' +
+    '<div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Opening ' + (title || "page") + '</div>' +
+    '<div class="ps-bar"><span></span></div></div>' +
+    "<script>(function(){var l=document.getElementById('ps-loader'),t=Date.now();" +
+    "function h(){if(!l)return;var w=Math.max(0,650-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide');setTimeout(function(){l.remove()},700)},w);l=null}" +
+    "if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,9000)})();</script>"
   );
 }
