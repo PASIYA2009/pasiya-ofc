@@ -11,9 +11,19 @@ document.head.appendChild(st);
 function parse(c){var m=c&&c.match(/rgba?\(([^)]+)\)/);if(!m)return null;var p=m[1].split(/[ ,\/]+/).filter(Boolean).map(parseFloat);return{r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1}}
 function lum(o){return(.2126*o.r+.7152*o.g+.0722*o.b)/255}
 function sat(o){var mx=Math.max(o.r,o.g,o.b),mn=Math.min(o.r,o.g,o.b);return mx?(mx-mn)/mx:0}
+function isPreview(el){
+  var b=parse(getComputedStyle(el).backgroundColor);
+  if(!b||b.a<.5||lum(b)<.55)return false;
+  if(el.offsetWidth*el.offsetHeight>360000)return false;
+  if(el.querySelector("canvas"))return true;
+  var v=el.querySelectorAll("svg");
+  for(var i=0;i<v.length;i++){var r=v[i].getBoundingClientRect();if(r.width>=120&&r.height>=120)return true}
+  return false}
 function evalEl(el){
-  if(el.nodeType!==1||SKIP[el.tagName]||(el.closest&&el.closest(".ps-loader,.ps-home,canvas,svg")))return;
+  if(el.nodeType!==1||SKIP[el.tagName]||(el.closest&&el.closest(".ps-loader,.ps-home,canvas,svg,[data-ps-keep]")))return;
   el.removeAttribute("data-ps");
+  // QR preview wage thanak (canvas / loku svg ekak thiyena light box ekak) scan wenna oni nisa palaweni widiyatama thiyenawa
+  if(isPreview(el)){el.setAttribute("data-ps-keep","1");return}
   var cs=getComputedStyle(el),t=[],bg=parse(cs.backgroundColor),accent=false;
   if(bg&&bg.a>.15){
     var L=lum(bg),S=sat(bg);

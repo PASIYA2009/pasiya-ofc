@@ -16,7 +16,6 @@ const APPS = {
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
     title: "PASIYA API",
-    keepIcon: true, // origin site eke thibuna "P" icon eka thiyaganna (portfolio photo eka danne na)
     theme: true, // portfolio theme eka inject karanawa
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
   },
@@ -25,7 +24,6 @@ const APPS = {
     origin: "https://pastpaper-pro.eshandinujaya86.workers.dev",
     title: "Past Papers",
     autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
-    keepIcon: true,
     theme: true, // project eka kharab wenawa nam false karanna
   },
   bot: {
@@ -33,14 +31,13 @@ const APPS = {
     origin: "https://pasiya-md-mini-production.up.railway.app",
     title: "WhatsApp Bot",
     autoTheme: true,
-    keepIcon: true,
     theme: true,
   },
   qr: {
     prefix: "/qr",
     origin: "https://qr-code-editor.lumi.ing",
     title: "QR Editor",
-    keepIcon: true,
+    autoTheme: true,
     theme: true,
   },
 };
@@ -216,7 +213,7 @@ function swap(str, from, to) {
 function inject(html, theme, home, title, keepIcon, autoTheme) {
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
-    (keepIcon ? "" : `<link rel="icon" type="image/png" href="${ICON}"><link rel="apple-touch-icon" href="${ICON}">`) +
+    (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
     '<link rel="stylesheet" href="/_pasiya/pill.css"><link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (home ? homeGuard(home) : "") +
