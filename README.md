@@ -1,4 +1,4 @@
-# PASIYA OFC (Cloudflare Worker)
+# PASIYA OFC (Vercel)
 
 yourdomain.com             -> portfolio
 yourdomain.com/api         -> PASIYA API   (theme eka match karala)
@@ -7,23 +7,15 @@ yourdomain.com/bot         -> WhatsApp Bot
 yourdomain.com/qr          -> QR Editor
 
 ## Deploy
-1. npm i -g wrangler && wrangler login
-2. wrangler deploy
-3. Custom domain: Cloudflare > Workers > pasiya-ofc > Settings > Domains
+1. GitHub ekata push karanna (ho `npm i -g vercel && vercel --prod`)
+2. Vercel > Add New Project > repo eka select karanna
+   Framework Preset = Other, Build Command = (hari), Output Directory = public
+3. Deploy. Custom domain: Project > Settings > Domains
 
 ## Aluth project ekak danna
-1. src/worker.js eke APPS walata line ekak (prefix + origin)
+1. api/__ps.js eke APPS walata line ekak (prefix + origin)
 2. public/index.html eke Projects section eke card ekak: href="/ee-nama"
-3. wrangler deploy
-
-## Origin link eka hariyata hide karanna
-wrangler.jsonc eke `services` uncomment karanna. Ee workers walata "workers_dev": false dala deploy karanna.
-(Railway / lumi.ing wage ewa Cloudflare walin eliyen thiyena nisa eke link eka off karanna bari.)
+3. Redeploy
 
 ## Google login (API site)
 Google OAuth settings walata aluth domain eka authorized origin / redirect URI widiyata add karanna.
-
-## UI
-Portfolio eka PASIYA API site eke layout pattern eka (top bar, sidebar, WORKSPACE sections, caps labels, status pills) ekata hadala thiyenne.
-API page eka dan eke original UI ekamai penne. Portfolio theme eka API/ anith project walata inject karanna ona nam
-src/worker.js eke ee app eke `theme: true` karanna.

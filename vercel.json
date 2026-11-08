@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/:path*", "destination": "/api/__ps?__p=/:path*" }
+  ]
+}
