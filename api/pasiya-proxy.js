@@ -16,7 +16,8 @@ const APPS = {
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
     title: "PASIYA API",
-    theme: true, // portfolio theme eka inject karanawa
+    theme: false, // API site has its own theme now (same palette + theme dots), so the forced portfolio theme.css is off
+    alias: { "/api/login": "/login", "/api/register": "/register" }, // portfolio -> /api/login?next=/ opens the API login page (same Firebase login, same origin)
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
   },
   pastpapers: {
@@ -85,6 +86,7 @@ export default async function handler(request) {
 
 function matchPrefix(p) {
   for (const [name, a] of Object.entries(APPS)) {
+    if (a.alias && a.alias[p]) return { name, path: a.alias[p] };
     if (p === a.prefix) return { name, path: "/" };
     if (p.startsWith(a.prefix + "/"))
       return { name, path: a.keepPath ? p : p.slice(a.prefix.length) };
@@ -207,6 +209,7 @@ function inject(html, theme, home, title, keepIcon, autoTheme) {
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
+    '<link rel="stylesheet" href="/_pasiya/palette.css"><script>try{document.documentElement.dataset.accent=localStorage.getItem("pasiya_accent")||"blue"}catch(e){}</script>' +
     '<link rel="stylesheet" href="/_pasiya/pill.css"><link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (home ? homeGuard(home) : "") +
@@ -230,7 +233,7 @@ function homeGuard(home) {
     'navigation.addEventListener("navigate",function(e){' +
     "if(!e.cancelable||e.hashChange||e.downloadRequest!==null||pill)return;" +
     "var u=new URL(e.destination.url);" +
-    'if(u.origin===location.origin&&u.pathname==="/"){e.preventDefault();location.replace(H+u.search)}' +
+    'if(u.origin===location.origin&&u.pathname==="/"&&!u.searchParams.has("ps_ok")){e.preventDefault();location.replace(H+u.search)}' +
     "})})();</script>"
   );
 }

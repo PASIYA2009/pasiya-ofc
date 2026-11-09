@@ -1,6 +1,6 @@
 /* back to portfolio pill (worker eka inject karanawa) */
-.ps-home{position:fixed;left:14px;bottom:14px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid rgba(0,229,255,.28);border-radius:999px;background:rgba(4,12,16,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#f4fbff!important;font:700 12px/1 "Inter",system-ui,sans-serif;text-decoration:none;box-shadow:0 8px 30px rgba(0,0,0,.4);transition:.25s}
-.ps-home span{color:#00e5ff;font-size:15px;transition:transform .25s}
-.ps-home:hover{border-color:rgba(0,229,255,.7);transform:translateY(-2px)}
+.ps-home{position:fixed;left:14px;bottom:14px;z-index:2147483000;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid rgba(var(--a-rgb),.28);border-radius:999px;background:rgba(8,12,26,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#eef3ff!important;font:700 12px/1 "Inter",system-ui,sans-serif;text-decoration:none;box-shadow:0 8px 30px rgba(0,0,0,.4);transition:.25s}
+.ps-home span{color:var(--a);font-size:15px;transition:transform .25s}
+.ps-home:hover{border-color:rgba(var(--a-rgb),.7);transform:translateY(-2px)}
 .ps-home:hover span{transform:translateX(-3px)}
 @media(prefers-reduced-motion:reduce){.ps-home,.ps-home span{transition:none}}

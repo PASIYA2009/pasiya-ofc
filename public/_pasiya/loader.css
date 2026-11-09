@@ -1,24 +1,24 @@
 /* PASIYA loading screen (portfolio + hama project ekakatama) */
 .ps-loader{position:fixed;inset:0;z-index:2147483600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  background:radial-gradient(circle at 50% -5%,#10333d 0,#061218 28%,#020608 60%,#010203 100%);color:#f4fbff;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  background:radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--a) 14%,#070b18) 0,#0a1122 28%,#070a14 60%,#04060d 100%);color:#eef3ff;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
   opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
 .ps-loader.ps-hide{opacity:0;visibility:hidden;pointer-events:none}
 .ps-loader::before,.ps-loader::after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;filter:blur(110px);opacity:.16;pointer-events:none}
-.ps-loader::before{background:#00e5ff;top:-160px;left:-130px}
-.ps-loader::after{background:#00ffc8;right:-160px;bottom:-120px}
+.ps-loader::before{background:var(--a);top:-160px;left:-130px}
+.ps-loader::after{background:var(--b);right:-160px;bottom:-120px}
 .ps-orb{position:relative;width:96px;height:96px;display:grid;place-items:center}
-.ps-orb i{position:absolute;border-radius:50%;border:3px solid transparent;box-shadow:0 0 18px rgba(0,229,255,.18)}
-.ps-orb i:nth-child(1){inset:0;border-top-color:#00e5ff;border-right-color:rgba(0,229,255,.35);animation:ps-spin 1.15s linear infinite}
-.ps-orb i:nth-child(2){inset:11px;border-bottom-color:#00ffc8;border-left-color:rgba(0,255,200,.35);animation:ps-spin 1.6s linear infinite reverse}
-.ps-orb i:nth-child(3){inset:22px;border-top-color:#f4fbff;border-right-color:rgba(244,251,255,.2);animation:ps-spin .9s linear infinite}
-.ps-orb b{position:relative;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:15px;font-weight:900;color:#001013;
-  background:linear-gradient(135deg,#00e5ff,#00ffc8);box-shadow:0 0 26px rgba(0,229,255,.55);animation:ps-pulse 1.6s ease-in-out infinite}
-.ps-brand{font-size:15px;font-weight:900;letter-spacing:6px;text-indent:6px;background:linear-gradient(90deg,#fff,#00e5ff,#00ffc8,#fff);background-size:250% auto;
+.ps-orb i{position:absolute;border-radius:50%;border:3px solid transparent;box-shadow:0 0 18px rgba(var(--a-rgb),.18)}
+.ps-orb i:nth-child(1){inset:0;border-top-color:var(--a);border-right-color:rgba(var(--a-rgb),.35);animation:ps-spin 1.15s linear infinite}
+.ps-orb i:nth-child(2){inset:11px;border-bottom-color:var(--b);border-left-color:rgba(var(--b-rgb),.35);animation:ps-spin 1.6s linear infinite reverse}
+.ps-orb i:nth-child(3){inset:22px;border-top-color:#eef3ff;border-right-color:rgba(244,251,255,.2);animation:ps-spin .9s linear infinite}
+.ps-orb b{position:relative;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:15px;font-weight:900;color:var(--on-a);
+  background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 26px rgba(var(--a-rgb),.55);animation:ps-pulse 1.6s ease-in-out infinite}
+.ps-brand{font-size:15px;font-weight:900;letter-spacing:6px;text-indent:6px;background:linear-gradient(90deg,#fff,var(--a),var(--b),#fff);background-size:250% auto;
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ps-shine 3.5s linear infinite}
-.ps-sub{margin-top:-10px;font-size:12px;font-weight:600;color:#91a2ad;letter-spacing:.4px}
+.ps-sub{margin-top:-10px;font-size:12px;font-weight:600;color:#8b97b3;letter-spacing:.4px}
 .ps-sub::after{content:"";display:inline-block;width:1.2em;text-align:left;animation:ps-dots 1.2s steps(4,end) infinite;overflow:hidden;vertical-align:bottom}
-.ps-bar{width:160px;height:3px;border-radius:99px;overflow:hidden;background:rgba(0,229,255,.12)}
-.ps-bar span{display:block;width:45%;height:100%;border-radius:99px;background:linear-gradient(90deg,#00e5ff,#00ffc8);box-shadow:0 0 12px rgba(0,229,255,.6);animation:ps-slide 1.2s ease-in-out infinite}
+.ps-bar{width:160px;height:3px;border-radius:99px;overflow:hidden;background:rgba(var(--a-rgb),.12)}
+.ps-bar span{display:block;width:45%;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--a),var(--b));box-shadow:0 0 12px rgba(var(--a-rgb),.6);animation:ps-slide 1.2s ease-in-out infinite}
 @keyframes ps-spin{to{transform:rotate(360deg)}}
 @keyframes ps-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
 @keyframes ps-shine{to{background-position:250% center}}

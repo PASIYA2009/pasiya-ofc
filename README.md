@@ -1,7 +1,7 @@
 # PASIYA OFC (Vercel)
 
 yourdomain.com             -> portfolio
-yourdomain.com/api         -> PASIYA API   (theme eka match karala)
+yourdomain.com/api         -> PASIYA API   (own theme + shared login)
 yourdomain.com/pastpapers  -> Past Papers
 yourdomain.com/bot         -> WhatsApp Bot
 yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public/qr, uploads -> catbox.moe via api/qr-upload.js)
@@ -32,3 +32,12 @@ Vercel > Settings > Environment Variables:
 - AI_MAX_TOKENS    optional (default 24000)
 - AI_PASSCODE      optional access code (key eka anunta use karanna nowena widiyata)
 Env wenas kalama Redeploy karanna.
+
+## One login, one theme (API site + OFC site)
+- Both sites use the SAME Firebase project (pasiya-api). The portfolio (`/`) and the API (`/api`) run on the same origin (the proxy), so a login on one is a login on the other.
+  The portfolio menu has Log in / Register -> `/api/login?next=/` (proxy alias) and comes back to the portfolio after login.
+- Opened the API directly on its workers.dev address? That is another origin (separate browser storage). Set `OFC_ORIGIN=https://yourdomain.com` in the Cloudflare worker variables:
+  the menu/footer links then carry the login to the OFC site with a 5-minute Firebase custom token (`POST /api/auth/handoff`, needs FIREBASE_SERVICE_ACCOUNT_JSON).
+- Theme: `public/_pasiya/palette.css` (4 accents: blue, purple, green, amber). Chosen from the menu, saved as `pasiya_accent` in localStorage, shared by the portfolio, /api, /ai, /qr, /pastpapers, /bot.
+- Shared menu/footer/login chip: `public/_pasiya/shell.js` + `shell.css` (same file is in the API repo as `public/shell.js`). Add social icons in the `SOCIAL` array at the top of shell.js.
+- Firebase > Authentication > Settings > Authorized domains: add your Vercel domain (and the custom domain).

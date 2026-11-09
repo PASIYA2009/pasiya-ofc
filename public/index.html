@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pasidu Eshan - Personal Portfolio">
     <title>Pasidu Eshan | Portfolio</title>
-    <meta name="theme-color" content="#020608">
+    <meta name="theme-color" content="#070a14">
     <meta property="og:title" content="Pasidu Eshan | Portfolio">
     <meta property="og:description" content="Web developer, software creator. Check out my projects and the free PASIYA API.">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta property="og:image" content="https://files.catbox.moe/8w0kfb.png">
-    <link rel="stylesheet" href="pasiyaofc.css">
+    <link rel="stylesheet" href="/_pasiya/palette.css"><script>try{document.documentElement.dataset.accent=localStorage.getItem("pasiya_accent")||"blue"}catch(e){}</script><link rel="stylesheet" href="pasiyaofc.css">
     <link rel="stylesheet" href="pasiyaofc-plus.css">
-    <link rel="stylesheet" href="_pasiya/loader.css">
+    <link rel="stylesheet" href="_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/shell.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
+<script>window.PS_ROLE="ofc"</script><script src="/_pasiya/shell.js" defer></script></head>
 <body>
     <div class="ps-loader" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Loading</div><div class="ps-bar"><span></span></div></div>
     <script>(function(){var l=document.getElementById('ps-loader'),t=Date.now();function h(){if(!l)return;var w=Math.max(0,2200-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide')},w)}if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,7000)})();</script>
@@ -31,9 +31,9 @@
     <header class="top-bar">
         <a class="top-name" href="#home">Pasidu Eshan</a>
         <div class="top-time" id="liveTime">Loading time...</div>
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
+        <div class="ps-top"><span data-ps-top style="display:contents"></span><button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
             <span></span><span></span><span></span><b>Menu</b>
-        </button>
+        </button></div>
     </header>
 
     <div class="menu-overlay" id="menuOverlay"></div>
@@ -42,6 +42,8 @@
             <div><small>WELCOME</small><strong>Menu</strong></div>
             <button class="close-menu" id="closeMenu" type="button" aria-label="Close menu">×</button>
         </div>
+        <div data-ps-account></div>
+        <div class="ps-sec">THIS PAGE</div>
         <nav class="menu-links">
             <a href="#home"><i class="fa-solid fa-house"></i> Home <span>↗</span></a>
             <a href="#contact"><i class="fa-solid fa-address-book"></i> Contact <span>↗</span></a>
@@ -49,6 +51,9 @@
             <a href="#skills"><i class="fa-solid fa-code"></i> My Skills <span>↗</span></a>
             <a href="#comments"><i class="fa-solid fa-comments"></i> Comments <span>↗</span></a>
         </nav>
+        <div data-ps-sites></div>
+        <div data-ps-dots></div>
+        <div data-ps-out hidden></div>
     </aside>
 
     <main class="container">
@@ -118,7 +123,7 @@
             <div id="commentsList" class="comments-list"></div>
         </section>
 
-        <footer>© 2026 · Designed & Built by <strong>Pasidu Eshan</strong></footer>
+        <div id="ps-footer"></div>
     </main>
     
     <!-- Scroll progress / back to top -->
