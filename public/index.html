@@ -51,8 +51,6 @@
             <a href="#skills"><i class="fa-solid fa-code"></i> My Skills <span>↗</span></a>
             <a href="#comments"><i class="fa-solid fa-comments"></i> Comments <span>↗</span></a>
         </nav>
-
-        <div class="ps-sec">MUSIC</div><div class="player" id="ofcPlayer"><div class="pl-art" id="ofcPlArt">♫</div><div class="pl-info"><b id="ofcPlTitle">PASIYA Music</b><small id="ofcPlSub">Loading playlist…</small></div><div class="pl-ctl"><button id="ofcPlPrev" aria-label="Previous song">|◀</button><button id="ofcPlPlay" class="pl-main" aria-label="Play music">▶</button><button id="ofcPlNext" aria-label="Next song">▶|</button></div></div>
         <div data-ps-sites></div>
         <div data-ps-dots></div>
         <div data-ps-out hidden></div>
@@ -125,24 +123,13 @@
             <div id="commentsList" class="comments-list"></div>
         </section>
 
-
-        <section class="links-section" id="admin-settings" hidden><div class="section-heading"><span class="line"></span><h2>Admin Control Center</h2><span class="line"></span></div><div class="comment-box"><h3>Website appearance</h3><p>Customize theme colour, background animation and site logo. Settings are shared by API and OFC on this browser.</p><label>Theme colour <select id="psAdminAccent"><option value="blue">Blue</option><option value="purple">Purple</option><option value="green">Green</option><option value="amber">Amber</option></select></label><label>Background animation <select id="psAdminMotion"><option value="on">Enabled</option><option value="off">Disabled</option></select></label><label>Logo image URL <input id="psAdminLogo" type="url" placeholder="https://example.com/logo.png"></label><button id="psAdminSave" type="button">Save appearance</button><p id="psAdminMsg" role="status"></p></div><div class="comment-box"><h3>Music playlist</h3><p>Add or remove YouTube tracks. Playlist changes are stored by PASIYA API and available to all visitors.</p><input id="ofcMusicUrl" type="url" placeholder="YouTube song URL"><button id="ofcMusicAdd" type="button">Add song</button><p id="ofcMusicMsg" role="status"></p><div id="ofcMusicRows"></div></div></section>
         <div id="ps-footer"></div>
     </main>
     
-    <div id="ofcMusicDock" class="ofc-music-dock">
-      <button id="ofcMusicToggle" class="ofc-music-toggle" type="button" aria-expanded="false" aria-controls="ofcMusicPopup"><span aria-hidden="true">♫</span><b>Music</b></button>
-      <div id="ofcMusicPopup" class="ofc-music-popup" hidden>
-        <div class="ofc-music-popup-head"><b>🎵 PASIYA Music</b><button id="ofcMusicClose" type="button" aria-label="Close music player">×</button></div>
-        <div id="ofcMusicPopupBody"></div>
-      </div>
-    </div>
-    <div id="ofcYtWrap" aria-hidden="true"><div id="ofcYtHost"></div></div>
     <!-- Scroll progress / back to top -->
     <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="19"></circle><circle class="progress" id="scrollProgress" cx="22" cy="22" r="19"></circle></svg><i class="fa-solid fa-arrow-up"></i></button>
 
     <script src="pasiyaofc.js"></script>
     <script src="pasiyaofc-plus.js"></script>
-    <script src="ofc-music-admin.js" defer></script>
 </body>
 </html>
