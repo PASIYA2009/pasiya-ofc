@@ -42,6 +42,8 @@ const APPS = {
 
 const FALLBACK_ICON =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e5ff"/><stop offset="1" stop-color="#4db8ff"/></linearGradient></defs><path d="M32 4.5 55.5 18v28L32 59.5 8.5 46V18z" fill="#061218" stroke="url(#g)" stroke-width="4.5" stroke-linejoin="round"/><path d="M26.5 44.5v-25h8.5a7.6 7.6 0 0 1 0 15.2h-8.5" fill="none" stroke="url(#g)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+// first paint already uses the colour the admin chose (no blue flash for new visitors)
+const ACCENT_BOOT = `try{var d=document.documentElement,L=localStorage,a=L.getItem("pasiya_accent")||L.getItem("pasiya_def_accent");d.dataset.accent=a||"blue";if(!a){var s=document.createElement("style");s.textContent="html.ps-wait body{opacity:0!important}";document.head.appendChild(s);d.classList.add("ps-wait");var f=function(){d.classList.remove("ps-wait")},c=window.AbortController?new AbortController():null,t=setTimeout(function(){f();c&&c.abort()},1500);fetch("/api/theme",{cache:"no-store",signal:c&&c.signal}).then(function(r){return r.json()}).then(function(j){if(j&&j.accent){d.dataset.accent=j.accent;try{L.setItem("pasiya_def_accent",j.accent)}catch(e){}}}).catch(function(){}).then(function(){clearTimeout(t);f()})}}catch(e){}`;
 const ICON = "/_pasiya/photo.png";
 const COOKIE = "ps_app";
 const isText = (t) =>
@@ -215,7 +217,7 @@ function inject(html, app) {
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
-    '<link rel="stylesheet" href="/_pasiya/palette.css"><script>try{document.documentElement.dataset.accent=localStorage.getItem("pasiya_accent")||localStorage.getItem("pasiya_def_accent")||"blue"}catch(e){}</script>' +
+    '<link rel="stylesheet" href="/_pasiya/palette.css"><script>' + ACCENT_BOOT + '</script>' +
     '<link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (app.native ? "" : '<link rel="stylesheet" href="/_pasiya/shell.css"><script>window.PS_ROLE=' + JSON.stringify(app.role || "") + '</script><script defer src="/_pasiya/shell.js"></script>') +
