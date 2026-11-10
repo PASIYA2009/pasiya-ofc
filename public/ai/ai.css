@@ -2,7 +2,7 @@
 :root{--bg:#070a14;--card:rgba(14,20,38,.72);--border:rgba(var(--a-rgb),.16);--cyan:var(--a);--green:var(--b);--text:#eef3ff;--muted:#8b97b3}
 html,body{height:100%}
 html{color-scheme:dark}
-body{overflow-x:hidden;overflow-y:auto;background-color:transparent;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--a) 14%,#070b18) 0,#0a1122 25%,var(--bg) 55%,#04060d 100%) fixed}
+body{overflow-x:hidden;overflow-y:auto;background-color:transparent;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--a) 14%,#070b18) 0,#0a1122 25%,var(--bg) 55%,#04060d 100%);background-color:#070a14}
 ::selection{background:rgba(var(--a-rgb),.3)}*{scrollbar-color:rgba(var(--a-rgb),.35) transparent}
 .glow{position:fixed;width:360px;height:360px;border-radius:50%;filter:blur(110px);opacity:.14;pointer-events:none}
 .glow-one{background:var(--cyan);top:-160px;left:-130px}.glow-two{background:var(--green);right:-160px;top:45%}

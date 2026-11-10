@@ -1,7 +1,7 @@
 /* PASIYA API  ->  portfolio theme (proxy eka inject karanawa) */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 :root{--ps-bg:#070a14;--ps-card:rgba(14,20,38,.72);--ps-border:rgba(var(--a-rgb),.16);--ps-cyan:var(--a);--ps-green:var(--b);--ps-text:#eef3ff;--ps-muted:#8b97b3}
-html{background:radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--a) 14%,#070b18) 0,#0a1122 25%,var(--ps-bg) 55%,#04060d 100%) fixed!important;color-scheme:dark}
+html{background:radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--a) 14%,#070b18) 0,#0a1122 25%,var(--ps-bg) 55%,#04060d 100%)!important;background-color:#070a14!important;color-scheme:dark}
 body{background:transparent!important;color:var(--ps-text)!important;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important}
 html::before,html::after{content:"";position:fixed;width:360px;height:360px;border-radius:50%;filter:blur(110px);opacity:.14;pointer-events:none;z-index:-1}
 html::before{background:var(--ps-cyan);top:-160px;left:-130px}

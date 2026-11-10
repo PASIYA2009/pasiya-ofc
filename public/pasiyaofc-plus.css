@@ -56,3 +56,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:8px}
 @media(max-width:650px){.link-card span:nth-child(2){font-size:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal,.link-grid .link-card,.skills .skill{opacity:1!important;transform:none!important}}
+
+/* profile logo follows the chosen colour (hue shift per accent, see --logo-hue in _pasiya/palette.css) */
+.profile-photo{filter:hue-rotate(var(--logo-hue,0deg));transition:filter .45s ease}

@@ -38,7 +38,8 @@ Env wenas kalama Redeploy karanna.
   The portfolio menu has Log in / Register -> `/api/login?next=/` (proxy alias) and comes back to the portfolio after login.
 - Opened the API directly on its workers.dev address? That is another origin (separate browser storage). Set `OFC_ORIGIN=https://yourdomain.com` in the Cloudflare worker variables:
   the menu/footer links then carry the login to the OFC site with a 5-minute Firebase custom token (`POST /api/auth/handoff`, needs FIREBASE_SERVICE_ACCOUNT_JSON).
-- Theme: `public/_pasiya/palette.css` (4 accents: blue, purple, green, amber). Chosen from the menu, saved as `pasiya_accent` in localStorage, shared by the portfolio, /api, /ai, /qr, /pastpapers, /bot.
+- Profile photo (`.profile-photo`) and the tab icon follow the colour: `--logo-hue` per accent in palette.css (tune the degrees if the photo looks off), favicon is rebuilt in shell.js `updateFavicon()`.
+- Theme: `public/_pasiya/palette.css` (8 accents: blue, purple, green, amber, red, pink, cyan, lime; the admin picks the DEFAULT one in Admin Panel > Default theme colour, stored in Firestore settings/theme, served by GET /api/theme; a visitor's own choice always wins). Chosen from the menu, saved as `pasiya_accent` in localStorage, shared by the portfolio, /api, /ai, /qr, /pastpapers, /bot.
 - Shared menu/footer/login chip: `public/_pasiya/shell.js` + `shell.css` (same file is in the API repo as `public/shell.js`). Add social icons in the `SOCIAL` array at the top of shell.js.
 - Firebase > Authentication > Settings > Authorized domains: add your Vercel domain (and the custom domain).
 
