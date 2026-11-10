@@ -106,3 +106,6 @@ footer{margin-top:34px;text-align:center;color:var(--muted);font-size:12px}
 footer strong{color:var(--text)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* shared animated background + top bar live in /_pasiya/shell.js */
+body{background:transparent!important}

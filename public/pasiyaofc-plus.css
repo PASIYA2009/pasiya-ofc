@@ -1,11 +1,11 @@
 /* Extra polish layer - pasiyaofc.css ekata uda load wenawa */
-html{scroll-padding-top:115px}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background-image:linear-gradient(rgba(var(--a-rgb),.045) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--a-rgb),.045) 1px,transparent 1px);
+/* page background is the shared animated canvas (shell.js); the portfolio only keeps a very soft grid on top */
+body{background:transparent}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:linear-gradient(rgba(var(--a-rgb),.04) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--a-rgb),.04) 1px,transparent 1px);
   background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse at 50% 20%,#000 0,transparent 70%);mask-image:radial-gradient(ellipse at 50% 20%,#000 0,transparent 70%)}
-.glow-one{animation:drift 14s ease-in-out infinite alternate}
-.glow-two{animation:drift 18s ease-in-out infinite alternate-reverse}
-@keyframes drift{to{transform:translate(70px,50px) scale(1.2)}}
+.container{padding-top:48px!important}
+.profile{min-height:calc(100vh - var(--psb-h,60px) - 90px)!important}
 
 /* readability (tiny text wadi kala) */
 .top-time{font-size:12px}.status-pill{font-size:11px}.scroll-hint{font-size:12px}

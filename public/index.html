@@ -14,7 +14,7 @@
     <meta property="og:image" content="https://files.catbox.moe/8w0kfb.png">
     <link rel="stylesheet" href="/_pasiya/palette.css"><script>try{document.documentElement.dataset.accent=localStorage.getItem("pasiya_accent")||"blue"}catch(e){}</script><link rel="stylesheet" href="pasiyaofc.css">
     <link rel="stylesheet" href="pasiyaofc-plus.css">
-    <link rel="stylesheet" href="_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/shell.css">
+    <link rel="stylesheet" href="/_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/shell.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,38 +23,18 @@
 <body>
     <div class="ps-loader" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Loading</div><div class="ps-bar"><span></span></div></div>
     <script>(function(){var l=document.getElementById('ps-loader'),t=Date.now();function h(){if(!l)return;var w=Math.max(0,2200-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide')},w)}if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,7000)})();</script>
-    <div class="background-glow glow-one"></div>
-    <div class="background-glow glow-two"></div>
-    <div class="noise"></div>
-
-    <!-- Top bar -->
-    <header class="top-bar">
-        <a class="top-name" href="#home">Pasidu Eshan</a>
-        <div class="top-time" id="liveTime">Loading time...</div>
-        <div class="ps-top"><span data-ps-top style="display:contents"></span><button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
-            <span></span><span></span><span></span><b>Menu</b>
-        </button></div>
-    </header>
-
-    <div class="menu-overlay" id="menuOverlay"></div>
-    <aside class="side-menu" id="sideMenu" aria-hidden="true">
-        <div class="side-menu-head">
-            <div><small>WELCOME</small><strong>Menu</strong></div>
-            <button class="close-menu" id="closeMenu" type="button" aria-label="Close menu">×</button>
-        </div>
-        <div data-ps-account></div>
+    
+    <!-- The top bar, left menu, music player, colour dots and footer are built by /_pasiya/shell.js (same on every site) -->
+    <div data-ps-page hidden>
         <div class="ps-sec">THIS PAGE</div>
-        <nav class="menu-links">
-            <a href="#home"><i class="fa-solid fa-house"></i> Home <span>↗</span></a>
-            <a href="#contact"><i class="fa-solid fa-address-book"></i> Contact <span>↗</span></a>
-            <a href="#projects"><i class="fa-solid fa-layer-group"></i> Projects <span>↗</span></a>
-            <a href="#skills"><i class="fa-solid fa-code"></i> My Skills <span>↗</span></a>
-            <a href="#comments"><i class="fa-solid fa-comments"></i> Comments <span>↗</span></a>
+        <nav class="ps-links">
+            <a href="#home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="#contact"><i class="fa-solid fa-address-book"></i><span>Contact</span></a>
+            <a href="#projects"><i class="fa-solid fa-layer-group"></i><span>Projects</span></a>
+            <a href="#skills"><i class="fa-solid fa-code"></i><span>My Skills</span></a>
+            <a href="#comments"><i class="fa-solid fa-comments"></i><span>Comments</span></a>
         </nav>
-        <div data-ps-sites></div>
-        <div data-ps-dots></div>
-        <div data-ps-out hidden></div>
-    </aside>
+    </div>
 
     <main class="container">
         <!-- Hero -->

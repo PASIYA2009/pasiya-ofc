@@ -16,6 +16,8 @@ const APPS = {
     origin: "https://pasiya-api-server-2.eshandinujaya86.workers.dev",
     keepPath: true, // origin eke thiyena /api/... endpoints same widiyata yanawa
     title: "PASIYA API",
+    role: "api",
+    native: true, // the API page already loads the shared shell itself (top bar, menu, music, footer)
     theme: false, // API site has its own theme now (same palette + theme dots), so the forced portfolio theme.css is off
     alias: { "/api/login": "/login", "/api/register": "/register" }, // portfolio -> /api/login?next=/ opens the API login page (same Firebase login, same origin)
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
@@ -24,6 +26,7 @@ const APPS = {
     prefix: "/pastpapers",
     origin: "https://pastpaper-pro.eshandinujaya86.workers.dev",
     title: "Past Papers",
+    role: "papers",
     autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
     theme: true, // project eka kharab wenawa nam false karanna
   },
@@ -31,6 +34,7 @@ const APPS = {
     prefix: "/bot",
     origin: "https://pasiya-md-mini-production.up.railway.app",
     title: "WhatsApp Bot",
+    role: "bot",
     autoTheme: true,
     theme: true,
   },
@@ -192,7 +196,7 @@ async function proxy(request, inUrl, search, name, path, entry) {
 
   let body = await res.text();
   body = swap(body, ORIGIN, inUrl.origin).split(ORIGIN_HOST).join(inUrl.host);
-  if (/text\/html/i.test(type)) body = inject(body, app.theme, app.home, app.title, app.keepIcon, app.autoTheme);
+  if (/text\/html/i.test(type)) body = inject(body, app);
   out.delete("ETag");
   return new Response(body, { status: res.status, headers: out });
 }
@@ -204,31 +208,31 @@ function swap(str, from, to) {
     .split(encodeURIComponent(from)).join(encodeURIComponent(to));
 }
 
-// back button (hama project ekakatama) + theme (theme:true walata withrai)
-function inject(html, theme, home, title, keepIcon, autoTheme) {
+// Every proxied project gets the SAME shell as the portfolio: animated background, top bar (P logo + site name + site tabs + live time),
+// left menu (account / admin / sites / music / colour), footer. Colour + music + login are shared because everything is on one domain.
+function inject(html, app) {
+  const { theme, home, title, keepIcon, autoTheme } = app;
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
     '<link rel="stylesheet" href="/_pasiya/palette.css"><script>try{document.documentElement.dataset.accent=localStorage.getItem("pasiya_accent")||"blue"}catch(e){}</script>' +
-    '<link rel="stylesheet" href="/_pasiya/pill.css"><link rel="stylesheet" href="/_pasiya/loader.css">' +
+    '<link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
+    (app.native ? "" : '<link rel="stylesheet" href="/_pasiya/shell.css"><script>window.PS_ROLE=' + JSON.stringify(app.role || "") + '</script><script defer src="/_pasiya/shell.js"></script>') +
     (home ? homeGuard(home) : "") +
     (autoTheme ? '<script defer src="/_pasiya/autotheme.js"></script>' : "");
-  const bar =
-    '<a class="ps-home" href="/" aria-label="Back to portfolio"><span>←</span> Pasidu Eshan</a>';
   const loader = loaderHtml(title);
   html = /<body[^>]*>/i.test(html) ? html.replace(/<body[^>]*>/i, (m) => m + loader) : html;
   html = /<\/head>/i.test(html) ? html.replace(/<\/head>/i, () => css + "</head>") : css + html;
-  html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, () => bar + "</body>") : html + bar;
   return html;
 }
 
 // project eke JS eken location.href="/" kalama portfolio ekata yanna nathuwa project ekatama yawanna
-// (back pill eka click karanawa nam withrai portfolio ekata yanne)
+// (top bar / menu link ekak click karanawa nam withrai portfolio ekata yanne)
 function homeGuard(home) {
   return (
     "<script>(function(){var H=" + JSON.stringify(home) + ",pill=false;" +
-    'document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".ps-home"))pill=true},true);' +
+    'document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".psb a,.psd a"))pill=true},true);' +
     "if(!window.navigation)return;" +
     'navigation.addEventListener("navigate",function(e){' +
     "if(!e.cancelable||e.hashChange||e.downloadRequest!==null||pill)return;" +

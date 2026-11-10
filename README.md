@@ -41,3 +41,10 @@ Env wenas kalama Redeploy karanna.
 - Theme: `public/_pasiya/palette.css` (4 accents: blue, purple, green, amber). Chosen from the menu, saved as `pasiya_accent` in localStorage, shared by the portfolio, /api, /ai, /qr, /pastpapers, /bot.
 - Shared menu/footer/login chip: `public/_pasiya/shell.js` + `shell.css` (same file is in the API repo as `public/shell.js`). Add social icons in the `SOCIAL` array at the top of shell.js.
 - Firebase > Authentication > Settings > Authorized domains: add your Vercel domain (and the custom domain).
+
+## Shared look on every site (shell v2)
+`public/_pasiya/shell.js` + `shell.css` (same files are in the API repo: `public/shell.js`, `public/shell.css`) build, on EVERY site (OFC, API, QR, AI, Past Papers, Bot):
+- animated background, top bar (P logo + site name + site tabs + Sri Lanka live time + music button + account), left menu (account, admin panel for admins, sites, music player, colour dots), footer (P logo + PASIYA OFC)
+- the chosen colour (`pasiya_accent`), the song + position (`pasiya_mpos`) and the login are shared because everything runs on one domain
+- Past Papers / Bot get it injected by `api/pasiya-proxy.js` (`inject()`); the API, QR, AI and portfolio pages load it themselves
+- A change in `shell.js` / `shell.css` must be copied to BOTH repos (they are identical files)
