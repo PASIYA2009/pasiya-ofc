@@ -32,7 +32,7 @@ const APPS = {
   },
   bot: {
     prefix: "/bot",
-    origin: "https://pasiya-md-mini-production.up.railway.app",
+    origin: "https://pasiya-md-new-pair.vercel.app",
     title: "WhatsApp Bot",
     role: "bot",
     autoTheme: true,
