@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pasiyaofc.vercel.app/sitemap.xml
