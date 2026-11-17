@@ -1,20 +1,32 @@
 {
   "outputDirectory": "public",
-  "functions": {
-    "api/index.js": { "maxDuration": 60 }
-  },
   "redirects": [
-    { "source": "/pastpapers/:path*", "destination": "https://pastpaper-pro.vercel.app/:path*", "permanent": false }
+    {
+      "source": "/pastpapers/:path*",
+      "destination": "https://pastpaper-pro.vercel.app/:path*",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/qr", "destination": "/qr/index.html" },
-    { "source": "/ai", "destination": "/ai/index.html" },
-    { "source": "/bot", "destination": "/bot/index.html" },
-    { "source": "/music-admin", "destination": "/music-admin/index.html" },
-    { "source": "/api", "destination": "/api-site/index.html" },
-    { "source": "/api/login", "destination": "/api-site/login.html" },
-    { "source": "/api/register", "destination": "/api-site/register.html" },
-    { "source": "/favicon.ico", "destination": "/favicon.svg" },
-    { "source": "/api/:path*", "destination": "/api/index" }
+    {
+      "source": "/qr",
+      "destination": "/qr/index.html"
+    },
+    {
+      "source": "/ai",
+      "destination": "/ai/index.html"
+    },
+    {
+      "source": "/bot",
+      "destination": "/bot/index.html"
+    },
+    {
+      "source": "/music-admin",
+      "destination": "/music-admin/index.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/api/pasiya-proxy?__p=/:path*"
+    }
   ]
 }

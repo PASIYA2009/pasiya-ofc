@@ -5,7 +5,7 @@ document.querySelectorAll(".link-card.soon").forEach(a=>a.addEventListener("clic
 
 // project card ekak click karama loading screen eka penawa (aluth page eka load wenakan)
 (function(){
-  var names={"/api":"PASIYA API","/pastpapers":"Past Papers","/bot":"WhatsApp Bot","/qr":"QR Editor","/ai":"PASIYA AI"};
+  var names={"/api":"PASIYA API","/pastpapers":"Past Papers","/bot":"WhatsApp Bot","/qr":"QR Editor"};
   function show(name){
     var l=document.getElementById("ps-loader");
     if(!l){l=document.createElement("div");l.id="ps-loader";l.className="ps-loader ps-hide";
@@ -14,7 +14,7 @@ document.querySelectorAll(".link-card.soon").forEach(a=>a.addEventListener("clic
     l.querySelector(".ps-sub").textContent="Opening "+name;
     void l.offsetWidth;l.classList.remove("ps-hide")}
   document.addEventListener("click",function(e){
-    var a=e.target.closest&&e.target.closest('.link-card[href^="/"],.tile[href^="/"]');
+    var a=e.target.closest&&e.target.closest('.link-card[href^="/"]');
     if(!a||e.defaultPrevented||e.metaKey||e.ctrlKey||e.shiftKey||e.button||a.target==="_blank")return;
     show(names[a.getAttribute("href")]||"page")});
   // back button eken enakota loader eka nathi wenna
@@ -25,7 +25,7 @@ document.querySelectorAll(".link-card.soon").forEach(a=>a.addEventListener("clic
 (function(){
   var warmed={};
   function warm(e){
-    var a=e.target.closest&&e.target.closest('.link-card[href^="/"],.tile[href^="/"]');
+    var a=e.target.closest&&e.target.closest('.link-card[href^="/"]');
     if(!a)return;var h=a.getAttribute("href");if(warmed[h])return;warmed[h]=1;
     try{fetch(h,{credentials:"same-origin",priority:"low"}).catch(function(){})}catch(_){}}
   document.addEventListener("pointerover",warm,{passive:true});
