@@ -108,7 +108,7 @@
 
   function renderSites() {
     $$('[data-ps-sites]').forEach(function (el) {
-      el.innerHTML = '<div class="ps-sec">PASIYA SITES</div><nav class="ps-links">' + SITES.map(function (s) {
+      el.innerHTML = '<div class="ps-sec">OTHER SERVICES</div><nav class="ps-links">' + SITES.map(function (s) {
         var l = link(s.p); if (!l) return '';
         return '<a href="' + esc(l.href) + '"' + (l.x ? ' data-ps-x="1"' : '') + (s.k === ROLE ? ' class="on" aria-current="page"' : '') + '>' + ico(s.ic) + '<span>' + esc(s.n) + '</span>' + (s.tag ? '<em class="ps-tag">' + s.tag + '</em>' : '') + '</a>';
       }).join('') + '</nav>';
@@ -245,7 +245,7 @@
     bar.innerHTML =
       '<button type="button" class="psb-menu" id="psMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="psd">' + ico('menu') + '</button>' +
       '<a class="psb-brand" data-ps-brandlink href="/" aria-label="' + esc(SITE.n) + '">' + '<span class="psb-logo">' + logo('psLgBar') + '</span><span><b>' + esc(SITE.n.toUpperCase()) + '</b><small>by Pasidu Eshan</small></span></a>' +
-      '<nav class="psb-tabs" data-ps-tabs aria-label="Pasiya sites"></nav>' +
+      '<nav class="psb-tabs" data-ps-tabs aria-label="Other services"></nav>' +
       '<div class="psb-right"><div class="psb-time" id="psTime" aria-label="Sri Lanka time"><span class="d"></span><span class="t"></span></div>' +
       '<button type="button" class="psb-music" id="psMusicBtn" aria-label="Play music" title="Music">' + ico('note') + '</button>' +
       '<span class="psb-acct" data-ps-top></span></div>';
@@ -275,6 +275,7 @@
   function openMenu(on) {
     if (!drawer) return;
     if (on) lastFocus = D.activeElement;
+    if (on) $$('.ps-sec,.ps-links a,.psp,.ps-acct,[data-ps-pagehost] .nav', drawer).forEach(function (el, i) { el.style.setProperty('--i', Math.min(i, 14)); });
     drawer.classList.toggle('open', on); back.classList.toggle('open', on); H.classList.toggle('ps-lock', on);
     drawer.setAttribute('aria-hidden', String(!on)); $('#psMenuBtn').setAttribute('aria-expanded', String(on));
     if (on) { setTimeout(function () { var c = $('#psdClose'); if (c) c.focus(); }, 60); } else if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} lastFocus = null; }

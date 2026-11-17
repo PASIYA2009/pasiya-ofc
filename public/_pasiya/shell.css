@@ -172,3 +172,25 @@ body{background:transparent!important}
 /* live coin counter: small pop when the number changes */
 .ps-bump{display:inline-block;animation:psBump .7s ease}
 @keyframes psBump{0%{transform:scale(1)}35%{transform:scale(1.4);filter:brightness(1.5)}100%{transform:scale(1)}}
+
+/* ===== menu animation (cyber style): items slide in one by one, blinking cursor, scan line, live tags ===== */
+.psd-head{position:relative}
+.psd-head::after{content:"";position:absolute;left:0;bottom:-1px;height:2px;width:38%;background:linear-gradient(90deg,transparent,var(--a),transparent);opacity:0;border-radius:2px}
+.psd-head strong::after{content:"";display:inline-block;width:.5em;height:1em;margin-left:8px;vertical-align:-.12em;background:var(--a);border-radius:2px;animation:psCaret 1s steps(2,start) infinite}
+.psd.open .psd-head::after{opacity:1;animation:psScan 2.8s ease-in-out infinite}
+.psd .ps-sec,.psd .ps-links a,.psd [data-ps-pagehost] .nav,.psd .psp,.psd .ps-acct{opacity:0}
+.psd.open .ps-sec{animation:psIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*55ms + 120ms)}
+.psd.open .ps-links a,.psd.open [data-ps-pagehost] .nav,.psd.open .psp,.psd.open .ps-acct{animation:psIn .46s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*55ms + 160ms)}
+.ps-links a.on{position:relative;overflow:hidden}
+.ps-links a.on::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(var(--a-rgb),.22),transparent);transform:skewX(-20deg);animation:psSheen 3.6s ease-in-out infinite}
+.ps-links a .ps-ico{transition:transform .2s,color .2s}
+.ps-links a:hover .ps-ico{transform:scale(1.18) rotate(-6deg)}
+.ps-tag{animation:psTagGlow 2.6s ease-in-out infinite}
+.ps-tag.live{animation:psTagLive 1.6s ease-in-out infinite}
+@keyframes psIn{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes psCaret{to{visibility:hidden}}
+@keyframes psScan{0%{left:-40%}100%{left:102%}}
+@keyframes psSheen{0%,55%{left:-70%}100%{left:140%}}
+@keyframes psTagGlow{50%{box-shadow:0 0 12px rgba(var(--a-rgb),.35)}}
+@keyframes psTagLive{50%{box-shadow:0 0 12px #34d39966;border-color:#34d399}}
+@media(prefers-reduced-motion:reduce){.psd .ps-sec,.psd .ps-links a,.psd [data-ps-pagehost] .nav,.psd .psp,.psd .ps-acct{opacity:1!important;animation:none!important}.psd-head strong::after,.psd-head::after,.ps-links a.on::after,.ps-tag{animation:none!important}}

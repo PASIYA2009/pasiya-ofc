@@ -1,0 +1,346 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050816"><title>WhatsApp Bot | PASIYA OFC</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>:root{--bg:#070b1a;--bg2:#0d1430;--card:rgba(20,28,60,.62);--line:rgba(140,160,255,.16);--text:#eef1ff;--muted:#9aa6cf;--p:#5b8cff;--t:#34d399;--gold:#ffd98a;--ok:#34d399;--bad:#ff7a90;--r:20px}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none}
+body::before{width:520px;height:520px;left:-160px;top:-140px;background:#5b46ff}
+body::after{width:460px;height:460px;right:-140px;bottom:-120px;background:#12bfa0;opacity:.35}
+.wrap{max-width:880px;margin:0 auto;padding:28px 16px 56px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,var(--p),var(--t));box-shadow:0 8px 26px rgba(120,100,255,.45)}
+.brand h1{margin:0;font-size:19px;letter-spacing:.14em;font-weight:800}
+.brand small{display:block;color:var(--muted);letter-spacing:.02em;font-size:12.5px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--line);border-radius:99px;background:var(--card);backdrop-filter:blur(10px);font-size:13px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.pill.on .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(52,211,153,.18);animation:pulse 2s infinite}.pill.off .dot{background:var(--bad)}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+.hero{margin:6px 0 24px}.hero h2{margin:0 0 6px;font-size:clamp(26px,5vw,38px);line-height:1.15;letter-spacing:-.02em}
+.grad{background:linear-gradient(100deg,#8fb0ff,var(--t));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:var(--muted);max-width:560px}
+.tabs{display:inline-flex;gap:4px;padding:5px;border:1px solid var(--line);border-radius:16px;background:var(--card);backdrop-filter:blur(10px);margin-bottom:18px}
+.tab{border:0;background:none;color:var(--muted);font:600 14px inherit;padding:10px 18px;border-radius:12px;cursor:pointer;margin:0;transition:.2s}
+.tab.active{color:#0b1026;background:linear-gradient(120deg,#7aa2ff,#35d9f0)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin:0 0 16px;backdrop-filter:blur(14px);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.card h3{margin:0 0 4px;font-size:17px}.card .sub{margin:0 0 16px;color:var(--muted);font-size:13.5px}
+label{display:block;margin:16px 0 7px;color:var(--muted);font-size:13px;font-weight:600}
+input,select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(6,10,26,.7);color:var(--text);font:inherit;outline:none;transition:.2s}
+input:focus,select:focus{border-color:var(--p);box-shadow:0 0 0 4px rgba(91,140,255,.18)}
+input::placeholder{color:#59648f}
+button{font:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:13px 18px;border:0;border-radius:12px;font-weight:700;color:#0b1026;background:linear-gradient(120deg,#6b9bff,#22d3ee);cursor:pointer;transition:.2s;box-shadow:0 10px 28px rgba(34,150,230,.18)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}.btn:disabled{opacity:.55;cursor:wait;transform:none}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none;width:auto;margin:0;padding:9px 14px;font-size:13px}
+.btn.sm{width:auto;margin:0;padding:9px 14px;font-size:13px}
+.msg{min-height:20px;margin:12px 0 0;color:var(--gold);font-size:14px;white-space:pre-wrap}.msg.error{color:var(--bad)}.msg.good{color:var(--ok)}
+.hidden{display:none!important}
+.code{margin-top:18px;text-align:center;padding:20px 12px;border-radius:16px;border:1px dashed rgba(255,217,138,.5);background:rgba(255,217,138,.06)}
+.code b{display:block;font:800 clamp(30px,9vw,44px)/1.1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;color:var(--gold)}
+.code span{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;padding:10px 0;color:var(--muted)}
+.steps li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#0b1026;background:linear-gradient(135deg,#6b9bff,#22d3ee)}
+.steps b,.steps code{color:var(--text)}code{padding:2px 7px;border-radius:7px;background:rgba(91,140,255,.18);font-size:13px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;padding:5px;border-radius:14px;background:rgba(6,10,26,.7);border:1px solid var(--line)}
+.seg button{border:0;border-radius:10px;padding:10px 6px;background:none;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer;transition:.2s}
+.seg button.active{color:#0b1026;background:linear-gradient(120deg,#7aa2ff,#35d9f0)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-top:1px solid var(--line)}
+.sw:first-of-type{border-top:0}.sw div b{display:block;font-size:14.5px}.sw div span{color:var(--muted);font-size:12.5px}
+.switch{position:relative;flex:none;width:48px;height:28px;border-radius:99px;border:0;padding:0;cursor:pointer;background:#2a335c;transition:.25s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.25s}
+.switch.on{background:linear-gradient(120deg,#5b8cff,#34d399)}.switch.on::after{transform:translateX(20px)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.who{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.tile{padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px)}
+.tile b{display:block;font-size:28px;line-height:1.1;background:linear-gradient(100deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile span{color:var(--muted);font-size:12.5px}
+.item{padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(8,13,34,.55);margin-top:10px}
+.item .h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+.tag{font-size:12px;padding:3px 10px;border-radius:99px;font-weight:600}.tag.on{color:var(--ok);background:rgba(52,211,153,.12)}.tag.off{color:var(--bad);background:rgba(255,122,144,.12)}
+.small{font-size:12.5px;color:var(--muted)}
+.bar{height:7px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--p),var(--t))}
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px}
+.spark{width:100%;height:46px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);opacity:0;padding:12px 18px;border-radius:12px;background:#12183a;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.5);transition:.3s;pointer-events:none;z-index:9}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{margin-top:28px;text-align:center;color:#5f6b95;font-size:12.5px}
+@media(max-width:560px){.two{grid-template-columns:1fr}.tab{padding:10px 12px}.card{padding:18px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><style>
+/* ===== PASIYA MD · professional theme + animated background ===== */
+:root{--bg:#050816;--bg2:#0a1124;--card:rgba(14,22,48,.66);--line:rgba(120,160,255,.18);--text:#eaf0ff;--muted:#93a3c9;--p:#5b8cff;--t:#22d3ee;--gold:#fbbf24;--ok:#34d399;--bad:#fb7185}
+body{background:radial-gradient(1200px 700px at 12% -10%,#0f1c4d 0%,transparent 60%),radial-gradient(900px 600px at 100% 110%,#052e3a 0%,transparent 60%),var(--bg)}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-3;pointer-events:none}
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.42;will-change:transform}
+.aurora i:nth-child(1){width:560px;height:560px;left:-140px;top:-120px;background:#2f5bff;animation:drift1 22s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:500px;height:500px;right:-120px;top:22%;background:#0ea5c6;opacity:.30;animation:drift2 26s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:460px;height:460px;left:28%;bottom:-180px;background:#7c3aed;opacity:.26;animation:drift3 30s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(180px,140px) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-200px,120px) scale(.9)}}
+@keyframes drift3{to{transform:translate(140px,-160px) scale(1.2)}}
+.gridfx{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.5;background-image:linear-gradient(rgba(120,160,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,255,.06) 1px,transparent 1px);background-size:46px 46px;-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 72%);mask-image:radial-gradient(ellipse at 50% 30%,#000 10%,transparent 72%)}
+body::before,body::after{display:none}
+.logo{background:linear-gradient(135deg,#5b8cff,#22d3ee);box-shadow:0 8px 30px rgba(56,140,255,.5);animation:glow 4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 8px 44px rgba(34,211,238,.65)}}
+.grad{background:linear-gradient(100deg,#8fb0ff,#22d3ee,#8fb0ff);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+@keyframes shine{to{background-position:-220% center}}
+.card,.tile,.tabs,.top,.hero{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.card:nth-of-type(2){animation-delay:.08s}.card:nth-of-type(3){animation-delay:.16s}.card:nth-of-type(4){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.card{transition:border-color .25s,transform .25s,box-shadow .25s}
+.card:hover{border-color:rgba(120,170,255,.38);box-shadow:0 22px 60px rgba(20,60,160,.32)}
+.btn{background:linear-gradient(120deg,#6b9bff,#22d3ee);position:relative;overflow:hidden;box-shadow:0 10px 28px rgba(34,150,230,.28)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:sweep 4.5s ease-in-out infinite}
+@keyframes sweep{60%,100%{left:130%}}
+.btn.ghost::after{display:none}
+.tab.active,.seg button.active{background:linear-gradient(120deg,#7aa2ff,#35d9f0)}
+.steps li::before{background:linear-gradient(135deg,#7aa2ff,#22d3ee)}
+.switch.on{background:linear-gradient(120deg,#5b8cff,#22d3ee)}
+input:focus,select:focus{border-color:#5b8cff;box-shadow:0 0 0 4px rgba(91,140,255,.22)}
+code{background:rgba(91,140,255,.2)}
+.pill.on .dot{box-shadow:0 0 0 4px rgba(52,211,153,.2)}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+.toast{background:#0c1636}
+.sec{margin:18px 0 0;padding-top:4px;font-size:12px;letter-spacing:.12em;font-weight:700;color:var(--t);text-transform:uppercase}
+.byline{margin-top:6px;color:#6f80ad}.byline a{color:#8fb0ff;text-decoration:none}.byline a:hover{text-decoration:underline}
+@media(prefers-reduced-motion:reduce){#bg{display:none}.aurora i,.btn::after{animation:none!important}}
+</style><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/palette.css"><script>try{var d=document.documentElement,L=localStorage,a=L.getItem("pasiya_accent")||L.getItem("pasiya_def_accent");d.dataset.accent=a||"blue";if(!a){var s=document.createElement("style");s.textContent="html.ps-wait body{opacity:0!important}";document.head.appendChild(s);d.classList.add("ps-wait");var f=function(){d.classList.remove("ps-wait")},c=window.AbortController?new AbortController():null,t=setTimeout(function(){f();c&&c.abort()},1500);fetch("/api/theme",{cache:"no-store",signal:c&&c.signal}).then(function(r){return r.json()}).then(function(j){if(j&&j.accent){d.dataset.accent=j.accent;try{L.setItem("pasiya_def_accent",j.accent)}catch(e){}}}).catch(function(){}).then(function(){clearTimeout(t);f()})}}catch(e){}</script><link rel="stylesheet" href="/_pasiya/shell.css"><script>window.PS_ROLE="bot"</script><script src="/_pasiya/shell.js" defer></script></head><style>/* inside PASIYA OFC: the shared shell draws the background, so the page's own layers are off */#bg,.aurora,.gridfx{display:none!important}html{background:#070a14}body{background:transparent!important}</style></head><body>
+    <div class="ps-loader ps-auto" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Opening WhatsApp Bot</div><div class="ps-bar"><span></span></div></div>
+    <script>(function(){var l=document.getElementById('ps-loader'),t=Date.now(),d=0;function h(){if(d||!l)return;d=1;var w=Math.max(0,350-(Date.now()-t));setTimeout(function(){l.classList.add('ps-hide');setTimeout(function(){l.remove()},700)},w)}if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,4000)})();</script>
+
+<canvas id="bg"></canvas><div class="aurora"><i></i><i></i><i></i></div><div class="gridfx"></div>
+<script>(function(){var c=document.getElementById('bg');if(!c||matchMedia('(prefers-reduced-motion:reduce)').matches)return;var x=c.getContext('2d'),W,H,P=[],D=Math.min(window.devicePixelRatio||1,2),m={x:-999,y:-999};
+function size(){W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);var n=Math.round(Math.min(90,W*H/16000));P=[];for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.4+.6})}
+addEventListener('resize',size);addEventListener('pointermove',function(e){m.x=e.clientX;m.y=e.clientY});size();
+function f(){x.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var a=P[i];a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1;
+var dx=a.x-m.x,dy=a.y-m.y,dm=dx*dx+dy*dy;if(dm<14000){a.x+=dx*.004;a.y+=dy*.004}
+x.beginPath();x.arc(a.x,a.y,a.r,0,6.283);x.fillStyle='rgba(140,190,255,.75)';x.fill();
+for(var j=i+1;j<P.length;j++){var b=P[j],ex=a.x-b.x,ey=a.y-b.y,d=ex*ex+ey*ey;if(d<17000){x.strokeStyle='rgba(90,160,255,'+(.22*(1-d/17000))+')';x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}}
+requestAnimationFrame(f)}f()})();</script>
+<!-- Menu items for the PASIYA OFC drawer (/_pasiya/shell.js moves this into the left menu; hidden when the page is opened alone) -->
+<div data-ps-page hidden>
+  <div class="ps-sec">BOT MENU</div>
+  <nav class="ps-links">
+    <a href="#pair" data-pgo="pairTab"><svg class="ps-ico" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><span>Pair bot</span><em class="ps-tag live">LIVE</em></a>
+    <a href="#settings" data-pgo="setTab"><svg class="ps-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><span>My bot settings</span><em class="ps-tag">Panel</em></a>
+    <a href="#howto" data-pgo="pairTab" data-scroll="howCard"><svg class="ps-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 4M12 17h.01"/></svg><span>How to link</span><em class="ps-tag">Guide</em></a>
+  </nav>
+</div>
+<main class="wrap">
+  <div class="top">
+    <div class="brand"><div class="logo">🤖</div><div><h1>PASIYA MD</h1><small>WhatsApp bot · pair &amp; manage</small></div></div>
+    <div class="pill" id="pill"><i class="dot"></i><span id="status">Checking…</span></div>
+  </div>
+  <section class="hero">
+    <h2>Link your WhatsApp.<br><span class="grad">Run your own bot.</span></h2>
+    <p>Get a pairing code, enter it in WhatsApp, and your bot is live in seconds. New pairings are automatically assigned to an available bot server. Then manage it from here with a password sent to your own WhatsApp.</p>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="pairTab" role="tab">🔗 Pair bot</button>
+    <button class="tab" data-tab="setTab" role="tab">⚙️ My bot settings</button>
+  </div>
+
+  <section id="pairTab">
+    <div class="card">
+      <div class="seg" id="method" style="margin-bottom:6px"><button data-m="code" class="active">🔢 Pair code</button><button data-m="qr">▦ QR code</button></div>
+      <div id="codePane">
+        <h3 style="margin-top:14px">Get your pairing code</h3>
+        <p class="sub">Enter your WhatsApp number with country code, digits only (e.g. 94771234567).</p>
+        <label for="phone">WhatsApp number</label>
+        <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="94771234567">
+        <button class="btn" id="pair">Get pairing code</button>
+        <div class="code hidden" id="codeBox"><b id="code"></b><span id="codeNote"></span><button class="btn ghost" id="copy" style="margin-top:12px">Copy code</button></div>
+        <p class="msg" id="msg"></p>
+      </div>
+      <div id="qrPane" class="hidden">
+        <h3 style="margin-top:14px">Scan the QR code</h3>
+        <p class="sub">No number needed. Open WhatsApp on your phone and scan this code.</p>
+        <button class="btn" id="qrBtn">Show QR code</button>
+        <div class="code hidden" id="qrBox" style="border-color:rgba(91,140,255,.5);background:rgba(91,140,255,.06)"><div id="qrImg" style="display:inline-block;padding:12px;border-radius:14px;background:#fff;line-height:0"></div><span id="qrNote">Waiting for QR…</span></div>
+        <p class="msg" id="qmsg"></p>
+      </div>
+    </div>
+    <div class="card" id="howCard">
+      <h3>How to link</h3><p class="sub">Takes about 30 seconds.</p>
+      <ol class="steps">
+        <li><span>Open WhatsApp ➜ <b>Settings ➜ Linked devices ➜ Link a device</b></span></li>
+        <li><span>For a pairing code choose <b>Link with phone number instead</b></span></li>
+        <li><span>Type the <b>pairing code</b> shown above, or choose <b>Link a device</b> and <b>scan the QR code</b></span></li>
+        <li><span>Send <code>.menu</code> to your own chat. Your bot answers!</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="setTab" class="hidden">
+    <div class="card" id="login">
+      <h3>Log in to your bot</h3>
+      <p class="sub">No account needed. Your bot sends you the password on WhatsApp.</p>
+      <ol class="steps">
+        <li><span>Open your own WhatsApp chat (message yourself)</span></li>
+        <li><span>Send <code>.webpass</code></span></li>
+        <li><span>Enter your number and the password the bot replies with</span></li>
+      </ol>
+      <label for="lphone">WhatsApp number</label>
+      <input id="lphone" type="tel" inputmode="numeric" placeholder="94771234567">
+      <label for="lpass">Password from WhatsApp</label>
+      <input id="lpass" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD-EFGH">
+      <button class="btn" id="loginBtn">Log in</button>
+      <p class="msg" id="lmsg"></p>
+    </div>
+
+    <div id="panel" class="hidden">
+      <div class="card who">
+        <div><h3 style="margin:0">Your bot</h3><div class="small" id="whoami"></div></div>
+        <button class="btn ghost" id="logout">Log out</button>
+      </div>
+      <div class="card">
+        <h3>General</h3><p class="sub">Changes apply to your number only.</p>
+        <div class="two">
+          <div><label for="botName" style="margin-top:0">Bot name</label><input id="botName" maxlength="40"></div>
+          <div><label for="reaction" style="margin-top:0">Default reaction</label><input id="reaction" maxlength="8" placeholder="✨"></div>
+        </div>
+        <label>Who can use the bot</label>
+        <div class="seg" data-key="mode"><button data-v="public">🌐 Public</button><button data-v="private">🔒 Private</button><button data-v="grouponly">👥 Groups</button><button data-v="inboxonly">📥 Inbox only</button></div>
+        <label>Reply style</label>
+        <div class="seg" data-key="replyMode"><button data-v="both">Number + button</button><button data-v="button">Buttons</button><button data-v="number">Numbers</button></div>
+      </div>
+      <div class="card">
+        <h3>🤖 AI assistant</h3><p class="sub">Control how the AI answers on your number.</p>
+        <label for="aiName" style="margin-top:0">AI name</label><input id="aiName" maxlength="30" placeholder="PASIYA AI">
+        <div class="sw" style="margin-top:14px"><div><b>.ai command</b><span>Answer when someone sends <code>.ai question</code></span></div><button class="switch" data-key="aiCmd" aria-label="AI command"></button></div>
+        <div class="sw"><div><b>Auto-reply AI</b><span>AI replies to every chat message, no command needed</span></div><button class="switch" data-key="aiChat" aria-label="AI auto reply"></button></div>
+        <div class="sw"><div><b>Also reply in groups</b><span>Auto-reply AI answers in groups too (needs Auto-reply on)</span></div><button class="switch" data-key="aiGroups" aria-label="AI in groups"></button></div>
+      </div>
+      <div class="card">
+        <h3>Automation</h3><p class="sub">Tap a switch to turn it on or off.</p>
+        <div class="sw"><div><b>Auto react</b><span>React to commands automatically</span></div><button class="switch" data-key="autoReact" aria-label="Auto react"></button></div>
+        <div class="sw"><div><b>Auto typing</b><span>Show “typing…” while the bot works</span></div><button class="switch" data-key="autoTyping" aria-label="Auto typing"></button></div>
+        <label>WhatsApp online visibility</label>
+        <p class="sub" style="margin-top:-5px">Choose who can see your bot account as online. Hidden is the default.</p>
+        <div class="seg" data-key="onlineVisibility"><button data-v="hidden">🙈 Hidden</button><button data-v="everyone">🌐 Everyone</button><button data-v="owner">👤 Owner only</button></div>
+        <div class="sw"><div><b>Status seen</b><span>View contacts’ statuses</span></div><button class="switch" data-key="statusSeen" aria-label="Status seen"></button></div>
+        <div class="sw"><div><b>Status react</b><span>React to contacts’ statuses</span></div><button class="switch" data-key="statusReact" aria-label="Status react"></button></div>
+        <div style="padding:6px 0 4px"><label for="statusEmoji" style="margin-top:8px">Status reaction emoji <span class="small">(empty = random ❤️ 😍 🔥 …)</span></label><input id="statusEmoji" maxlength="8" placeholder="❤️"></div>
+        <div class="sw"><div><b>Fake quote</b><span>Branded quoted reply style</span></div><button class="switch" data-key="fakeQuote" aria-label="Fake quote"></button></div>
+        <button class="btn" id="save">Save settings</button>
+        <p class="msg" id="smsg"></p>
+      </div>
+    </div>
+  </section>
+  <footer>PASIYA MD · never share your pairing code or password<div class="byline">Developed by <a href="https://pasiyaofc.vercel.app" target="_blank" rel="noopener">Pasidu Eshan</a> · Anuradhapura, Sri Lanka</div></footer>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="/bot/config.js?v=11"></script><script>const normApi=u=>String(u||'').trim().replace(/\/+$/,'');let bases=(Array.isArray(window.PASIYA_API_BASES)?window.PASIYA_API_BASES:[window.PASIYA_API_BASE]).map(normApi).filter(u=>u&&!/YOUR[-_ ]/i.test(u));try{const q=new URLSearchParams(location.search).get('api');if(q){const v=normApi(q);bases=[v,...bases.filter(x=>x!==v)]}}catch{}try{const last=normApi(localStorage.getItem('pm_active_api'));if(last&&bases.includes(last))bases=[last,...bases.filter(x=>x!==last)]}catch{}let base=bases[0]||'';const $=id=>document.getElementById(id);
+let token='';try{token=sessionStorage.getItem('pm_token')||''}catch{}
+let cur={},timer=null;
+let usePost=true;
+const proxyFail=(r,d)=>[408,499,500,502,503,504,522,524].includes(r.status);
+async function callAt(server,path,opt,asGet){
+  const h={'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})};
+  let url=server+path,init={...opt,headers:h};
+  if(asGet){url+=(path.includes('?')?'&':'?')+(opt.body?'_b='+encodeURIComponent(opt.body)+'&':'')+'_t='+Date.now();init={method:'GET',headers:token?{Authorization:'Bearer '+token}:{}}}
+  let r;try{r=await fetch(url,init)}catch{const e=Error('Cannot reach '+server+'. Trying the next configured bot server…');e.proxy=true;throw e}
+  let d={};try{d=await r.json()}catch{}
+  if(r.status===202)return{...d,pending:true};
+  if(proxyFail(r,d)){const e=Error(d.error||'Bot server unavailable ('+r.status+').');e.proxy=true;e.status=r.status;throw e}
+  if(!r.ok){const e=Error(d.error||'Request failed ('+r.status+')');e.status=r.status;throw e}return d}
+async function api(path,opt={}){
+  if(!bases.length)throw Error('Set both bot server URLs in config.js (PASIYA_API_BASES).');
+  const isPost=(opt.method||'GET')==='POST';let last;
+  for(const server of [base,...bases.filter(x=>x!==base)]){
+    try{
+      let d;
+      if(isPost&&usePost){try{d=await callAt(server,path,opt,false)}catch(e){if(!e.proxy)throw e;if(e.status)throw e;d=await callAt(server,path,opt,true);usePost=false}}
+      else d=await callAt(server,path,opt,isPost);
+      base=server;try{localStorage.setItem('pm_active_api',server)}catch{}return d;
+    }catch(e){last=e;if(!e.proxy)throw e}
+  }
+  throw last||Error('All configured bot servers are offline.');
+}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+function say(id,t,k){const e=$(id);e.textContent=t||'';e.className='msg'+(k?' '+k:'')}
+let hint='';
+async function stats(){
+  if(!bases.length){hint='Add the Hostless and Altare bot URLs to PASIYA_API_BASES in config.js.';$('pill').className='pill off';$('status').textContent='Bot URL not set (config.js)';return}
+  try{const d=await api('/api/stats');let ready=true;hint='';
+    try{const h=await(await fetch(base+'/health?_t='+Date.now())).json();ready=h.ready!==false;hint=(h.hints||[]).join(' ')}catch{}
+    $('pill').className='pill '+(ready?'on':'off');
+    $('status').textContent=ready?'Online · '+(d.online||0)+' bot'+((d.online||0)==1?'':'s')+' running':'Server up · WhatsApp not ready yet'}
+  catch(e){hint=e.message;$('pill').className='pill off';$('status').textContent='Offline'}}
+const why=m=>m+(hint?'\n\n🔎 '+hint:'');
+stats();setInterval(stats,10000);
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['pairTab','setTab'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab))});
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('[data-pgo]');if(!a)return;e.preventDefault();const t=document.querySelector('.tab[data-tab="'+a.dataset.pgo+'"]');if(t)t.click();if(a.dataset.scroll)setTimeout(()=>{const c=$(a.dataset.scroll);c&&c.scrollIntoView({behavior:'smooth',block:'start'})},120);else scrollTo({top:0,behavior:'smooth'})});
+
+/* pairing */
+$('pair').onclick=async()=>{
+  const phone=$('phone').value.replace(/\D/g,'');
+  if(phone.length<10){say('msg','Enter the full number with country code, e.g. 94771234567.','error');return}
+  $('pair').disabled=true;$('pair').textContent='Requesting code…';say('msg','Connecting to WhatsApp… this can take up to a minute.');$('codeBox').classList.add('hidden');
+  try{
+    let d;const t0=Date.now();
+    for(;;){d=await api('/api/pair',{method:'POST',body:JSON.stringify({phone})});if(!d.pending)break;
+      const sec=Math.round((Date.now()-t0)/1000);if(sec>150)throw Error('WhatsApp is taking too long. Open <bot-url>/health to see why, then try again.');
+      say('msg','Connecting to WhatsApp… ('+sec+'s)');await new Promise(r=>setTimeout(r,2000))}
+    $('code').textContent=d.code;$('codeBox').classList.remove('hidden');say('msg','');
+    let left=150;clearInterval(timer);const tick=()=>{const m=Math.floor(left/60),s=String(left%60).padStart(2,'0');$('codeNote').textContent=left>0?'Enter this in WhatsApp ➜ Linked devices · expires in '+m+':'+s:'Code expired. Request a new one.';if(left--<=0)clearInterval(timer)};tick();timer=setInterval(tick,1000);
+    stats()}
+  catch(e){await stats();say('msg',why(e.message),'error')}
+  finally{$('pair').disabled=false;$('pair').textContent='Get pairing code'}};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('code').textContent.replace(/\s/g,''));toast('Code copied')}catch{toast('Select and copy the code manually')}};
+
+/* QR login */
+let qrTok='',qrTimer=null,qrLast='',qrLib=null;
+document.querySelectorAll('#method button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#method button').forEach(x=>x.classList.toggle('active',x===b));$('codePane').classList.toggle('hidden',b.dataset.m!=='code');$('qrPane').classList.toggle('hidden',b.dataset.m!=='qr');if(b.dataset.m!=='qr')stopQr()});
+function stopQr(){clearInterval(qrTimer);qrTimer=null;qrTok=''}
+function loadQrLib(){return qrLib||(qrLib=new Promise((res,rej)=>{if(window.qrcode)return res();const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';s.onload=res;s.onerror=()=>rej(Error('QR library failed to load'));document.head.appendChild(s)}))}
+async function drawQr(d){
+  if(!d.qr||d.qr===qrLast)return;qrLast=d.qr;const box=$('qrImg');
+  if(d.image){box.innerHTML='<img alt="WhatsApp QR code" width="260" height="260" style="display:block" src="'+d.image+'">';return}
+  await loadQrLib();const q=qrcode(0,'M');q.addData(d.qr);q.make();box.innerHTML=q.createSvgTag({cellSize:5,margin:0,scalable:true});const sv=box.querySelector('svg');if(sv){sv.setAttribute('width','260');sv.setAttribute('height','260')}}
+async function pollQr(){
+  if(!qrTok)return;
+  try{const d=await api('/api/qr/poll?token='+encodeURIComponent(qrTok));
+    if(d.status==='linked'){stopQr();$('qrBox').classList.add('hidden');say('qmsg','Linked! +'+d.phone+' is now connected. Send .menu to your own chat ✅','good');$('qrBtn').textContent='Show a new QR code';$('qrBtn').classList.remove('hidden');stats();return}
+    if(d.status==='expired'){stopQr();$('qrNote').textContent='QR expired.';say('qmsg','QR expired. Tap the button to get a new one.','error');$('qrBtn').classList.remove('hidden');return}
+    await drawQr(d);$('qrImg').style.display=d.qr?'inline-block':'none';$('qrNote').textContent=d.qr?'Scan with WhatsApp ➜ Linked devices ➜ Link a device (refreshes automatically)':'Preparing QR… connecting to WhatsApp'}
+  catch(e){say('qmsg',e.message,'error')}}
+$('qrBtn').onclick=async()=>{
+  $('qrBtn').disabled=true;say('qmsg','Preparing QR… this can take up to a minute.');stopQr();qrLast='';$('qrBox').classList.add('hidden');
+  try{
+    let d;const t0=Date.now();
+    for(;;){d=await api('/api/qr/start',{method:'POST'});if(!d.pending)break;
+      const sec=Math.round((Date.now()-t0)/1000);if(sec>90)throw Error('The bot is not connected to WhatsApp yet.');
+      say('qmsg','Bot is connecting to WhatsApp… ('+sec+'s)');await new Promise(r=>setTimeout(r,2500))}
+    qrTok=d.token;say('qmsg','');$('qrBox').classList.remove('hidden');$('qrBtn').classList.add('hidden');$('qrImg').style.display='none';$('qrNote').textContent='Preparing QR… connecting to WhatsApp';await drawQr(d);if(d.qr){$('qrImg').style.display='inline-block';$('qrNote').textContent='Scan with WhatsApp ➜ Linked devices ➜ Link a device (refreshes automatically)'}qrTimer=setInterval(pollQr,2500)}
+  catch(e){await stats();say('qmsg',why(e.message),'error')}finally{$('qrBtn').disabled=false}};
+
+/* my bot settings */
+function derive(s){s.aiCmd=s.aiMode==='cmd'||s.aiMode==='both';s.aiChat=s.aiMode==='chat'||s.aiMode==='both';return s}
+function aiModeOf(){return cur.aiCmd&&cur.aiChat?'both':cur.aiChat?'chat':cur.aiCmd?'cmd':'off'}
+function paint(){
+  document.querySelectorAll('.switch').forEach(b=>b.classList.toggle('on',!!cur[b.dataset.key]));
+  document.querySelectorAll('.seg[data-key]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.classList.toggle('active',cur[s.dataset.key]===b.dataset.v)));
+  $('botName').value=cur.botName||'';$('reaction').value=cur.reaction||'';$('aiName').value=cur.aiName||'';$('statusEmoji').value=cur.statusEmoji||''}
+document.querySelectorAll('.switch').forEach(b=>b.onclick=()=>{cur[b.dataset.key]=!cur[b.dataset.key];paint()});
+document.querySelectorAll('.seg[data-key] button').forEach(b=>b.onclick=()=>{cur[b.parentElement.dataset.key]=b.dataset.v;paint()});
+function showPanel(d){cur=derive(d.settings);$('login').classList.add('hidden');$('panel').classList.remove('hidden');$('whoami').textContent='+'+d.phone+(d.server?' · '+d.server:'');paint()}
+function logout(msg){token='';try{sessionStorage.removeItem('pm_token')}catch{}$('panel').classList.add('hidden');$('login').classList.remove('hidden');$('lpass').value='';if(msg)say('lmsg',msg,'error')}
+async function loadMe(){try{showPanel(await api('/api/user/me'))}catch(e){if(e.status===401||e.status===404)logout(token?e.message:'');else say('lmsg',e.message,'error')}}
+$('loginBtn').onclick=async()=>{
+  const phone=$('lphone').value.replace(/\D/g,''),password=$('lpass').value.trim();
+  if(!phone||!password){say('lmsg','Enter your number and the password.','error');return}
+  $('loginBtn').disabled=true;say('lmsg','');
+  try{const d=await api('/api/user/login',{method:'POST',body:JSON.stringify({phone,password})});token=d.token;try{sessionStorage.setItem('pm_token',token)}catch{};await loadMe();toast('Welcome back 👋')}
+  catch(e){say('lmsg',e.message,'error')}finally{$('loginBtn').disabled=false}};
+$('lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
+$('logout').onclick=()=>logout('');
+$('save').onclick=async()=>{
+  $('save').disabled=true;say('smsg','');
+  try{const d=await api('/api/user/settings',{method:'POST',body:JSON.stringify({...cur,botName:$('botName').value,reaction:$('reaction').value,aiName:$('aiName').value,statusEmoji:$('statusEmoji').value,aiMode:aiModeOf()})});cur=derive(d.settings);paint();say('smsg','Saved. Your bot is updated ✅','good');toast('Settings saved')}
+  catch(e){if(e.status===401){logout(e.message)}else say('smsg',e.message,'error')}finally{$('save').disabled=false}};
+if(token)loadMe();
+</script></body></html>

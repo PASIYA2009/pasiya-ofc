@@ -2,7 +2,7 @@
 // yourdomain.com             -> portfolio  (public/index.html)
 // yourdomain.com/api         -> PASIYA API
 // yourdomain.com/pastpapers  -> Past Papers
-// yourdomain.com/bot         -> WhatsApp Bot
+// yourdomain.com/bot         -> WhatsApp Bot (own page: public/bot, no proxy)
 // yourdomain.com/qr          -> QR Editor (own page: public/qr, not proxied)
 //
 // Aluth project ekak danna one nam APPS walata line ekak add karanna.
@@ -29,14 +29,6 @@ const APPS = {
     role: "papers",
     autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
     theme: true, // project eka kharab wenawa nam false karanna
-  },
-  bot: {
-    prefix: "/bot",
-    origin: "https://pasiya-md-new-pair.vercel.app",
-    title: "WhatsApp Bot",
-    role: "bot",
-    autoTheme: true,
-    theme: true,
   },
 };
 

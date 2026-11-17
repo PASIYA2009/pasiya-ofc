@@ -3,7 +3,7 @@
 yourdomain.com             -> portfolio
 yourdomain.com/api         -> PASIYA API   (own theme + shared login)
 yourdomain.com/pastpapers  -> Past Papers
-yourdomain.com/bot         -> WhatsApp Bot
+yourdomain.com/bot         -> WhatsApp Bot (pair web, site eka athule hadapu page eka: public/bot)
 yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public/qr, uploads -> catbox.moe via api/qr-upload.js)
 
 ## Deploy
@@ -49,3 +49,9 @@ Env wenas kalama Redeploy karanna.
 - the chosen colour (`pasiya_accent`), the song + position (`pasiya_mpos`) and the login are shared because everything runs on one domain
 - Past Papers / Bot get it injected by `api/pasiya-proxy.js` (`inject()`); the API, QR, AI and portfolio pages load it themselves
 - A change in `shell.js` / `shell.css` must be copied to BOTH repos (they are identical files)
+
+
+## WhatsApp Bot / Pair web (/bot)
+- Pair web eka dan site eka athule: `public/bot/index.html` (proxy ekak nathuwa).
+- `public/bot/config.js` eke `PASIYA_API_BASES` walata bot servers deke public URL dekama danna (Hostless first, Altare second).
+- Bot servers dekema `WEB_ORIGINS` walata me site eke origin eka (https://yourdomain.com) add karanna.
