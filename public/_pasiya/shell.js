@@ -461,7 +461,9 @@
       if (t.id === 'psNext') { plWant(true); plGo(M.i + 1); } else if (t.id === 'psPrev') { plWant(true); plGo(M.i - 1); } else plToggle();
     });
     var kick = function () { if (M.want && TRACKS.length) keepAlive(true); if (M.ready && M.want && !M.playing && TRACKS.length) { M.yielded = false; try { M.yt.playVideo(); } catch (e) {} } };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { addEventListener(ev, kick, { passive: true }); });
+    // browsers only allow sound after a real gesture: pointerdown / touchstart do NOT count, the "up" / click events do, so listen to all of them (the first tap, scroll-tap or key starts the music at once)
+    ['pointerdown', 'pointerup', 'mouseup', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (ev) { addEventListener(ev, kick, { passive: true, capture: true }); });
+    addEventListener('load', function () { setTimeout(kick, 300); setTimeout(kick, 2500); }); // try once more when the page + loader finished (works where the browser allows autoplay)
     bindSession();
     // leaving the page / app and coming back: carry on (the browser often pauses embedded players in the background)
     D.addEventListener('visibilitychange', function () { setTimeout(resumeIfWanted, D.hidden ? 300 : 0); setSession(); });
