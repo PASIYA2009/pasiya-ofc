@@ -5,4 +5,4 @@ Real background music (keeps playing with the screen off / other apps open):
      { "title": "My Song", "url": "/music/my-song.mp3" },
      { "title": "Song 2",  "url": "/music/song2.mp3" }
    ]
-3. Redeploy. While tracks.json is empty ([]), the old YouTube playlist is used.
+3. Redeploy. (Or use /music-admin.)

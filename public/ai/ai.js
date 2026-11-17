@@ -39,14 +39,6 @@
     setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
   }
 
-  /* ---------- modes ---------- */
-  $("modes").addEventListener("click", function (e) {
-    var b = e.target.closest(".mode"); if (!b) return;
-    document.querySelectorAll(".mode").forEach(function (x) { x.classList.toggle("active", x === b); });
-    ["chat", "video"].forEach(function (m) { $("view-" + m).classList.toggle("active", m === b.dataset.mode); });
-    $("clear").style.visibility = b.dataset.mode === "chat" ? "visible" : "hidden";
-  });
-
   /* ---------- project files ---------- */
   function cleanPath(p) {
     p = String(p).replace(/\\/g, "/").replace(/^\/+/, "").replace(/\s+$/, "");
@@ -299,49 +291,7 @@
     o.set = function (d) { o.data = d; show(); };
     return o;
   }
-  var vidSrc = bindSrc("vidFile", "vidThumb", "vidThumbX");
-  function goMode(m) { document.querySelector('.mode[data-mode="' + m + '"]').click(); }
-
-  /* ---------- video ---------- */
-  $("vidGo").onclick = function () {
-    var prompt = $("vidPrompt").value.trim(), st = $("vidStatus"), t0 = Date.now(), fails = 0;
-    if (!prompt) { status(st, "err", "Describe the video first."); return; }
-    $("vidGo").disabled = true;
-    status(st, "", "Starting...", true);
-    function done() { $("vidGo").disabled = false; }
-    api("/api/ai-video", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt, image: vidSrc.data || undefined, aspect: $("vidAspect").value }) })
-      .then(jsonOrThrow)
-      .then(function (j) {
-        (function poll() {
-          var s = Math.round((Date.now() - t0) / 1000);
-          if (s > 600) { status(st, "err", "This is taking too long. Please try again."); done(); return; }
-          status(st, "", "Making your video... " + Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2), true);
-          setTimeout(function () {
-            api("/api/ai-video?op=" + encodeURIComponent(j.op)).then(jsonOrThrow).then(function (p) {
-              fails = 0;
-              if (!p.done) return poll();
-              if (p.error) throw new Error(p.error);
-              status(st, "", "Downloading video...", true);
-              return api("/api/ai-video?op=" + encodeURIComponent(j.op) + "&download=1").then(function (r) {
-                if (!r.ok) return r.json().catch(function () { return {}; }).then(function (x) { throw new Error(x.error || "Could not download the video."); });
-                return r.blob();
-              }).then(function (blob) {
-                st.hidden = true;
-                var u = URL.createObjectURL(blob), card = el("div", "res"), v = el("video"), acts = el("div", "acts");
-                v.src = u; v.controls = true; v.playsInline = true; card.appendChild(v); card.appendChild(el("p", "", prompt));
-                var dl = el("a", "btn primary", "Download"); dl.href = u; dl.download = "pasiya-ai-video.mp4"; acts.appendChild(dl); card.appendChild(acts);
-                $("vidResults").insertBefore(card, $("vidResults").firstChild);
-                done();
-              });
-            }).catch(function (e) {
-              if (++fails < 3 && !/^(Video|Too many|No video)/.test(e.message)) return poll();
-              status(st, "err", e.message); done();
-            });
-          }, s < 2 ? 1000 : 8000);
-        })();
-      })
-      .catch(function (e) { status(st, "err", e.message); done(); });
-  };
+  function goMode() {}
 
   /* ---------- conversations (per account) + sidebar ---------- */
   var layout = $("layout"), convsEl = $("convs"), mq = window.matchMedia ? window.matchMedia("(max-width: 900px)") : { matches: false };

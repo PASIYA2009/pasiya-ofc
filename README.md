@@ -21,12 +21,11 @@ yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public
 Google OAuth settings walata aluth domain eka authorized origin / redirect URI widiyata add karanna.
 
 ## PASIYA AI (/ai)
-Chat & Code (projects + ZIP + bug fix), Video (Veo)
+Chat & Code (projects + ZIP + bug fix)
 
 Vercel > Settings > Environment Variables:
 - GEMINI_API_KEY   (required)
 - AI_MODEL         text/code model (default gemini-flash-lite-latest)
-- VIDEO_MODEL      default veo-3.0-generate-001  (Google billing oni wenna puluwan)
 - AI_MAX_TOKENS    optional (default 24000)
 - AI_PASSCODE      optional access code (key eka anunta use karanna nowena widiyata)
 Env wenas kalama Redeploy karanna.
@@ -56,3 +55,6 @@ Env wenas kalama Redeploy karanna.
 
 ## Background music (/music)
 mp3 files -> `public/music/`, then list them in `public/music/tracks.json` (see README.txt there). They play through a normal <audio> element, so they keep playing in the background. Empty list = YouTube playlist from /api/music (YouTube embeds are paused by phones in the background).
+
+## Music admin (/music-admin)
+Admin-only page: upload mp3 to GitHub (`public/music`), switch songs ON/OFF, reorder, delete. Needs a GitHub fine-grained token (Contents: Read and write) typed once on that page (kept only in that browser). The site updates after Vercel redeploys.

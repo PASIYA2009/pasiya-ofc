@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Music Admin | PASIYA OFC</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#070a14">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/_pasiya/palette.css">
+<script>try{var d=document.documentElement,L=localStorage;d.dataset.accent=L.getItem("pasiya_accent")||L.getItem("pasiya_def_accent")||"blue"}catch(e){}</script>
+<link rel="stylesheet" href="/_pasiya/shell.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070a14;--card:rgba(14,20,38,.72);--border:rgba(var(--a-rgb),.18);--text:#eef3ff;--muted:#8b97b3}
+html{color-scheme:dark;background:#070a14}
+body{background:transparent!important;color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{position:relative;z-index:1;width:min(100% - 24px,760px);margin:0 auto;padding:34px 0 60px;display:grid;gap:14px}
+h1{font-size:24px;font-weight:900}h1 span{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:13.5px;line-height:1.6}
+.card{padding:16px;border:1px solid var(--border);border-radius:18px;background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:grid;gap:12px}
+.card h2{font-size:15px;font-weight:800}
+label{display:grid;gap:5px;font-size:12px;font-weight:700;color:var(--muted)}
+input[type=text],input[type=password],input[type=file]{width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(0,0,0,.32);color:#fff;font:500 14px "Inter",sans-serif;outline:none}
+input:focus{border-color:rgba(var(--a-rgb),.55);box-shadow:0 0 0 3px rgba(var(--a-rgb),.1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.btn{padding:10px 14px;border:1px solid rgba(var(--a-rgb),.28);border-radius:12px;background:rgba(255,255,255,.05);color:var(--text);font:700 13px "Inter",sans-serif;cursor:pointer;transition:.2s}
+.btn:hover:not(:disabled){border-color:rgba(var(--a-rgb),.65)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{border:0;color:var(--on-a);background:linear-gradient(90deg,var(--a),var(--b))}
+.btn.danger{color:#ff9a9a;border-color:rgba(255,90,90,.35)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.msg{padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.28);font-size:13px;line-height:1.5;color:var(--muted)}
+.msg.err{border-color:rgba(255,90,90,.45);color:#ff9a9a}.msg.ok{border-color:rgba(var(--a-rgb),.45);color:var(--text)}
+.song{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(0,0,0,.22)}
+.song.off{opacity:.55}
+.song .t{flex:1;min-width:0}.song .t b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.song .t small{color:var(--muted);font-size:11.5px;word-break:break-all}
+.song .btn{padding:7px 10px;font-size:12px}
+.sw{position:relative;width:46px;height:26px;flex:none;border:0;border-radius:99px;background:rgba(255,255,255,.14);cursor:pointer;transition:.2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:linear-gradient(90deg,var(--a),var(--b))}.sw.on::after{left:23px}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+[hidden]{display:none!important}
+</style>
+<script>window.PS_ROLE="ofc"</script><script src="/_pasiya/shell.js" defer></script>
+</head>
+<body>
+<main class="wrap">
+  <div><h1><span>Music</span> Admin</h1><p class="sub">Add songs, switch them on / off, delete them. Songs are saved to your GitHub repo (<code>public/music</code>), and the site updates after Vercel redeploys (about a minute).</p></div>
+
+  <div class="msg err" id="gate" hidden>This page is for the admin only. Log in with the admin account first.</div>
+
+  <div id="app" hidden>
+    <section class="card" id="cfgCard">
+      <h2>GitHub connection</h2>
+      <div class="grid2">
+        <label>GitHub username / owner<input type="text" id="gOwner" placeholder="yourname" autocomplete="off"></label>
+        <label>Repository<input type="text" id="gRepo" placeholder="pasiya-ofc" autocomplete="off"></label>
+        <label>Branch<input type="text" id="gBranch" placeholder="main" autocomplete="off"></label>
+        <label>Access token<input type="password" id="gToken" placeholder="github_pat_..." autocomplete="off"></label>
+      </div>
+      <p class="sub">Token: GitHub &gt; Settings &gt; Developer settings &gt; Fine-grained tokens &gt; only this repo &gt; <b>Contents: Read and write</b>. It is kept only in this browser and sent only to GitHub.</p>
+      <div class="row"><button type="button" class="btn primary" id="cfgSave">Save &amp; load songs</button></div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Add a song</h2>
+      <label>Song name<input type="text" id="sTitle" maxlength="80" placeholder="Song name"></label>
+      <label>Audio file (mp3, m4a, ogg, wav · up to 25 MB)<input type="file" id="sFile" accept="audio/*,.mp3,.m4a,.ogg,.wav"></label>
+      <div class="row"><button type="button" class="btn primary" id="sAdd">Upload song</button></div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Songs</h2>
+      <div id="list"></div>
+    </section>
+    <div class="msg" id="status" hidden style="margin-top:14px"></div>
+  </div>
+  <div id="ps-footer"></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var K = "pasiya_music_admin", DIR = "public/music", LIST = DIR + "/tracks.json";
+  var songs = [], listSha = null, busy = false;
+  function lget() { try { return JSON.parse(localStorage.getItem(K)) || {}; } catch (e) { return {}; } }
+  function cfg() { return { owner: $("gOwner").value.trim(), repo: $("gRepo").value.trim(), branch: $("gBranch").value.trim() || "main", token: $("gToken").value.trim() }; }
+  function say(t, kind) { var s = $("status"); s.hidden = !t; s.className = "msg" + (kind ? " " + kind : ""); s.textContent = t || ""; if (t) s.scrollIntoView({ block: "nearest" }); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  /* ---------- GitHub contents API ---------- */
+  function gh(method, path, body) {
+    var c = cfg();
+    if (!c.owner || !c.repo || !c.token) return Promise.reject(new Error("Fill in the GitHub username, repository and token first."));
+    var url = "https://api.github.com/repos/" + encodeURIComponent(c.owner) + "/" + encodeURIComponent(c.repo) + "/contents/" + path.split("/").map(encodeURIComponent).join("/") + (method === "GET" ? "?ref=" + encodeURIComponent(c.branch) + "&t=" + Date.now() : "");
+    if (body) body.branch = c.branch;
+    return fetch(url, { method: method, headers: { Authorization: "Bearer " + c.token, Accept: "application/vnd.github+json", "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok) { var e = new Error(r.status === 401 ? "GitHub did not accept the token." : r.status === 403 ? "The token cannot write to this repo (needs Contents: Read and write)." : r.status === 404 && method !== "GET" ? "Repo or branch not found." : (j.message || "GitHub error " + r.status)); e.status = r.status; throw e; }
+          return j;
+        });
+      });
+  }
+  var b64 = function (str) { var u = new TextEncoder().encode(str), s = ""; for (var i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+  var unb64 = function (b) { var s = atob(b.replace(/\s/g, "")), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new TextDecoder().decode(u); };
+
+  function load() {
+    return gh("GET", LIST).then(function (j) { listSha = j.sha; var d = JSON.parse(unb64(j.content) || "[]"); songs = Array.isArray(d) ? d : (d.tracks || []); })
+      .catch(function (e) { if (e.status === 404) { songs = []; listSha = null; return; } throw e; });
+  }
+  function saveList(msg) { // always re-read the sha first so two quick edits never clash
+    var body = { message: msg, content: b64(JSON.stringify(songs, null, 2) + "\n") };
+    return gh("GET", LIST).then(function (j) { return j.sha; }, function (e) { if (e.status === 404) return null; throw e; })
+      .then(function (sha) { if (sha) body.sha = sha; return gh("PUT", LIST, body); })
+      .then(function (j) { listSha = j.content && j.content.sha; });
+  }
+  function done(t) { say(t + " The live site updates after the redeploy (about a minute).", "ok"); }
+
+  /* ---------- list UI ---------- */
+  function render() {
+    var box = $("list"); box.textContent = "";
+    if (!songs.length) { box.appendChild(el("div", "empty", "No songs yet. Upload your first one above.")); return; }
+    var wrap = el("div"); wrap.style.display = "grid"; wrap.style.gap = "8px";
+    songs.forEach(function (s, i) {
+      var row = el("div", "song" + (s.on === false ? " off" : "")), t = el("div", "t"), sw = el("button", "sw" + (s.on === false ? "" : " on"));
+      t.appendChild(el("b", "", s.title || "Untitled")); t.appendChild(el("small", "", s.url));
+      sw.type = "button"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-checked", String(s.on !== false)); sw.setAttribute("aria-label", "Play this song");
+      sw.onclick = function () { mutate(function () { s.on = s.on === false; }, (s.on === false ? "Switched off: " : "Switched on: ") + s.title); };
+      var up = el("button", "btn", "\u2191"), dn = el("button", "btn", "\u2193"), del = el("button", "btn danger", "Delete");
+      up.type = dn.type = del.type = "button"; up.disabled = i === 0; dn.disabled = i === songs.length - 1;
+      up.onclick = function () { mutate(function () { songs.splice(i - 1, 0, songs.splice(i, 1)[0]); }, "Moved up: " + s.title); };
+      dn.onclick = function () { mutate(function () { songs.splice(i + 1, 0, songs.splice(i, 1)[0]); }, "Moved down: " + s.title); };
+      del.onclick = function () { if (window.confirm("Delete \"" + (s.title || s.url) + "\"?")) remove(s); };
+      row.appendChild(sw); row.appendChild(t); row.appendChild(up); row.appendChild(dn); row.appendChild(del); wrap.appendChild(row);
+    });
+    box.appendChild(wrap);
+  }
+  function lock(on) { busy = on; [].slice.call(document.querySelectorAll("#app button")).forEach(function (b) { b.disabled = on; }); if (!on) render(); }
+  function mutate(fn, msg) {
+    if (busy) return; var before = JSON.stringify(songs); fn(); render(); lock(true); say("Saving...");
+    saveList("music: " + msg).then(function () { done("Saved."); }).catch(function (e) { songs = JSON.parse(before); say(e.message, "err"); }).then(function () { lock(false); });
+  }
+  function remove(s) {
+    if (busy) return; lock(true); say("Deleting...");
+    var path = s.url.indexOf("/music/") === 0 ? DIR + "/" + s.url.slice(7) : "";
+    var kill = path ? gh("GET", path).then(function (j) { return gh("DELETE", path, { message: "music: delete " + s.title, sha: j.sha }); }, function (e) { if (e.status !== 404) throw e; }) : Promise.resolve();
+    kill.then(function () { songs = songs.filter(function (x) { return x !== s; }); return saveList("music: remove " + s.title + " from list"); })
+      .then(function () { done("Deleted."); }).catch(function (e) { say(e.message, "err"); }).then(function () { lock(false); });
+  }
+
+  /* ---------- upload ---------- */
+  function safeName(n) { var m = n.match(/\.([a-z0-9]{2,4})$/i), ext = m ? m[1].toLowerCase() : "mp3", base = n.replace(/\.[^.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "song"; return Date.now().toString(36) + "-" + base + "." + ext; }
+  function toB64(file) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = function () { rej(new Error("Could not read that file.")); }; r.readAsDataURL(file); }); }
+  $("sAdd").onclick = function () {
+    if (busy) return;
+    var f = $("sFile").files[0], title = $("sTitle").value.trim();
+    if (!f) { say("Choose an audio file first.", "err"); return; }
+    if (!/^audio\//.test(f.type) && !/\.(mp3|m4a|ogg|wav|aac)$/i.test(f.name)) { say("That does not look like an audio file.", "err"); return; }
+    if (f.size > 25 * 1024 * 1024) { say("That file is bigger than 25 MB.", "err"); return; }
+    title = title || f.name.replace(/\.[^.]+$/, "");
+    var name = safeName(f.name); lock(true); say("Uploading \"" + title + "\"... (large files can take a while)");
+    toB64(f).then(function (data) { return gh("PUT", DIR + "/" + name, { message: "music: add " + title, content: data }); })
+      .then(function () { return load(); })
+      .then(function () { songs.push({ title: title, url: "/music/" + name, on: true }); return saveList("music: add " + title + " to list"); })
+      .then(function () { $("sFile").value = ""; $("sTitle").value = ""; done("Uploaded \"" + title + "\"."); })
+      .catch(function (e) { say(e.message, "err"); }).then(function () { lock(false); });
+  };
+
+  /* ---------- settings ---------- */
+  $("cfgSave").onclick = function () {
+    var c = cfg(); try { localStorage.setItem(K, JSON.stringify(c)); } catch (e) {}
+    lock(true); say("Connecting to GitHub...");
+    load().then(function () { say("Connected. " + songs.length + " song" + (songs.length === 1 ? "" : "s") + " in the list.", "ok"); }).catch(function (e) { say(e.message, "err"); }).then(function () { lock(false); });
+  };
+  var saved = lget(); $("gOwner").value = saved.owner || ""; $("gRepo").value = saved.repo || ""; $("gBranch").value = saved.branch || "main"; $("gToken").value = saved.token || "";
+
+  /* ---------- admin gate (UX only: the real lock is the GitHub token) ---------- */
+  var shown = false;
+  function gate() {
+    var P = window.PS || {}, admin = !!(P.me && P.me.role === "admin");
+    if (admin && !shown) { shown = true; $("gate").hidden = true; $("app").hidden = false; render(); if (cfg().token) $("cfgSave").click(); }
+    else if (!admin && !shown && P.me === null && P.user === null && window.__psAuthDone) { $("gate").hidden = false; }
+  }
+  document.addEventListener("ps:me", gate);
+  document.addEventListener("ps:user", function (e) { window.__psAuthDone = true; if (!e.detail) $("gate").hidden = false; else gate(); });
+  setTimeout(function () { if (!shown) { $("gate").hidden = false; } }, 8000);
+  gate();
+})();
+</script>
+</body>
+</html>

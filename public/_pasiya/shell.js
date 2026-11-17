@@ -398,17 +398,18 @@
     plRender();
   }
   // Real background play: put mp3 files in /public/music and list them in /public/music/tracks.json  ->  [{ "title": "Song", "url": "/music/song.mp3" }]
-  // Those songs play through a normal <audio> element (works with the screen off / other apps open). With no list, the YouTube playlist from /api/music is used.
-  function loadLocal() {
+  // ("on": false on a song = switched off from /music-admin.) Those songs play through a normal <audio> element (works with the screen off / other apps open). With no list, the YouTube playlist from /api/music is used.
+  function loadLocal() { // resolves null = no local list (use YouTube); otherwise the songs that are switched ON (can be empty = everything off)
     return fetch('/music/tracks.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
       var l = (Array.isArray(d) ? d : (d && d.tracks)) || [];
-      l = l.filter(function (t) { return t && typeof t.url === 'string' && /^(\/|https:\/\/)/.test(t.url); }).map(function (t) { return { id: t.url, title: t.title || '', url: t.url }; });
-      return l.length ? l : null;
+      l = l.filter(function (t) { return t && typeof t.url === 'string' && /^(\/|https:\/\/)/.test(t.url); });
+      if (!l.length) return null;
+      return l.filter(function (t) { return t.on !== false; }).map(function (t) { return { id: t.url, title: t.title || '', url: t.url }; });
     }).catch(function () { return null; });
   }
   function loadMusic() {
     return loadLocal().then(function (loc) {
-      if (loc) { M.native = true; applyTracks(loc); return; }
+      if (loc) { M.native = true; applyTracks(loc); return; } // [] here = every song switched off -> silence, not YouTube
       return fetch('/api/music', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) { if (d && Array.isArray(d.tracks)) applyTracks(d.tracks); });
     }).catch(function () {}).then(function () {
       var first = !M.loaded; M.loaded = true;

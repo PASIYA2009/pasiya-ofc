@@ -1,9 +1,25 @@
 {
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/qr", "destination": "/qr/index.html" },
-    { "source": "/ai", "destination": "/ai/index.html" },
-    { "source": "/bot", "destination": "/bot/index.html" },
-    { "source": "/:path*", "destination": "/api/pasiya-proxy?__p=/:path*" }
+    {
+      "source": "/qr",
+      "destination": "/qr/index.html"
+    },
+    {
+      "source": "/ai",
+      "destination": "/ai/index.html"
+    },
+    {
+      "source": "/bot",
+      "destination": "/bot/index.html"
+    },
+    {
+      "source": "/music-admin",
+      "destination": "/music-admin/index.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/api/pasiya-proxy?__p=/:path*"
+    }
   ]
 }
