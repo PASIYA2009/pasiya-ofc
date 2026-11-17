@@ -43,7 +43,7 @@
   $("modes").addEventListener("click", function (e) {
     var b = e.target.closest(".mode"); if (!b) return;
     document.querySelectorAll(".mode").forEach(function (x) { x.classList.toggle("active", x === b); });
-    ["chat", "image", "video"].forEach(function (m) { $("view-" + m).classList.toggle("active", m === b.dataset.mode); });
+    ["chat", "video"].forEach(function (m) { $("view-" + m).classList.toggle("active", m === b.dataset.mode); });
     $("clear").style.visibility = b.dataset.mode === "chat" ? "visible" : "hidden";
   });
 
@@ -299,33 +299,8 @@
     o.set = function (d) { o.data = d; show(); };
     return o;
   }
-  var imgSrc = bindSrc("imgFile", "imgThumb", "imgThumbX"), vidSrc = bindSrc("vidFile", "vidThumb", "vidThumbX");
+  var vidSrc = bindSrc("vidFile", "vidThumb", "vidThumbX");
   function goMode(m) { document.querySelector('.mode[data-mode="' + m + '"]').click(); }
-
-  /* ---------- image ---------- */
-  $("imgGo").onclick = function () {
-    var prompt = $("imgPrompt").value.trim(), st = $("imgStatus");
-    if (!prompt) { status(st, "err", "Describe the image first."); return; }
-    $("imgGo").disabled = true;
-    status(st, "", imgSrc.data ? "Editing your image..." : "Creating your image...", true);
-    api("/api/ai-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: prompt, image: imgSrc.data || undefined }) })
-      .then(jsonOrThrow)
-      .then(function (j) {
-        st.hidden = true;
-        var card = el("div", "res"), im = el("img"), acts = el("div", "acts");
-        im.src = j.image; im.alt = prompt; card.appendChild(im);
-        if (j.text) card.appendChild(el("p", "", j.text));
-        var dl = el("a", "btn primary", "Download"); dl.href = j.image; dl.download = "pasiya-ai-image.png";
-        var ed = el("button", "btn", "Edit this"); ed.type = "button";
-        ed.onclick = function () { fitImage(dataToBlob(j.image), 1280).then(function (d) { imgSrc.set(d); $("imgPrompt").focus(); window.scrollTo(0, 0); }); };
-        var vd = el("button", "btn", "Make a video"); vd.type = "button";
-        vd.onclick = function () { fitImage(dataToBlob(j.image), 1280).then(function (d) { vidSrc.set(d); goMode("video"); }); };
-        acts.appendChild(dl); acts.appendChild(ed); acts.appendChild(vd); card.appendChild(acts);
-        $("imgResults").insertBefore(card, $("imgResults").firstChild);
-      })
-      .catch(function (e) { status(st, "err", e.message); })
-      .then(function () { $("imgGo").disabled = false; });
-  };
 
   /* ---------- video ---------- */
   $("vidGo").onclick = function () {

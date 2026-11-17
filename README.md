@@ -21,13 +21,11 @@ yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public
 Google OAuth settings walata aluth domain eka authorized origin / redirect URI widiyata add karanna.
 
 ## PASIYA AI (/ai)
-Chat & Code (projects + ZIP + bug fix), Image (generate/edit), Video (Veo)
-Backend: api/ai-chat.js, api/ai-image.js, api/ai-video.js
+Chat & Code (projects + ZIP + bug fix), Video (Veo)
 
 Vercel > Settings > Environment Variables:
 - GEMINI_API_KEY   (required)
 - AI_MODEL         text/code model (default gemini-flash-lite-latest)
-- IMAGE_MODEL      default gemini-2.5-flash-image
 - VIDEO_MODEL      default veo-3.0-generate-001  (Google billing oni wenna puluwan)
 - AI_MAX_TOKENS    optional (default 24000)
 - AI_PASSCODE      optional access code (key eka anunta use karanna nowena widiyata)
@@ -55,3 +53,6 @@ Env wenas kalama Redeploy karanna.
 - Pair web eka dan site eka athule: `public/bot/index.html` (proxy ekak nathuwa).
 - `public/bot/config.js` eke `PASIYA_API_BASES` walata bot servers deke public URL dekama danna (Hostless first, Altare second).
 - Bot servers dekema `WEB_ORIGINS` walata me site eke origin eka (https://yourdomain.com) add karanna.
+
+## Background music (/music)
+mp3 files -> `public/music/`, then list them in `public/music/tracks.json` (see README.txt there). They play through a normal <audio> element, so they keep playing in the background. Empty list = YouTube playlist from /api/music (YouTube embeds are paused by phones in the background).

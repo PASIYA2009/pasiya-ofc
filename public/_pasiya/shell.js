@@ -348,7 +348,7 @@
     for (i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.sin(2 * Math.PI * 30 * i / sr) * 40), true);
     return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
   }
-  function keepAlive(on) { // runs for as long as the person wants music (NOT only while YouTube reports "playing"), otherwise the phone freezes the page the moment YouTube pauses in the background
+  function keepAlive(on) { if (M.native) return; // runs for as long as the person wants music (NOT only while YouTube reports "playing"), otherwise the phone freezes the page the moment YouTube pauses in the background
     try {
       if (!KEEP) { KEEP = D.createElement('audio'); KEEP.loop = true; KEEP.preload = 'auto'; KEEP.setAttribute('playsinline', ''); KEEP.setAttribute('aria-hidden', 'true'); KEEP_URL = keepWav(); KEEP.src = KEEP_URL; KEEP.volume = 1; }
       if (on) { if (KEEP.paused) { var pr = KEEP.play(); if (pr && pr.catch) pr.catch(function () {}); } } else if (!KEEP.paused) KEEP.pause();
@@ -397,8 +397,20 @@
     if (M.yt && M.yt.loadVideoById) { try { M.want && M.loaded ? M.yt.loadVideoById(list[M.i].id) : M.yt.cueVideoById(list[M.i].id); } catch (e) {} }
     plRender();
   }
+  // Real background play: put mp3 files in /public/music and list them in /public/music/tracks.json  ->  [{ "title": "Song", "url": "/music/song.mp3" }]
+  // Those songs play through a normal <audio> element (works with the screen off / other apps open). With no list, the YouTube playlist from /api/music is used.
+  function loadLocal() {
+    return fetch('/music/tracks.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var l = (Array.isArray(d) ? d : (d && d.tracks)) || [];
+      l = l.filter(function (t) { return t && typeof t.url === 'string' && /^(\/|https:\/\/)/.test(t.url); }).map(function (t) { return { id: t.url, title: t.title || '', url: t.url }; });
+      return l.length ? l : null;
+    }).catch(function () { return null; });
+  }
   function loadMusic() {
-    return fetch('/api/music', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) { if (d && Array.isArray(d.tracks)) applyTracks(d.tracks); }).catch(function () {}).then(function () {
+    return loadLocal().then(function (loc) {
+      if (loc) { M.native = true; applyTracks(loc); return; }
+      return fetch('/api/music', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) { if (d && Array.isArray(d.tracks)) applyTracks(d.tracks); });
+    }).catch(function () {}).then(function () {
       var first = !M.loaded; M.loaded = true;
       if (first) { // continue the same song at the same place if the previous page was playing a moment ago
         try {
@@ -406,12 +418,28 @@
           if (ix >= 0) { M.i = ix; M.start = (s.p && Date.now() - s.at < 20000) ? Math.max(0, Math.floor(s.t + (Date.now() - s.at) / 1000)) : 0; }
         } catch (e) {}
       }
-      if (M.pendingInit) { M.pendingInit(); M.pendingInit = null; }
+      if (M.native && !M.yt) initPlayer(); else if (M.pendingInit) { M.pendingInit(); M.pendingInit = null; }
     });
   }
+  function initNative(ev) { // same player interface as YT.Player, driven by an <audio> element
+    var a = D.createElement('audio'); a.preload = 'auto'; a.setAttribute('playsinline', ''); a.style.display = 'none'; D.body.appendChild(a); M.audio = a;
+    var ad = {
+      playVideo: function () { var p = a.play(); if (p && p.catch) p.catch(function () { M.blocked = true; plRender(); }); },
+      pauseVideo: function () { a.pause(); }, stopVideo: function () { a.pause(); a.removeAttribute('src'); },
+      getCurrentTime: function () { return a.currentTime || 0; }, getVideoData: function () { return { title: '' }; },
+      loadVideoById: function (u) { a.src = u; ad.playVideo(); }, cueVideoById: function (u) { a.src = u; }
+    };
+    M.yt = ad;
+    a.addEventListener('playing', function () { ev.onStateChange({ data: 1 }); });
+    a.addEventListener('pause', function () { if (!a.ended) ev.onStateChange({ data: 2 }); });
+    a.addEventListener('ended', function () { ev.onStateChange({ data: 0 }); });
+    a.addEventListener('error', function () { ev.onError(); });
+    var t = TRACKS[M.i]; if (t) { a.src = t.id; if (M.start) a.addEventListener('loadedmetadata', function () { try { a.currentTime = M.start; } catch (e) {} }, { once: true }); }
+    ev.onReady();
+  }
   function initPlayer() {
-    if (!D.getElementById('ytWrap')) { var w = D.createElement('div'); w.id = 'ytWrap'; w.setAttribute('aria-hidden', 'true'); w.innerHTML = '<div id="ytHost"></div>'; D.body.appendChild(w); }
-    M.yt = new YT.Player('ytHost', { width: 200, height: 200, videoId: (TRACKS[M.i] || {}).id, playerVars: { autoplay: M.want ? 1 : 0, controls: 0, playsinline: 1, rel: 0, disablekb: 1, fs: 0, start: M.start || 0, origin: location.origin }, events: {
+    if (M.yt) return;
+    var ev = {
       onReady: function () { M.ready = true; if (M.want && TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} setTimeout(function () { if (!M.playing && M.want) { M.blocked = true; plRender(); } }, 2000); } plRender(); },
       onAutoplayBlocked: function () { M.blocked = true; plRender(); },
       onStateChange: function (e) {
@@ -421,7 +449,10 @@
         plRender(); plSave();
       },
       onError: function () { M.playing = false; if (++M.fails < TRACKS.length) plGo(M.i + 1); else plRender(); }
-    } });
+    };
+    if (M.native) { initNative(ev); return; }
+    if (!D.getElementById('ytWrap')) { var w = D.createElement('div'); w.id = 'ytWrap'; w.setAttribute('aria-hidden', 'true'); w.innerHTML = '<div id="ytHost"></div>'; D.body.appendChild(w); }
+    M.yt = new YT.Player('ytHost', { width: 200, height: 200, videoId: (TRACKS[M.i] || {}).id, playerVars: { autoplay: M.want ? 1 : 0, controls: 0, playsinline: 1, rel: 0, disablekb: 1, fs: 0, start: M.start || 0, origin: location.origin }, events: ev });
   }
   function bootMusic() {
     D.addEventListener('click', function (e) {

@@ -24,7 +24,7 @@ const APPS = {
   },
   pastpapers: {
     prefix: "/pastpapers",
-    origin: "https://pastpaper-pro.eshandinujaya86.workers.dev",
+    origin: "https://pastpaper-pro.vercel.app",
     title: "Past Papers",
     role: "papers",
     autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
