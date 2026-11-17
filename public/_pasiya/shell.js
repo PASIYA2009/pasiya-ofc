@@ -314,7 +314,32 @@
     set('psSub', function (e) { e.textContent = !M.ready ? 'Loading\u2026' : !TRACKS.length ? 'No songs added' : M.fails >= TRACKS.length ? 'Songs unavailable' : M.playing ? 'Playing \u00b7 ' + (M.i + 1) + ' / ' + TRACKS.length : M.want && M.blocked ? 'Tap anywhere to start' : 'Paused \u00b7 ' + (M.i + 1) + ' / ' + TRACKS.length; });
     set('psPlay', function (e) { e.innerHTML = M.playing ? PAUSE_I : PLAY_I; e.setAttribute('aria-label', M.playing ? 'Pause music' : 'Play music'); });
     set('psArt', function (e) { e.classList.toggle('on', M.playing); });
+    keepAlive(M.playing); setSession();
     set('psMusicBtn', function (e) { e.classList.toggle('on', M.playing); e.setAttribute('aria-label', M.playing ? 'Pause music' : 'Play music'); });
+  }
+  // ---------- background playback: keep the song going when the person leaves the tab / app / locks the phone ----------
+  var KEEP = null;
+  function keepAlive(on) { // a silent looping <audio> keeps the browser's media session alive so the tab is not frozen
+    try {
+      if (!KEEP) { KEEP = D.createElement('audio'); KEEP.loop = true; KEEP.setAttribute('playsinline', ''); KEEP.src = 'data:audio/wav;base64,UklGRsQPAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YaAPAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'; KEEP.volume = 0.02; }
+      if (on) { var pr = KEEP.play(); if (pr && pr.catch) pr.catch(function () {}); } else KEEP.pause();
+    } catch (e) {}
+  }
+  function resumeIfWanted() { if (M.ready && M.want && !M.playing && TRACKS.length && M.fails < TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} } }
+  function setSession() { // lock-screen / notification controls (Android, iOS, desktop)
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: trackName(), artist: 'PASIYA OFC', album: 'Cyber Ecosystem' });
+      navigator.mediaSession.playbackState = M.playing ? 'playing' : 'paused';
+    } catch (e) {}
+  }
+  function bindSession() {
+    if (!('mediaSession' in navigator)) return;
+    var h = function (a, f) { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+    h('play', function () { plWant(true); LS.set('pasiya_owner', M.tab); resumeIfWanted(); });
+    h('pause', function () { plWant(false); try { M.yt.pauseVideo(); } catch (e) {} });
+    h('nexttrack', function () { plWant(true); plGo(M.i + 1); });
+    h('previoustrack', function () { plWant(true); plGo(M.i - 1); });
   }
   var plWant = function (on) { M.want = on; LS.set('pasiya_music', on ? 'on' : 'off'); };
   function plSave() {
@@ -362,7 +387,7 @@
       onAutoplayBlocked: function () { M.blocked = true; plRender(); },
       onStateChange: function (e) {
         if (e.data === 1) { M.playing = true; M.blocked = false; M.fails = 0; LS.set('pasiya_owner', M.tab); try { var t = M.yt.getVideoData().title; if (t && TRACKS[M.i]) M.titles[TRACKS[M.i].id] = t; } catch (x) {} }
-        else if (e.data === 2 || e.data === 5) M.playing = false;
+        else if (e.data === 2 || e.data === 5) { M.playing = false; if (e.data === 2 && D.hidden && M.want) setTimeout(resumeIfWanted, 250); }
         else if (e.data === 0) { M.playing = false; plGo(M.i + 1); }
         plRender(); plSave();
       },
@@ -376,6 +401,11 @@
     });
     var kick = function () { if (M.ready && M.want && !M.playing && TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} } };
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { addEventListener(ev, kick, { passive: true }); });
+    bindSession();
+    // leaving the page / app and coming back: carry on (the browser often pauses embedded players in the background)
+    D.addEventListener('visibilitychange', function () { setTimeout(resumeIfWanted, D.hidden ? 300 : 0); });
+    addEventListener('pageshow', function () { setTimeout(resumeIfWanted, 0); });
+    addEventListener('focus', function () { setTimeout(resumeIfWanted, 0); });
     // only one tab plays at a time
     addEventListener('storage', function (e) { if (e.key === 'pasiya_owner' && e.newValue && e.newValue !== M.tab && M.playing) { try { M.yt.pauseVideo(); } catch (x) {} } });
     setInterval(function () { if (M.playing) plSave(); }, 1000);
