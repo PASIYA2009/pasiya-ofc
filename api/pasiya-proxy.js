@@ -1,7 +1,7 @@
 // PASIYA OFC - Vercel Edge Function (portfolio + hidden project proxies)
 // yourdomain.com             -> portfolio  (public/index.html)
 // yourdomain.com/api         -> PASIYA API
-// yourdomain.com/pastpapers  -> Past Papers
+// Past Papers opens directly at https://pastpaper-pro.vercel.app (no proxy; /pastpapers redirects there via vercel.json)
 // yourdomain.com/bot         -> WhatsApp Bot (own page: public/bot, no proxy)
 // yourdomain.com/qr          -> QR Editor (own page: public/qr, not proxied)
 //
@@ -21,14 +21,6 @@ const APPS = {
     theme: false, // API site has its own theme now (same palette + theme dots), so the forced portfolio theme.css is off
     alias: { "/api/login": "/login", "/api/register": "/register" }, // portfolio -> /api/login?next=/ opens the API login page (same Firebase login, same origin)
     home: "/api", // project eka athule "/" kiyala yanawa nam, eka meka wenuwata /api ekata yawanawa
-  },
-  pastpapers: {
-    prefix: "/pastpapers",
-    origin: "https://pastpaper-pro.vercel.app",
-    title: "Past Papers",
-    role: "papers",
-    autoTheme: true, // site eke colours automatically portfolio theme ekata maru karanawa
-    theme: true, // project eka kharab wenawa nam false karanna
   },
 };
 

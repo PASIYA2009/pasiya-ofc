@@ -2,7 +2,7 @@
 
 yourdomain.com             -> portfolio
 yourdomain.com/api         -> PASIYA API   (own theme + shared login)
-yourdomain.com/pastpapers  -> Past Papers
+yourdomain.com/pastpapers  -> redirects to https://pastpaper-pro.vercel.app (direct, no proxy)
 yourdomain.com/bot         -> WhatsApp Bot (pair web, site eka athule hadapu page eka: public/bot)
 yourdomain.com/qr          -> QR Editor (site eka athule hadapu page eka: public/qr, uploads -> catbox.moe via api/qr-upload.js)
 

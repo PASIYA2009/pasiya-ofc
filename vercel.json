@@ -1,5 +1,12 @@
 {
   "outputDirectory": "public",
+  "redirects": [
+    {
+      "source": "/pastpapers/:path*",
+      "destination": "https://pastpaper-pro.vercel.app/:path*",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/qr",

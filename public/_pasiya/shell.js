@@ -16,7 +16,7 @@
     { k: 'api', n: 'Pasiya API', t: 'API', p: '/api', ic: 'bolt', sub: 'Developer platform' },
     { k: 'qr', n: 'Pasiya QR', t: 'QR', p: '/qr', ic: 'qr', sub: 'QR editor', tag: 'NEW' },
     { k: 'ai', n: 'Pasiya AI', t: 'AI', p: '/ai', ic: 'ai', sub: 'Chat, image, video', tag: 'NEW' },
-    { k: 'papers', n: 'Pasiya Papers', t: 'Past Papers', p: '/pastpapers', ic: 'book', sub: 'Past papers' },
+    { k: 'papers', n: 'Pasiya Papers', t: 'Past Papers', p: 'https://pastpaper-pro.vercel.app', ic: 'book', sub: 'Past papers' },
     { k: 'bot', n: 'Pasiya Bot', t: 'Bot', p: '/bot', ic: 'bot', sub: 'WhatsApp bot' }
   ];
   function detectRole() {
@@ -100,6 +100,7 @@
   function ofcBase() { return String(P.cfg.ofcOrigin || '').replace(/\/+$/, ''); }
   function isDirect() { if (ROLE !== 'api') return false; var o = ofcBase(); return o ? new URL(o).host !== location.host : /\.workers\.dev$/i.test(location.hostname); }
   function link(path) { // returns {href, x} ; x = needs hand-off
+    if (/^https?:\/\//i.test(path)) return { href: path }; // external site (Past Papers) opens directly, no proxy
     if (ROLE === 'api' && path === '/api') return { href: isDirect() ? '/' : '/api' };
     if (isDirect()) return ofcBase() ? { href: ofcBase() + path, x: 1 } : null;
     return { href: path };
