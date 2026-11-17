@@ -335,23 +335,31 @@
     set('psSub', function (e) { e.textContent = !M.ready ? 'Loading\u2026' : !TRACKS.length ? 'No songs added' : M.fails >= TRACKS.length ? 'Songs unavailable' : M.playing ? 'Playing \u00b7 ' + (M.i + 1) + ' / ' + TRACKS.length : M.want && M.blocked ? 'Tap anywhere to start' : 'Paused \u00b7 ' + (M.i + 1) + ' / ' + TRACKS.length; });
     set('psPlay', function (e) { e.innerHTML = M.playing ? PAUSE_I : PLAY_I; e.setAttribute('aria-label', M.playing ? 'Pause music' : 'Play music'); });
     set('psArt', function (e) { e.classList.toggle('on', M.playing); });
-    keepAlive(M.playing); setSession();
+    keepAlive(M.want && !M.yielded && TRACKS.length > 0); setSession();
     set('psMusicBtn', function (e) { e.classList.toggle('on', M.playing); e.setAttribute('aria-label', M.playing ? 'Pause music' : 'Play music'); });
   }
   // ---------- background playback: keep the song going when the person leaves the tab / app / locks the phone ----------
-  var KEEP = null;
-  function keepAlive(on) { // a silent looping <audio> keeps the browser's media session alive so the tab is not frozen
+  var KEEP = null, KEEP_URL = '';
+  function keepWav() { // 10 s mono 16-bit, 8 kHz: a 30 Hz tone at about -60 dB (inaudible, but not "silent" so the browser keeps the media session alive)
+    var sr = 8000, n = sr * 10, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf), i;
+    var w = function (o, t) { for (var k = 0; k < t.length; k++) v.setUint8(o + k, t.charCodeAt(k)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+    for (i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.sin(2 * Math.PI * 30 * i / sr) * 40), true);
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  }
+  function keepAlive(on) { // runs for as long as the person wants music (NOT only while YouTube reports "playing"), otherwise the phone freezes the page the moment YouTube pauses in the background
     try {
-      if (!KEEP) { KEEP = D.createElement('audio'); KEEP.loop = true; KEEP.setAttribute('playsinline', ''); KEEP.src = 'data:audio/wav;base64,UklGRsQPAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YaAPAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'; KEEP.volume = 0.02; }
-      if (on) { var pr = KEEP.play(); if (pr && pr.catch) pr.catch(function () {}); } else KEEP.pause();
+      if (!KEEP) { KEEP = D.createElement('audio'); KEEP.loop = true; KEEP.preload = 'auto'; KEEP.setAttribute('playsinline', ''); KEEP.setAttribute('aria-hidden', 'true'); KEEP_URL = keepWav(); KEEP.src = KEEP_URL; KEEP.volume = 1; }
+      if (on) { if (KEEP.paused) { var pr = KEEP.play(); if (pr && pr.catch) pr.catch(function () {}); } } else if (!KEEP.paused) KEEP.pause();
     } catch (e) {}
   }
-  function resumeIfWanted() { if (M.ready && M.want && !M.playing && TRACKS.length && M.fails < TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} } }
+  function resumeIfWanted() { if (M.yielded) return; if (M.ready && M.want && !M.playing && TRACKS.length && M.fails < TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} } }
   function setSession() { // lock-screen / notification controls (Android, iOS, desktop)
     if (!('mediaSession' in navigator)) return;
     try {
-      navigator.mediaSession.metadata = new MediaMetadata({ title: trackName(), artist: 'PASIYA OFC', album: 'Cyber Ecosystem' });
-      navigator.mediaSession.playbackState = M.playing ? 'playing' : 'paused';
+      navigator.mediaSession.metadata = new MediaMetadata({ title: trackName(), artist: 'PASIYA OFC', album: 'Cyber Ecosystem', artwork: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }] });
+      navigator.mediaSession.playbackState = (M.playing || (M.want && D.hidden)) ? 'playing' : 'paused';
     } catch (e) {}
   }
   function bindSession() {
@@ -407,7 +415,7 @@
       onReady: function () { M.ready = true; if (M.want && TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} setTimeout(function () { if (!M.playing && M.want) { M.blocked = true; plRender(); } }, 2000); } plRender(); },
       onAutoplayBlocked: function () { M.blocked = true; plRender(); },
       onStateChange: function (e) {
-        if (e.data === 1) { M.playing = true; M.blocked = false; M.fails = 0; LS.set('pasiya_owner', M.tab); try { var t = M.yt.getVideoData().title; if (t && TRACKS[M.i]) M.titles[TRACKS[M.i].id] = t; } catch (x) {} }
+        if (e.data === 1) { M.playing = true; M.yielded = false; M.blocked = false; M.fails = 0; LS.set('pasiya_owner', M.tab); try { var t = M.yt.getVideoData().title; if (t && TRACKS[M.i]) M.titles[TRACKS[M.i].id] = t; } catch (x) {} }
         else if (e.data === 2 || e.data === 5) { M.playing = false; if (e.data === 2 && D.hidden && M.want) setTimeout(resumeIfWanted, 250); }
         else if (e.data === 0) { M.playing = false; plGo(M.i + 1); }
         plRender(); plSave();
@@ -420,15 +428,17 @@
       var t = e.target.closest && e.target.closest('#psPlay,#psMusicBtn,#psNext,#psPrev'); if (!t) return;
       if (t.id === 'psNext') { plWant(true); plGo(M.i + 1); } else if (t.id === 'psPrev') { plWant(true); plGo(M.i - 1); } else plToggle();
     });
-    var kick = function () { if (M.ready && M.want && !M.playing && TRACKS.length) { try { M.yt.playVideo(); } catch (e) {} } };
+    var kick = function () { if (M.want && TRACKS.length) keepAlive(true); if (M.ready && M.want && !M.playing && TRACKS.length) { M.yielded = false; try { M.yt.playVideo(); } catch (e) {} } };
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { addEventListener(ev, kick, { passive: true }); });
     bindSession();
     // leaving the page / app and coming back: carry on (the browser often pauses embedded players in the background)
-    D.addEventListener('visibilitychange', function () { setTimeout(resumeIfWanted, D.hidden ? 300 : 0); });
+    D.addEventListener('visibilitychange', function () { setTimeout(resumeIfWanted, D.hidden ? 300 : 0); setSession(); });
+    // while the app/browser is in the background the embedded player is often paused by the phone: keep nudging it (only if the person never pressed pause)
+    setInterval(function () { if (D.hidden && M.want && M.ready && !M.playing && !M.yielded && TRACKS.length) { keepAlive(true); resumeIfWanted(); } }, 1500);
     addEventListener('pageshow', function () { setTimeout(resumeIfWanted, 0); });
     addEventListener('focus', function () { setTimeout(resumeIfWanted, 0); });
     // only one tab plays at a time
-    addEventListener('storage', function (e) { if (e.key === 'pasiya_owner' && e.newValue && e.newValue !== M.tab && M.playing) { try { M.yt.pauseVideo(); } catch (x) {} } });
+    addEventListener('storage', function (e) { if (e.key === 'pasiya_owner' && e.newValue && e.newValue !== M.tab && M.playing) { M.yielded = true; try { M.yt.pauseVideo(); } catch (x) {} } });
     setInterval(function () { if (M.playing) plSave(); }, 1000);
     addEventListener('pagehide', plSave); D.addEventListener('visibilitychange', function () { if (D.hidden) plSave(); });
     setInterval(function () { if (!D.hidden) loadMusic(); }, 30000);
@@ -503,6 +513,7 @@
   //  FOOTER (same on every site: P logo + PASIYA OFC)
   // ====================================================================================
   function renderFooter() {
+    if (ROLE === 'ai') { var old = $('#ps-footer'); if (old) old.remove(); return; } // PASIYA AI is a full-screen app: no footer (other sites keep theirs)
     var el = $('#ps-footer');
     if (!el) { el = D.createElement('footer'); el.id = 'ps-footer'; D.body.appendChild(el); }
     var soc = SOCIAL.map(function (s) { return '<a href="' + esc(s[1]) + '" target="_blank" rel="noopener" aria-label="' + esc(s[0]) + '">' + ico(s[2]) + '</a>'; }).join('');
