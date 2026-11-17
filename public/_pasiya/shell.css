@@ -240,3 +240,31 @@ body{background:transparent!important}
 @media(max-width:380px){.psh-art{width:104px;height:104px}.psh-txt b{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.psh *,.psh::before,.psh-term span{animation:none!important}.psh-term span{width:15ch}}
 .psh-term span{margin-left:6px}
+
+/* ===== menu v3: no "Menu" row, nicer character ===== */
+.psd-head.psd-head-min{position:sticky;top:0;height:0;padding:0;border:0;display:block;z-index:6;overflow:visible}
+.psd-head.psd-head-min::after{display:none}
+.psd-head-min .psd-close{position:absolute;top:0;right:0;width:36px;height:36px}
+.psh{margin-top:2px;padding-right:44px}
+.psh-svg .hd{fill:color-mix(in srgb,var(--a) 55%,#0b1222)}
+.psh-svg .hy{fill:var(--a)}
+.psh-svg .hyl{fill:color-mix(in srgb,var(--a) 70%,#fff 0%);filter:brightness(.78)}
+.psh-svg .ds{fill:none;stroke:rgba(255,255,255,.85);stroke-width:1.8;stroke-linecap:round}
+.psh-svg .dsb{fill:#fff}
+.psh-svg .nk{fill:#efb48a}.psh-svg .nks{fill:#d99872}
+.psh-svg .fc{fill:#f8cfa6}
+.psh-svg .bl{fill:#f4907f;opacity:.45}
+.psh-svg .hr{fill:#1c1838}
+.psh-svg .hh{fill:none;stroke:var(--b);stroke-width:2.4;stroke-linecap:round;opacity:.9}
+.psh-svg .br{fill:none;stroke:#1c1838;stroke-width:2.2;stroke-linecap:round}
+.psh-svg .eye{fill:#1b1530;transform-box:fill-box;transform-origin:center;animation:psBlink 4.6s infinite}
+.psh-svg .shn{fill:#fff}
+.psh-svg .ns{fill:none;stroke:#d99872;stroke-width:1.8;stroke-linecap:round}
+.psh-svg .mo{fill:none;stroke:#b4573f;stroke-width:2.2;stroke-linecap:round}
+.psh-svg .hp{fill:none;stroke:var(--b);stroke-width:5.5;stroke-linecap:round}
+.psh-svg .hc{fill:var(--b);stroke:rgba(0,0,0,.28);stroke-width:1}
+.psh-svg .hg{fill:#fff;opacity:.9;animation:psPop 2s ease-in-out infinite}
+.psh-svg .lp rect:first-child{fill:#0b1222;stroke:rgba(var(--a-rgb),.75);stroke-width:2}
+.psh-svg .lg{fill:var(--b);filter:drop-shadow(0 0 3px var(--b));animation:psPop 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.psh-svg .ln{fill:var(--a);transform-box:fill-box;transform-origin:left center;animation:psType 3.2s ease-in-out infinite}
+.psh-svg .l2{fill:var(--b);animation-delay:.6s}
