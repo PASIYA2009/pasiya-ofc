@@ -253,6 +253,21 @@
     drawer = D.createElement('aside'); drawer.className = 'psd'; drawer.id = 'psd'; drawer.setAttribute('aria-label', 'Main menu'); drawer.setAttribute('aria-hidden', 'true');
     drawer.innerHTML =
       '<div class="psd-head"><div><small>' + esc(SITE.n.toUpperCase()) + '</small><strong>Menu</strong></div><button type="button" class="psd-close" id="psdClose" aria-label="Close menu">' + ico('x') + '</button></div>' +
+      '<div class="psh" aria-hidden="true"><div class="psh-art"><i class="psh-blob"></i><i class="psh-ring"></i>' +
+        '<svg class="psh-svg" viewBox="0 0 140 140"><g class="psh-char">' +
+        '<path class="sh" d="M18 140c0-27 21-44 52-44s52 17 52 44z"/><path class="co" d="M52 98l18 16 18-16" />' +
+        '<rect class="sk" x="61" y="84" width="18" height="16" rx="6"/>' +
+        '<ellipse class="sk" cx="70" cy="62" rx="23" ry="26"/>' +
+        '<path class="hr" d="M46 58c-2-20 10-32 25-32 16 0 27 11 24 31-4-9-9-13-16-14-9 3-22 4-33 15z"/>' +
+        '<g class="gl"><circle cx="60" cy="63" r="8"/><circle cx="82" cy="63" r="8"/><path d="M68 63h6"/></g>' +
+        '<g class="ey"><circle class="eye" cx="60" cy="63" r="2.6"/><circle class="eye" cx="82" cy="63" r="2.6"/></g>' +
+        '<path class="mo" d="M62 76c5 6 13 6 18 0"/>' +
+        '<path class="hp" d="M44 62c-3-26 12-40 27-40s30 14 26 40"/><rect class="hc" x="38" y="55" width="9" height="20" rx="4"/><rect class="hc" x="95" y="55" width="9" height="20" rx="4"/>' +
+        '<g class="lp"><rect x="34" y="104" width="76" height="36" rx="5"/><rect class="ln l1" x="42" y="112" width="30" height="3" rx="1.5"/><rect class="ln l2" x="42" y="119" width="46" height="3" rx="1.5"/><rect class="ln l3" x="42" y="126" width="22" height="3" rx="1.5"/></g>' +
+        '</g></svg>' +
+        '<span class="psh-sy s1">&lt;/&gt;</span><span class="psh-sy s2">{ }</span><span class="psh-sy s3">( )</span><span class="psh-sy s4">;</span>' +
+        '<span class="psh-js">JS</span><span class="psh-ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div>' +
+        '<div class="psh-txt"><span class="psh-pill"><i></i>DEVELOPER</span><b>PASIDU<br>ESHAN</b><small>CYBER ECOSYSTEM</small><em class="psh-term">&gt; <span>pasiya --online</span><u></u></em></div></div>' +
       '<div data-ps-account></div><div data-ps-admin></div><div data-ps-pagehost></div><div data-ps-acctlinks></div><div data-ps-sites></div>' +
       '<div class="ps-sec">MUSIC</div>' +
       '<div class="psp" id="psPlayer"><div class="psp-art" id="psArt" aria-hidden="true">' + ico('note') + '</div><div class="psp-info"><b id="psTitle">Music</b><small id="psSub">Loading\u2026</small></div>' +
