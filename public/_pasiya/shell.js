@@ -33,7 +33,7 @@
 
   var FB = { apiKey: 'AIzaSyCPZAmh7zUmU24aRtDvhGKXydh8DCDSaxk', authDomain: 'pasiya-api.firebaseapp.com', projectId: 'pasiya-api', storageBucket: 'pasiya-api.firebasestorage.app', messagingSenderId: '1074532195422', appId: '1:1074532195422:web:3a1f26e066ad5165e3a8cf' };
   var WA = 'https://wa.me/94741500792';
-  var SOCIAL = [['WhatsApp', WA, 'wa']]; // add more: ['Telegram', 'https://t.me/yourname', 'tg']
+  var SOCIAL = []; // add more: ['Telegram', 'https://t.me/yourname', 'tg']
   var LS = { get: function (k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   var $ = function (s, r) { return (r || D).querySelector(s); }, $$ = function (s, r) { return [].slice.call((r || D).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -555,7 +555,7 @@
     el.innerHTML = '<div class="brand"><span class="logo">' + logo('psLgFoot') + '</span><div><b>PASIYA <em>OFC</em></b><span class="ps-up" id="psUp"><i></i>checking\u2026</span></div></div>' +
       '<p>Pasidu Eshan\'s home for the free PASIYA API, past papers, WhatsApp bot, QR editor and AI tools. One login works everywhere.</p>' +
       '<div class="ps-info"><a href="' + WA + '" target="_blank" rel="noopener"><span class="bx">' + ico('chat') + '</span>WhatsApp support</a><div><span class="bx">' + ico('globe') + '</span>' + esc(location.host) + '</div><div><span class="bx">' + ico('pin') + '</span>Sri Lanka \ud83c\uddf1\ud83c\uddf0</div><div><span class="bx">' + ico('clock') + '</span>24/7 Global Support</div></div>' +
-      '<div class="ps-social">' + soc + '</div>' +
+      (soc ? '<div class="ps-social">' + soc + '</div>' : '') +
       '<div class="ps-copy">\u00a9 ' + new Date().getFullYear() + ' \u00b7 Designed &amp; built by <b>Pasidu Eshan</b></div>';
     fetch('/api/health', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) { setUp(d && d.ok); }).catch(function () { setUp(false); });
     function setUp(ok) { var u = $('#psUp'); if (!u) return; u.className = 'ps-up' + (ok ? '' : ' warn'); u.innerHTML = '<i></i>' + (ok ? 'All systems online \u2713' : 'Status unavailable'); }
