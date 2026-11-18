@@ -1,12 +1,11 @@
 {
   "outputDirectory": "public",
-  "redirects": [
-    {
-      "source": "/pastpapers/:path*",
-      "destination": "https://pastpaper-pro.vercel.app/:path*",
-      "permanent": false
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60
     }
-  ],
+  },
+  "redirects": [],
   "rewrites": [
     {
       "source": "/qr",
@@ -25,8 +24,61 @@
       "destination": "/music-admin/index.html"
     },
     {
-      "source": "/:path*",
-      "destination": "/api/pasiya-proxy?__p=/:path*"
+      "source": "/pastpapers",
+      "destination": "/pastpapers/index.html"
+    },
+    {
+      "source": "/api",
+      "destination": "/api-site/index.html"
+    },
+    {
+      "source": "/api/login",
+      "destination": "/api-site/login.html"
+    },
+    {
+      "source": "/api/register",
+      "destination": "/api-site/register.html"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/favicon.svg"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/music-admin(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/_pasiya/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
     }
   ]
 }

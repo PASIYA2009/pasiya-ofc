@@ -16,7 +16,7 @@
     { k: 'api', n: 'Pasiya API', t: 'API', p: '/api', ic: 'bolt', sub: 'Developer platform' },
     { k: 'qr', n: 'Pasiya QR', t: 'QR', p: '/qr', ic: 'qr', sub: 'QR editor', tag: 'NEW' },
     { k: 'ai', n: 'Pasiya AI', t: 'AI', p: '/ai', ic: 'ai', sub: 'Chat, image, video', tag: 'NEW' },
-    { k: 'papers', n: 'Pasiya Papers', t: 'Past Papers', p: 'https://pastpaper-pro.vercel.app', ic: 'book', sub: 'Past papers' },
+    { k: 'papers', n: 'Pasiya Papers', t: 'Past Papers', p: '/pastpapers', ic: 'book', sub: 'Past papers' },
     { k: 'bot', n: 'Pasiya Bot', t: 'Bot', p: '/bot', ic: 'bot', sub: 'WhatsApp bot' }
   ];
   function detectRole() {
@@ -66,23 +66,35 @@
     if (LS.get('pasiya_accent')) return; // the visitor's own choice always wins
     if (H.dataset.accent !== a) { H.dataset.accent = a; renderDots(); D.dispatchEvent(new CustomEvent('ps:accent', { detail: a })); }
   }
-  function loadDefaultAccent() { fetch('/api/theme', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) { if (d && d.accent) applyDefaultAccent(d.accent); }).catch(function () {}); }
+  function loadDefaultAccent() { /* one fixed brand colour now */ }
   function setAccent(a) {
     H.dataset.accent = a; LS.set('pasiya_accent', a);
     $$('.ps-dot').forEach(function (b) { b.classList.toggle('on', b.dataset.a === a); });
     D.dispatchEvent(new CustomEvent('ps:accent', { detail: a }));
   }
-  function renderDots() {
-    var cur = H.dataset.accent || 'blue';
-    $$('[data-ps-dots]').forEach(function (el) {
-      el.innerHTML = '<div class="ps-theme"><span>' + ico('palette') + 'Theme</span><div class="ps-dots">' + ACCENTS.map(function (x) { return '<button type="button" class="ps-dot' + (x[0] === cur ? ' on' : '') + '" data-a="' + x[0] + '" style="--c:' + x[1] + '" aria-label="' + x[2] + ' theme"></button>'; }).join('') + '</div></div>';
-    });
+  // ---------- dark / light (one fixed brand colour, no colour picker) ----------
+  var SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', MOON = '<path d="M21 13.2A9 9 0 1110.8 3a7 7 0 0010.2 10.2z"/>';
+  function curTheme() { return H.dataset.theme === 'light' ? 'light' : 'dark'; }
+  function setTheme(t) {
+    t = t === 'light' ? 'light' : 'dark'; H.dataset.theme = t; H.style.colorScheme = t; LS.set('pasiya_theme', t);
+    var m = D.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', t === 'light' ? '#f4f7fc' : '#070a14');
+    syncTheme(); D.dispatchEvent(new CustomEvent('ps:theme', { detail: t }));
   }
-  D.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.ps-dot'); if (b) setAccent(b.dataset.a); });
-  // another tab / site page changed the colour -> follow it
-  addEventListener('storage', function (e) {
-    if (e.key === 'pasiya_accent' && e.newValue && e.newValue !== H.dataset.accent) { H.dataset.accent = e.newValue; renderDots(); D.dispatchEvent(new CustomEvent('ps:accent', { detail: e.newValue })); }
-  });
+  function syncTheme() {
+    var t = curTheme();
+    $$('.ps-seg button').forEach(function (b) { b.classList.toggle('on', b.dataset.t === t); b.setAttribute('aria-pressed', b.dataset.t === t); });
+    var tb = $('#psThemeBtn'); if (tb) { tb.innerHTML = '<svg class="ps-ico" viewBox="0 0 24 24" aria-hidden="true">' + (t === 'light' ? MOON : SUN) + '</svg>'; tb.setAttribute('aria-label', t === 'light' ? 'Switch to dark mode' : 'Switch to light mode'); tb.title = t === 'light' ? 'Dark mode' : 'Light mode'; }
+  }
+  function renderDots() {
+    $$('[data-ps-dots]').forEach(function (el) {
+      el.innerHTML = '<div class="ps-theme"><span>' + ico('palette') + 'Appearance</span><div class="ps-seg" role="group" aria-label="Theme"><button type="button" data-t="dark"><svg class="ps-ico" viewBox="0 0 24 24">' + MOON + '</svg>Dark</button><button type="button" data-t="light"><svg class="ps-ico" viewBox="0 0 24 24">' + SUN + '</svg>Light</button></div></div>';
+    });
+    syncTheme();
+  }
+  D.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('.ps-seg button'); if (t) return setTheme(t.dataset.t); if (e.target.closest && e.target.closest('#psThemeBtn')) setTheme(curTheme() === 'light' ? 'dark' : 'light'); });
+  window.PSTheme = { get: curTheme, set: setTheme };
+  // another tab / page changed dark-light -> follow it
+  addEventListener('storage', function (e) { if (e.key === 'pasiya_theme' && e.newValue && e.newValue !== curTheme()) setTheme(e.newValue); });
 
   // browser tab icon follows the chosen colour
   function updateFavicon() {
@@ -248,6 +260,7 @@
       '<a class="psb-brand" data-ps-brandlink href="/" aria-label="' + esc(SITE.n) + '">' + '<span class="psb-logo">' + logo('psLgBar') + '</span><span><b>' + esc(SITE.n.toUpperCase()) + '</b><small>by Pasidu Eshan</small></span></a>' +
       '<nav class="psb-tabs" data-ps-tabs aria-label="Other services"></nav>' +
       '<div class="psb-right"><div class="psb-time" id="psTime" aria-label="Sri Lanka time"><span class="d"></span><span class="t"></span></div>' +
+      '<button type="button" class="psb-music psb-theme" id="psThemeBtn" aria-label="Switch theme"></button>' +
       '<button type="button" class="psb-music" id="psMusicBtn" aria-label="Play music" title="Music">' + ico('note') + '</button>' +
       '<span class="psb-acct" data-ps-top></span></div>';
     back = D.createElement('div'); back.className = 'psd-back'; back.id = 'psdBack';
@@ -587,7 +600,7 @@
 
   function renderAll() { renderDots(); renderSites(); renderAccount(); renderAdmin(); renderAccountLinks(); }
   function start() {
-    H.dataset.accent = LS.get('pasiya_accent') || LS.get('pasiya_def_accent') || H.dataset.accent || 'blue'; loadDefaultAccent();
+    H.dataset.accent = 'blue'; if (!H.dataset.theme) H.dataset.theme = LS.get('pasiya_theme') === 'light' ? 'light' : 'dark'; loadDefaultAccent();
     if (!$('link[href*="family=Inter"]')) { var l = D.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'; D.head.appendChild(l); }
     updateFavicon(); bootBg(); buildChrome(); renderAll(); tick(); setInterval(tick, 1000); bootMusic(); renderFooter(); bootTop();
     fetch('/api/config').then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (c) { P.cfg = c || {}; renderAll(); });
