@@ -2,5 +2,5 @@
 // If Hostless is offline, the website automatically tries Altare.
 window.PASIYA_API_BASES = [
   'https://pasiya-md-1.hostless.app',
-  'https://YOUR-ALTARE-URL'
+  'https://kg-bsz02.altare.global:25443'
 ];
