@@ -1,7 +1,5 @@
+
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /music-admin
-Disallow: /music-admin/
 
 Sitemap: https://pasiyaofc.vercel.app/sitemap.xml
