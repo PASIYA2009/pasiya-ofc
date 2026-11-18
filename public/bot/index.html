@@ -232,7 +232,7 @@ requestAnimationFrame(f)}f()})();</script>
 </main>
 <div class="toast" id="toast"></div>
 
-<script src="/bot/config.js?v=12"></script><script>const normApi=u=>String(u||'').trim().replace(/\/+$/,'');let bases=(Array.isArray(window.PASIYA_API_BASES)?window.PASIYA_API_BASES:[window.PASIYA_API_BASE]).map(normApi).filter(u=>u&&!/YOUR[-_ ]/i.test(u));try{const q=new URLSearchParams(location.search).get('api');if(q){const v=normApi(q);bases=[v,...bases.filter(x=>x!==v)]}}catch{}try{const last=normApi(localStorage.getItem('pm_active_api'));if(last&&bases.includes(last))bases=[last,...bases.filter(x=>x!==last)]}catch{}let base=bases[0]||'';const $=id=>document.getElementById(id);
+<script src="/bot/config.js?v=11"></script><script>const normApi=u=>String(u||'').trim().replace(/\/+$/,'');let bases=(Array.isArray(window.PASIYA_API_BASES)?window.PASIYA_API_BASES:[window.PASIYA_API_BASE]).map(normApi).filter(u=>u&&!/YOUR[-_ ]/i.test(u));try{const q=new URLSearchParams(location.search).get('api');if(q){const v=normApi(q);bases=[v,...bases.filter(x=>x!==v)]}}catch{}try{const last=normApi(localStorage.getItem('pm_active_api'));if(last&&bases.includes(last))bases=[last,...bases.filter(x=>x!==last)]}catch{}let base=bases[0]||'';const $=id=>document.getElementById(id);
 let token='';try{token=sessionStorage.getItem('pm_token')||''}catch{}
 let cur={},timer=null;
 let usePost=true;
