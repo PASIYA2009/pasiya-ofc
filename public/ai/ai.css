@@ -203,3 +203,16 @@ body{background:transparent!important}
 .topline .ibtn{border-color:rgba(var(--a-rgb),.2);background:rgba(255,255,255,.04);width:42px;height:42px;border-radius:13px}
 
 .top-sp{flex:1}
+
+/* preview dialog + mic */
+.dlg-box{height:min(92dvh,860px)}
+.dlg-frame{flex:1;width:100%;min-height:0;border:0;background:#fff}
+.copy.prev{right:64px}
+.chip-file.prev{border-color:rgba(var(--a-rgb),.55);background:rgba(var(--a-rgb),.14)}
+.mic,.mic-lang{flex:none;align-self:center;cursor:pointer;color:var(--muted);transition:.2s}
+.mic{width:40px;height:40px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent}
+.mic:hover,.mic-lang:hover{color:var(--text)}
+.mic.rec{color:#fff;background:#e5484d;animation:micpulse 1.2s infinite}
+@keyframes micpulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.55)}100%{box-shadow:0 0 0 12px rgba(229,72,77,0)}}
+.mic-lang{height:26px;padding:0 9px;border:1px solid var(--border);border-radius:999px;background:transparent;font:700 11px "Inter",sans-serif}
+.mic[hidden],.mic-lang[hidden]{display:none}

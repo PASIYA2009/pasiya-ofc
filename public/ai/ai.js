@@ -59,11 +59,7 @@
     Object.keys(project).forEach(function (p) { var n = project[p].length + p.length + 30; if (n <= left) { out.push({ path: p, content: project[p] }); left -= n; } });
     return out;
   }
-  function projectUi() {
-    var n = Object.keys(project).length, kb = Math.round(Object.keys(project).reduce(function (a, p) { return a + project[p].length; }, 0) / 1024);
-    $("pinfo").textContent = n ? "Project: " + n + " file" + (n > 1 ? "s" : "") + " · " + kb + " KB. Ask me to change or fix it." : "No project yet. Ask me to build one, or import yours to fix bugs.";
-    ["pFiles", "pZip", "pClear"].forEach(function (id) { $(id).hidden = !n; });
-  }
+  function projectUi() {} /* the project bar was removed; project state still lives in the background for context */
 
   /* assistant text -> segments (text / file) */
   function parse(text) {
@@ -112,20 +108,34 @@
       if (i % 2) {
         var code = part.replace(/^[^\n]*\n/, "") || part, pre = el("pre"), c = el("code", "", code.replace(/\n$/, "")), b = el("button", "copy", "Copy");
         b.type = "button"; b.onclick = function () { copyText(c.textContent, b); };
-        pre.appendChild(c); pre.appendChild(b); container.appendChild(pre);
+        pre.appendChild(c); pre.appendChild(b);
+        var lang = (part.match(/^([^\n]*)\n/) || [])[1] || "";
+        if (/^\s*html\s*$/i.test(lang) || /^\s*(<!doctype html|<html)/i.test(code)) {
+          var pv = el("button", "copy prev", "Preview"); pv.type = "button";
+          pv.onclick = function () { openPreview(c.textContent, "index.html", {}); };
+          pre.appendChild(pv);
+        }
+        container.appendChild(pre);
       } else if (part.trim()) { var p = el("p"); inline(p, part.trim()); container.appendChild(p); }
     });
   }
   function renderAssistant(bubble, text) {
     bubble.textContent = "";
-    var files = null;
-    parse(text).forEach(function (s) {
+    var files = null, segs = parse(text), msgFiles = {};
+    segs.forEach(function (s) { if (s.t === "file" && s.done) { var q = cleanPath(s.path); if (q) msgFiles[q] = cleanContent(s.content); } });
+    segs.forEach(function (s) {
       if (s.t === "text") { md(bubble, s.s); return; }
       if (!files) { files = el("div", "files"); bubble.appendChild(files); }
-      var lines = s.content ? s.content.split("\n").length : 0;
-      var b = el("button", "chip-file" + (s.done ? "" : " live"), "📄 " + s.path + (s.done ? " · " + lines + " lines" : " · writing..."));
-      b.type = "button"; b.onclick = function () { var p = cleanPath(s.path); if (project[p] != null) openDlg(p); };
+      var p = cleanPath(s.path), lines = s.content ? s.content.split("\n").length : 0;
+      var b = el("button", "chip-file" + (s.done ? "" : " live"), (s.done ? "\u2B07 " : "\uD83D\uDCC4 ") + s.path + (s.done ? " \u00B7 " + lines + " lines" : " \u00B7 writing..."));
+      b.type = "button"; if (s.done) b.title = "Click to download";
+      b.onclick = function () { if (s.done && p) save(new Blob([msgFiles[p]], { type: "text/plain;charset=utf-8" }), p.split("/").pop()); };
       files.appendChild(b);
+      if (s.done && p && /\.html?$/i.test(p)) {
+        var v = el("button", "chip-file prev", "\u25B6 Preview"); v.type = "button";
+        v.onclick = function () { openPreview(msgFiles[p], p, msgFiles); };
+        files.appendChild(v);
+      }
     });
   }
   function actions(b) {
@@ -155,14 +165,14 @@
   function ask(text) {
     text = text.trim();
     if (!text || busy) return;
-    busy = true; send.disabled = true;
+    busy = true; send.disabled = true; micStop();
     ensureConv(text);
     add("user", text); history.push({ role: "user", content: text }); histSave();
     input.value = ""; resize();
     var wait = add("bot", ""); wait.appendChild(el("span", "typing")); for (var k = 0; k < 3; k++) wait.firstChild.appendChild(el("i"));
     var full = "", raf = 0;
     function paint() { raf = 0; renderAssistant(wait, full.replace("[[PASIYA_ERROR]]", "")); chat.scrollTop = chat.scrollHeight; }
-    api("/api/ai-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history.slice(-24), project: projectList() }) })
+    api("/api/ai-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history.slice(-24).map(function (m) { return { role: m.role, content: m.content }; }), project: projectList() }) })
       .then(function (r) {
         if (!r.ok) return r.json().catch(function () { return {}; }).then(function (j) { throw new Error(j.error || "Something went wrong."); });
         if (!r.body || !r.body.getReader) return r.text().then(function (t) { full = t; });
@@ -182,9 +192,9 @@
         if (!full) throw new Error("No answer came back. Please try again.");
         renderAssistant(wait, full);
         var n = applyFiles(parse(full));
-        if (n) { var note = el("p", "", n + " file" + (n > 1 ? "s" : "") + " saved to your project. Use Download ZIP below."); wait.appendChild(note); }
+        if (n) { var note = el("p", "", n + " file" + (n > 1 ? "s" : "") + " ready. Click a file above to download it."); wait.appendChild(note); }
         if (broke) wait.appendChild(el("p", "", "(The answer was cut off. Say \"continue\" to get the rest.)"));
-        history.push({ role: "assistant", content: plain(full) || full }); histSave(); actions(wait);
+        history.push({ role: "assistant", content: plain(full) || full, raw: full }); histSave(); actions(wait);
       })
       .catch(function (e) { wait.className = "bubble err"; wait.textContent = e.message || "Something went wrong."; history.pop(); histSave(); })
       .then(function () { busy = false; send.disabled = false; chat.scrollTop = chat.scrollHeight; input.focus(); });
@@ -194,68 +204,65 @@
   input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(input.value); } });
   $("form").addEventListener("submit", function (e) { e.preventDefault(); ask(input.value); });
   $("chips").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) ask(b.textContent); });
-  /* ---------- project: files dialog, zip, import ---------- */
-  var cur = "";
-  function openDlg(path) {
-    var names = Object.keys(project).sort();
-    if (!names.length) return;
-    cur = path && project[path] != null ? path : names[0];
-    var ul = $("dlgList"); ul.textContent = "";
-    names.forEach(function (n) {
-      var li = el("li", n === cur ? "on" : "", n);
-      li.onclick = function () { openDlg(n); };
-      ul.appendChild(li);
-    });
-    $("dlgCode").value = project[cur];
-    $("dlgTitle").textContent = cur;
-    $("dlg").hidden = false;
+  /* ---------- HTML preview ---------- */
+  var frame = $("dlgFrame");
+  function closePreview() { $("dlg").hidden = true; frame.srcdoc = ""; }
+  function resolveRef(base, ref) {
+    ref = String(ref).split(/[?#]/)[0];
+    if (!ref || /^([a-z]+:)?\/\//i.test(ref) || /^(data|blob|javascript):/i.test(ref)) return "";
+    var parts = ref.charAt(0) === "/" ? [] : base.split("/").slice(0, -1), out = [];
+    parts.concat(ref.split("/")).forEach(function (x) { if (x === "..") out.pop(); else if (x && x !== ".") out.push(x); });
+    return out.join("/");
   }
-  $("dlgCode").addEventListener("input", function () { if (cur) { project[cur] = $("dlgCode").value; projectSave(); projectUi(); } });
-  $("dlgClose").onclick = function () { $("dlg").hidden = true; };
-  $("dlgCopy").onclick = function () { copyText($("dlgCode").value, $("dlgCopy")); };
-  $("dlg").addEventListener("click", function (e) { if (e.target === $("dlg")) $("dlg").hidden = true; });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") $("dlg").hidden = true; });
-  $("pFiles").onclick = function () { openDlg(); };
-  $("pZip").onclick = function () {
-    var files = Object.keys(project).sort().map(function (p) { return { path: p, content: project[p] }; });
-    if (files.length) save(PZip.create(files), "pasiya-project.zip");
-  };
-  $("pClear").onclick = function () { if (window.confirm("Remove the project from this page?")) { project = {}; projectSave(); projectUi(); } };
-  $("pImport").onclick = function () { $("pFile").click(); };
+  function buildPreview(html, base, files) {
+    var find = function (r) { var p = resolveRef(base, r); if (!p) return null; return files[p] != null ? files[p] : (project[p] != null ? project[p] : null); };
+    html = html.replace(/<link\b[^>]*>/gi, function (tag) {
+      if (!/rel=["']?stylesheet/i.test(tag)) return tag;
+      var m = tag.match(/href=["']([^"']+)["']/i), c = m && find(m[1]);
+      return c != null ? "<style>" + c.replace(/<\/style/gi, "<\\/style") + "</style>" : tag;
+    });
+    html = html.replace(/<script\b([^>]*?)\bsrc=["']([^"']+)["']([^>]*)>\s*<\/script>/gi, function (all, a1, src, a2) {
+      var c = find(src);
+      return c != null ? "<script" + a1 + a2 + ">" + c.replace(/<\/script/gi, "<\\/script") + "</scr" + "ipt>" : all;
+    });
+    return html;
+  }
+  function openPreview(html, base, files) { frame.srcdoc = buildPreview(html, base || "index.html", files || {}); $("dlg").hidden = false; }
+  $("dlgClose").onclick = closePreview;
+  $("dlg").addEventListener("click", function (e) { if (e.target === $("dlg")) closePreview(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("dlg").hidden) closePreview(); });
 
-  var SKIP_DIR = /(^|\/)(node_modules|\.git|dist|build|__pycache__|\.next|\.venv|venv|\.idea|\.vscode)\//;
-  var SKIP_EXT = /\.(png|jpe?g|gif|webp|ico|bmp|pdf|zip|gz|rar|7z|mp4|mov|mp3|wav|woff2?|ttf|otf|eot|exe|dll|so|class|jar|bin|apk|lock)$|(^|\/)package-lock\.json$/i;
-  function importEntries(entries) {
-    var skipped = 0, total = 0, out = {};
-    var tops = entries.map(function (e) { return e.path.split("/")[0]; });
-    var strip = entries.length > 1 && entries.every(function (e) { return e.path.indexOf("/") > 0; }) && tops.every(function (t) { return t === tops[0]; });
-    entries.forEach(function (e) {
-      var p = cleanPath(strip ? e.path.slice(e.path.indexOf("/") + 1) : e.path);
-      if (!p || SKIP_DIR.test(p) || SKIP_EXT.test(p) || e.bytes.length > 200000) { skipped++; return; }
-      var s = PZip.decode(e.bytes);
-      if (s.indexOf("\u0000") >= 0) { skipped++; return; }
-      if (total + s.length > MAX_CTX) { skipped++; return; }
-      out[p] = s; total += s.length;
-    });
-    return { files: out, skipped: skipped };
+  /* ---------- microphone (speech to text) ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition, mic = $("mic"), micLang = $("micLang"), LK = "pasiya_ai_vlang";
+  var rec = null, listening = false, vlang = lget(LK) === "en-US" ? "en-US" : "si-LK";
+  function micStop() { listening = false; mic.classList.remove("rec"); if (rec) { try { rec.abort(); } catch (e) {} rec = null; } }
+  function micLabel() { micLang.textContent = vlang === "si-LK" ? "\u0DC3\u0DD2\u0D82" : "EN"; }
+  if (!SR) { mic.hidden = true; micLang.hidden = true; }
+  else {
+    micLabel();
+    micLang.onclick = function () { vlang = vlang === "si-LK" ? "en-US" : "si-LK"; lset(LK, vlang); micLabel(); if (listening) { micStop(); mic.click(); } };
+    mic.onclick = function () {
+      if (listening) { micStop(); return; }
+      if (busy) return;
+      var base = input.value, r = new SR();
+      rec = r; r.lang = vlang; r.continuous = true; r.interimResults = true;
+      r.onresult = function (ev) {
+        if (!listening || rec !== r) return;
+        var t = "";
+        for (var i = 0; i < ev.results.length; i++) t += ev.results[i][0].transcript;
+        input.value = base + (base && t && !/\s$/.test(base) ? " " : "") + t; resize();
+      };
+      r.onerror = function (ev) {
+        if (rec !== r) return;
+        if (ev.error === "not-allowed" || ev.error === "service-not-allowed") window.alert("Microphone is blocked. Allow microphone access for this site in your browser settings.");
+        else if (ev.error === "language-not-supported") window.alert("This browser does not support that voice language. Switch the language button (si / EN).");
+        micStop();
+      };
+      r.onend = function () { if (rec === r) micStop(); };
+      listening = true; mic.classList.add("rec");
+      try { r.start(); } catch (e) { micStop(); }
+    };
   }
-  $("pFile").addEventListener("change", function (ev) {
-    var list = [].slice.call(ev.target.files); ev.target.value = ""; if (!list.length) return;
-    var entries = [];
-    Promise.all(list.map(function (f) {
-      if (/\.zip$/i.test(f.name)) return PZip.read(f).then(function (r) { entries = entries.concat(r); });
-      return f.arrayBuffer().then(function (b) { entries.push({ path: f.webkitRelativePath || f.name, bytes: new Uint8Array(b) }); });
-    })).then(function () {
-      var r = importEntries(entries), n = Object.keys(r.files).length;
-      if (!n) throw new Error("No readable code files found in that import.");
-      if (Object.keys(project).length && !window.confirm("Replace the current project with the " + n + " imported files?")) return;
-      project = r.files; projectSave(); projectUi();
-      welcome.hidden = true;
-      var b = add("bot", ""); b.textContent = "Imported " + n + " file" + (n > 1 ? "s" : "") + (r.skipped ? " (" + r.skipped + " skipped: binary, too big or build folders)" : "") + ". Tell me what to fix or change.";
-      if (!input.value) input.value = "Find and fix the bugs in this project.";
-      resize(); input.focus();
-    }).catch(function (e) { window.alert(e.message || "Could not read that file."); });
-  });
 
   /* ---------- images / video helpers ---------- */
   function fitImage(file, max) {
@@ -317,14 +324,14 @@
     if (!c) return;
     curId = c.id; history = c.messages.slice(); project = c.project || {};
     clearView(); welcome.hidden = history.length > 0;
-    history.forEach(function (m) { add(m.role, m.content); });
+    history.forEach(function (m) { add(m.role, m.raw || m.content); });
     projectUi(); goMode("chat"); sideRender(); sideClose();
     chat.scrollTop = chat.scrollHeight;
   }
   function newChat() {
     if (busy) return;
     curId = ""; history = [];
-    if (uid) project = {}; else histSave();
+    project = {}; projectSave(); if (!uid) histSave();
     clearView(); welcome.hidden = false; projectUi(); sideRender(); sideClose(); goMode("chat"); input.focus();
   }
   function delConv(id) {
@@ -419,7 +426,7 @@
   /* ---------- start ---------- */
   try { history = JSON.parse(lget(KEY)) || []; } catch (e) { history = []; }
   try { project = JSON.parse(lget(PKEY)) || {}; } catch (e) { project = {}; }
-  history.forEach(function (m) { add(m.role, m.content); });
+  history.forEach(function (m) { add(m.role, m.raw || m.content); });
   projectUi();
   sideRender();
   if (window.PS && window.PS.user) setUser(window.PS.user);

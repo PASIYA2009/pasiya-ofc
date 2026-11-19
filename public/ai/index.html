@@ -45,7 +45,7 @@
                 <div class="welcome" id="welcome">
                     <div class="orb"><b>P</b></div>
                     <h1>PASIYA AI</h1>
-                    <p>Chat, write code in any language, build whole projects and download them as a ZIP.</p>
+                    <p>Chat, write code in any language, build whole projects and download the files.</p>
                     <div class="chips" id="chips">
                         <button type="button">Oyawa hadapu kauda?</button>
                         <button type="button">Build a todo app with HTML, CSS and JS</button>
@@ -55,17 +55,10 @@
                 </div>
             </main>
 
-            <div class="projbar" id="projbar">
-                <span class="pinfo" id="pinfo">No project yet. Ask me to build one, or import yours to fix bugs.</span>
-                <button type="button" id="pFiles" hidden>Files</button>
-                <button type="button" id="pZip" hidden>Download ZIP</button>
-                <button type="button" id="pImport">Import</button>
-                <button type="button" id="pClear" hidden>Clear</button>
-                <input type="file" id="pFile" multiple hidden>
-            </div>
-
             <form class="composer" id="form" autocomplete="off">
                 <textarea id="input" rows="1" maxlength="20000" placeholder="Message PASIYA AI..." aria-label="Message"></textarea>
+                <button type="button" id="micLang" class="mic-lang" title="Voice language" aria-label="Voice language">සිං</button>
+                <button type="button" id="mic" class="mic" title="Speak" aria-label="Speak"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0014 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
                 <button type="submit" id="send" aria-label="Send"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M3.4 20.4 21 12 3.4 3.6l-.01 6.5L15 12 3.39 13.9z" fill="currentColor"/></svg></button>
             </form>
             <p class="fine">PASIYA AI can make mistakes. Check important information.</p>
@@ -73,11 +66,11 @@
     </div>
     </div>
 
-    <!-- project files dialog -->
+    <!-- preview dialog -->
     <div class="dlg" id="dlg" hidden>
         <div class="dlg-box">
-            <div class="dlg-head"><strong id="dlgTitle">Project files</strong><div><button type="button" id="dlgCopy">Copy</button><button type="button" id="dlgClose">Close</button></div></div>
-            <div class="dlg-body"><ul id="dlgList"></ul><textarea id="dlgCode" spellcheck="false"></textarea></div>
+            <div class="dlg-head"><strong>Preview</strong><div><button type="button" id="dlgClose">Close</button></div></div>
+            <iframe id="dlgFrame" class="dlg-frame" title="Preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe>
         </div>
     </div>
     <script src="/ai/zip.js"></script>
