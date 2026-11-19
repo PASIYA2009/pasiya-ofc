@@ -2,6 +2,6 @@
 // If Hostless is offline, the website automatically tries Altare.
 window.PASIYA_API_BASES = [
   'https://pasiya-md-1.hostless.app',
-  
+   'pasiya-md-new-bot-production.up.railway.app'
 
 ];
