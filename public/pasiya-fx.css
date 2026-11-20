@@ -1,0 +1,55 @@
+/* PASIYA FX: per-element scroll animation + auto-typing terminal (loads AFTER shell.css) */
+
+/* the old section-level fade must not hide anything; every card/button animates on its own now */
+.ps-reveal-ready .reveal,.ps-reveal-ready .reveal.visible{opacity:1!important;transform:none!important}
+
+/* footer: no blurred box behind it, just the divider line */
+.ps-footer{background:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;border-radius:0!important}
+
+/* ---------- scroll reveal ---------- */
+.ps-anim:not(.in){opacity:0!important}
+.ps-anim.in{animation:psRise .9s cubic-bezier(.16,1,.3,1) var(--d,0s) backwards}
+.ps-anim.from-l.in{animation-name:psLeft}
+.ps-anim.from-r.in{animation-name:psRight}
+.ps-anim.pop.in{animation-name:psPop}
+.ps-anim.zoom.in{animation-name:psZoom}
+@keyframes psRise{from{opacity:0;transform:translateY(44px) scale(.97);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes psLeft{from{opacity:0;transform:translateX(-54px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes psRight{from{opacity:0;transform:translateX(54px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes psPop{0%{opacity:0;transform:translateY(26px) scale(.7) rotate(-4deg)}60%{opacity:1;transform:translateY(-4px) scale(1.05) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes psZoom{from{opacity:0;transform:scale(.86);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+/* heading side lines grow out from the title */
+.section-heading .line{transform-origin:center}
+.section-heading.in .line{animation:psLine 1s cubic-bezier(.16,1,.3,1) calc(var(--d,0s) + .12s) backwards}
+@keyframes psLine{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+/* comments appear softly when posted */
+.comment{animation:psRise .7s cubic-bezier(.16,1,.3,1) backwards}
+/* press feedback on every button / card (the "moves when you touch it" feel) */
+.link-card:active{transform:scale(.975)!important}
+.skill:active{transform:scale(.95)!important}
+
+/* ---------- terminal ---------- */
+.ps-terminal-body{display:block}
+.ps-term-log{max-height:340px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(85,231,255,.35) transparent;overscroll-behavior:contain;padding-right:4px}
+.ps-term-log::-webkit-scrollbar{width:6px}.ps-term-log::-webkit-scrollbar-thumb{background:rgba(85,231,255,.3);border-radius:9px}
+.ps-term-row{word-break:break-word;padding-left:0}
+.ps-term-row.out{padding-left:18px;color:#91a8ca;line-height:1.75}
+.ps-term-row.out strong{color:#b99cff}
+.ps-term-row.gap{height:8px}
+.ps-term-row.art{white-space:pre;font-size:11px;line-height:1.25;color:var(--px-cyan,#55e7ff);padding-left:18px}
+.ps-term-row.ok{color:#61e8b0}.ps-term-row.warn{color:#ffc45e}
+.ps-term-row.out .k{display:inline-block;min-width:92px;color:#72dfff}
+.ps-term-row.out .d{color:#607897}
+.ps-term-row.out em{font-style:normal;color:#5be8c0}
+.ps-term-echo{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.ps-term-link{color:#8eeaff;text-decoration:underline;text-decoration-color:rgba(142,234,255,.35);text-underline-offset:3px;transition:color .2s,text-decoration-color .2s}
+.ps-term-link:hover{color:#fff;text-decoration-color:#8eeaff}
+.ps-term-typeline{display:flex;align-items:center;gap:8px;margin-top:6px;cursor:text}
+.ps-term-typeline .ps-term-prompt{white-space:nowrap}
+.ps-term-input{flex:1;min-width:60px;padding:0;margin:0;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;color:#72dfff;font:inherit;caret-color:#5be8c0}
+.ps-term-input::placeholder{color:#3f5675}
+.ps-term-chips{margin-top:14px}
+.ps-terminal.is-typing .ps-term-head-dot{animation:psTermBlink .5s steps(2) infinite}
+@media(max-width:650px){.ps-term-log{max-height:300px}.ps-term-row.art{font-size:9.5px}.ps-term-row.out .k{min-width:78px}}
+@media(pointer:coarse){.ps-term-input{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.ps-anim:not(.in){opacity:1!important}.ps-anim.in,.comment,.section-heading.in .line{animation:none!important}}

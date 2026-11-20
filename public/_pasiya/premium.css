@@ -3,7 +3,7 @@
 html{scroll-behavior:smooth;scroll-padding-top:92px}body{background-color:var(--px-bg)}
 body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 8%,rgba(50,112,255,.14),transparent 36%),radial-gradient(ellipse at 88% 22%,rgba(151,75,255,.12),transparent 32%),linear-gradient(rgba(100,150,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,255,.035) 1px,transparent 1px);background-size:auto,auto,42px 42px,42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
 /* Shared shell */
-.ps-topbar,.ps-header,.ps-nav,.ps-drawer,.ps-menu,.ps-player,.ps-footer{backdrop-filter:blur(22px) saturate(145%)}
+.ps-topbar,.ps-header,.ps-nav,.ps-drawer,.ps-menu,.ps-player{backdrop-filter:blur(22px) saturate(145%)}
 .ps-topbar,.ps-header{border-color:var(--px-line)!important;box-shadow:0 12px 38px rgba(0,0,0,.2)}
 .ps-drawer,.ps-menu{border-color:var(--px-line)!important;box-shadow:var(--px-shadow)}
 .ps-links a,.ps-nav a,.ps-drawer a{transition:transform .28s cubic-bezier(.2,.8,.2,1),background .28s,border-color .28s,box-shadow .28s!important}

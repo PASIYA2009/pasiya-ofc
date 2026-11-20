@@ -56,7 +56,7 @@
     <meta property="og:image" content="https://files.catbox.moe/8w0kfb.png">
     <link rel="stylesheet" href="/_pasiya/palette.css"><script>try{var d=document.documentElement,L=localStorage,a=L.getItem("pasiya_accent")||L.getItem("pasiya_def_accent");d.dataset.accent=a||"blue";if(!a){var s=document.createElement("style");s.textContent="html.ps-wait body{opacity:0!important}";document.head.appendChild(s);d.classList.add("ps-wait");var f=function(){d.classList.remove("ps-wait")},c=window.AbortController?new AbortController():null,t=setTimeout(function(){f();c&&c.abort()},1500);fetch("/api/theme",{cache:"no-store",signal:c&&c.signal}).then(function(r){return r.json()}).then(function(j){if(j&&j.accent){d.dataset.accent=j.accent;try{L.setItem("pasiya_def_accent",j.accent)}catch(e){}}}).catch(function(){}).then(function(){clearTimeout(t);f()})}}catch(e){}</script><link rel="stylesheet" href="pasiyaofc.css">
     <link rel="stylesheet" href="pasiyaofc-plus.css">
-    <link rel="stylesheet" href="/_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/shell.css">
+    <link rel="stylesheet" href="/_pasiya/loader.css"><link rel="stylesheet" href="/_pasiya/shell.css"><link rel="stylesheet" href="/pasiya-fx.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -163,10 +163,10 @@
         <!-- Interactive visual terminal demo (simulated commands; never executes system commands) -->
         <section class="ps-terminal reveal" id="terminal" aria-label="PASIYA terminal demo">
             <div class="ps-terminal-head"><span class="ps-term-dots"><i></i><i></i><i></i></span><span class="ps-term-title">PASIYA_TERMINAL / OFC</span><span class="ps-term-live">● SYSTEM ONLINE</span></div>
-            <div class="ps-terminal-body" aria-live="polite">
-                <div class="ps-term-line"><span class="ps-term-prompt">pasidu@pasiya:~$</span><span class="ps-term-command" id="psTermCommand">whoami</span></div>
-                <div class="ps-term-output" id="psTermOutput">Creator: <strong>Pasidu Eshan</strong><br>Workspace: PASIYA Digital Ecosystem<br>Mode: Creative development <span class="ps-term-cursor"></span></div>
-                <div class="ps-term-chips"><button class="ps-term-chip" type="button" data-cmd="projects">projects</button><button class="ps-term-chip" type="button" data-cmd="skills">skills</button><button class="ps-term-chip" type="button" data-cmd="help">help</button><button class="ps-term-chip" type="button" data-cmd="clear">clear</button></div>
+            <div class="ps-terminal-body" id="psTermBody">
+                <div class="ps-term-log" id="psTermLog" aria-live="polite"></div>
+                <label class="ps-term-line ps-term-typeline" for="psTermInput"><span class="ps-term-prompt">pasidu@pasiya:~$</span><input class="ps-term-input" id="psTermInput" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Terminal command" maxlength="60"></label>
+                <div class="ps-term-chips"><button class="ps-term-chip" type="button" data-cmd="whoami">whoami</button><button class="ps-term-chip" type="button" data-cmd="projects">projects</button><button class="ps-term-chip" type="button" data-cmd="skills">skills</button><button class="ps-term-chip" type="button" data-cmd="neofetch">neofetch</button><button class="ps-term-chip" type="button" data-cmd="status">status</button><button class="ps-term-chip" type="button" data-cmd="contact">contact</button><button class="ps-term-chip" type="button" data-cmd="help">help</button><button class="ps-term-chip" type="button" data-cmd="clear">clear</button></div>
                 <div class="ps-term-note">INTERACTIVE DEMO · Safe simulated commands · No system access</div>
             </div>
         </section>
@@ -209,19 +209,10 @@
     <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="19"></circle><circle class="progress" id="scrollProgress" cx="22" cy="22" r="19"></circle></svg><i class="fa-solid fa-arrow-up"></i></button>
 
 
-    <script>
-    (function(){
-      const outputs={
-        whoami:'Creator: <strong>Pasidu Eshan</strong><br>Workspace: PASIYA Digital Ecosystem<br>Mode: Creative development',
-        projects:'<strong>PROJECT MODULES</strong><br>01 · PASIYA API<br>02 · PASIYA AI<br>03 · QR Editor<br>04 · WhatsApp Bot<br>05 · Past Papers',
-        skills:'<strong>TOOLKIT</strong><br>HTML · CSS · JavaScript<br>Python · PHP · MySQL<br>UI engineering · Web development',
-        help:'Available demo commands:<br><strong>projects</strong> · show ecosystem modules<br><strong>skills</strong> · show development toolkit<br><strong>clear</strong> · clear terminal output',
-        clear:''
-      };
-      document.querySelectorAll('.ps-term-chip').forEach(function(btn){btn.addEventListener('click',function(){var cmd=btn.dataset.cmd,command=document.getElementById('psTermCommand'),output=document.getElementById('psTermOutput');if(!command||!output)return;command.textContent=cmd;output.innerHTML=outputs[cmd]||'Unknown demo command. Type <strong>help</strong>.';if(cmd==='clear')output.innerHTML='<span style="color:#61e8b0">Terminal cleared.</span>';});});
-    })();
-    </script>
+    
     <script src="pasiyaofc.js"></script>
     <script src="pasiyaofc-plus.js"></script>
+    <script src="/_pasiya/navloader.js" defer></script>
+    <script src="/pasiya-fx.js" defer></script>
 </body>
 </html>
