@@ -17,14 +17,15 @@
   function flush() {
     flushT = 0;
     var batch = pending.splice(0).sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; });
-    batch.forEach(function (el, i) { el.style.setProperty('--d', Math.min(i * 0.09, 0.7).toFixed(2) + 's'); el.classList.add('in'); });
+    batch.forEach(function (el, i) { el.style.setProperty('--d', (batch.length > 1 ? Math.min(i * 0.09, 0.6) : 0).toFixed(2) + 's'); el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); });
   }
   function onHit(entries) {
     entries.forEach(function (en) {
-      if (!en.isIntersecting) return;
-      io.unobserve(en.target); pending.push(en.target);
+      var el = en.target;
+      if (en.isIntersecting) { if (!el.classList.contains('in') && pending.indexOf(el) < 0) pending.push(el); }
+      else { var i = pending.indexOf(el); if (i > -1) pending.splice(i, 1); el.classList.remove('in'); } // fully out of view -> reset, so it animates again next time
     });
-    if (pending.length && !flushT) flushT = setTimeout(flush, 16); // everything that appeared in the same frame = one staggered batch
+    if (pending.length && !flushT) flushT = setTimeout(flush, 16);
   }
   function prep() {
     var seen = 0;
@@ -42,11 +43,10 @@
   function initReveal() {
     if (reduce || !('IntersectionObserver' in window)) return;
     try {
-      io = new IntersectionObserver(onHit, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+      io = new IntersectionObserver(onHit, { threshold: [0, 0.12], rootMargin: '0px 0px -4% 0px' });
       prep();
       addEventListener('load', prep);           // footer / late elements
       setTimeout(prep, 1200);
-      setTimeout(function () { D.querySelectorAll('.ps-anim:not(.in)').forEach(function (e) { if (e.getBoundingClientRect().top < innerHeight * 1.5) e.classList.add('in'); }); }, 6000);
       addEventListener('error', function () { D.querySelectorAll('.ps-anim').forEach(function (e) { e.classList.add('in'); }); }, { once: true });
     } catch (e) { D.querySelectorAll('.ps-anim').forEach(function (e2) { e2.classList.add('in'); }); }
   }
@@ -63,8 +63,9 @@
   /* ===================== 2. TERMINAL ===================== */
   var root = D.getElementById('terminal');
   if (!root) return;
-  var log = D.getElementById('psTermLog'), input = D.getElementById('psTermInput'), chips = root.querySelectorAll('.ps-term-chip');
+  var log = D.getElementById('psTermLog'), typed = D.getElementById('psTermTyped'), chips = root.querySelectorAll('.ps-term-chip');
   var PROMPT = 'pasidu@pasiya:~$';
+  var input = { set value(v) { typed.textContent = v; }, get value() { return typed.textContent; }, readOnly: true, placeholder: '' };
   var busy = false, skip = false, userTook = false, hist = [], hi = 0, started = false;
 
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -117,7 +118,7 @@
       kv('<strong>open</strong> &lt;name&gt;', 'api · ai · qr · bot · papers'),
       kv('<strong>ls</strong> · <strong>pwd</strong> · <strong>date</strong> · <strong>echo</strong>', 'the usual'),
       kv('<strong>clear</strong>', 'wipe the screen'),
-      '<span class="d">tip: ↑ ↓ history · Tab autocomplete · Enter skips typing</span>'
+      '<span class="d">tap any command below · tap the terminal to skip the typing</span>'
     ]; },
     whoami: function () { return ['Creator: <strong>Pasidu Eshan</strong>', 'Alias: Pasidu OFC · PASIYA Official', 'Workspace: PASIYA Digital Ecosystem', 'Location: Sri Lanka \uD83C\uDDF1\uD83C\uDDF0', 'Mode: <em>Creative development</em>']; },
     about: function () { return ['I build websites, software projects and digital experiences.', 'Free APIs, an AI assistant, a QR editor, a WhatsApp bot and past papers', 'all live under one domain with <strong>one login</strong> and <strong>one theme</strong>.', '<span class="d">Code. Create. Learn. Build.</span>']; },
@@ -183,19 +184,21 @@
     skip = false; busy = false; input.readOnly = false; root.classList.remove('is-typing'); toEnd();
   }
 
+  var running = false;
   async function demo() {
+    running = true;
     var seq = ['whoami', 'projects', 'skills', 'neofetch'];
     for (var i = 0; i < seq.length && !userTook; i++) {
-      await typeCmd(seq[i], true); if (userTook) { input.value = ''; input.readOnly = false; break; }
+      await typeCmd(seq[i], true); if (userTook) { input.value = ''; break; }
       await exec(seq[i]);
       if (i < seq.length - 1) await sleep(reduce ? 0 : 900);
     }
-    if (!userTook) { input.value = ''; input.placeholder = 'type a command\u2026 try  help'; }
+    input.value = ''; running = false;
   }
-  function start() { if (started) return; started = true; demo(); }
+  function start() { started = true; log.innerHTML = ''; demo(); }
 
   /* user takes over: stop the demo, let them type */
-  function takeOver() { if (userTook) return; userTook = true; skip = busy; input.placeholder = 'type a command\u2026 try  help'; }
+  function takeOver() { if (userTook) return; userTook = true; skip = busy; }
   root.addEventListener('pointerdown', function (e) { if (e.target.closest('.ps-term-chip')) return; if (busy) skip = true; });
 
   chips.forEach(function (b) {
@@ -204,19 +207,15 @@
       var c = b.dataset.cmd; await typeCmd(c); await exec(c); input.readOnly = false;
     });
   });
-  D.querySelector('.ps-term-typeline').addEventListener('click', function (e) { if (!e.target.closest('input')) { takeOver(); input.focus({ preventScroll: true }); } });
-  input.addEventListener('focus', takeOver);
-  input.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); if (busy) { skip = true; return; } var v = input.value; takeOver(); exec(v); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); if (hist.length) { hi = Math.max(0, hi - 1); input.value = hist[hi] || ''; } }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); hi = Math.min(hist.length, hi + 1); input.value = hist[hi] || ''; }
-    else if (e.key === 'Tab') { e.preventDefault(); var v2 = input.value.trim().toLowerCase(); if (!v2) return; var all = Object.keys(CMD).concat(['clear', 'open', 'echo', 'sudo']), m = all.filter(function (c) { return c.indexOf(v2) === 0; }); if (m.length === 1) input.value = m[0]; }
-    else if (e.key.toLowerCase() === 'l' && e.ctrlKey) { e.preventDefault(); log.innerHTML = ''; }
-  });
 
-  /* begin when the terminal scrolls into view */
+  /* plays when the terminal scrolls into view, and again every time it comes back (until someone taps a command) */
   if ('IntersectionObserver' in window) {
-    var tio = new IntersectionObserver(function (es) { if (es.some(function (x) { return x.isIntersecting; })) { tio.disconnect(); setTimeout(start, 450); } }, { threshold: 0.35 });
+    var inView = false, tio = new IntersectionObserver(function (es) {
+      es.forEach(function (x) {
+        if (x.isIntersecting && x.intersectionRatio >= 0.35) { if (!inView) { inView = true; if (!userTook && !running && !busy) setTimeout(start, 350); } }
+        else if (!x.isIntersecting) inView = false;
+      });
+    }, { threshold: [0, 0.35] });
     tio.observe(root);
   } else start();
 })();

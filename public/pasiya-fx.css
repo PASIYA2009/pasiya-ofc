@@ -8,16 +8,17 @@
 
 /* ---------- scroll reveal ---------- */
 .ps-anim:not(.in){opacity:0!important}
+.ps-anim{will-change:transform,opacity}
 .ps-anim.in{animation:psRise .9s cubic-bezier(.16,1,.3,1) var(--d,0s) backwards}
 .ps-anim.from-l.in{animation-name:psLeft}
 .ps-anim.from-r.in{animation-name:psRight}
 .ps-anim.pop.in{animation-name:psPop}
 .ps-anim.zoom.in{animation-name:psZoom}
-@keyframes psRise{from{opacity:0;transform:translateY(44px) scale(.97);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
-@keyframes psLeft{from{opacity:0;transform:translateX(-54px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
-@keyframes psRight{from{opacity:0;transform:translateX(54px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes psRise{from{opacity:0;transform:translateY(44px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes psLeft{from{opacity:0;transform:translateX(-54px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes psRight{from{opacity:0;transform:translateX(54px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes psPop{0%{opacity:0;transform:translateY(26px) scale(.7) rotate(-4deg)}60%{opacity:1;transform:translateY(-4px) scale(1.05) rotate(1deg)}100%{opacity:1;transform:none}}
-@keyframes psZoom{from{opacity:0;transform:scale(.86);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes psZoom{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
 /* heading side lines grow out from the title */
 .section-heading .line{transform-origin:center}
 .section-heading.in .line{animation:psLine 1s cubic-bezier(.16,1,.3,1) calc(var(--d,0s) + .12s) backwards}
@@ -25,8 +26,6 @@
 /* comments appear softly when posted */
 .comment{animation:psRise .7s cubic-bezier(.16,1,.3,1) backwards}
 /* press feedback on every button / card (the "moves when you touch it" feel) */
-.link-card:active{transform:scale(.975)!important}
-.skill:active{transform:scale(.95)!important}
 
 /* ---------- terminal ---------- */
 .ps-terminal-body{display:block}
@@ -44,12 +43,9 @@
 .ps-term-echo{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .ps-term-link{color:#8eeaff;text-decoration:underline;text-decoration-color:rgba(142,234,255,.35);text-underline-offset:3px;transition:color .2s,text-decoration-color .2s}
 .ps-term-link:hover{color:#fff;text-decoration-color:#8eeaff}
-.ps-term-typeline{display:flex;align-items:center;gap:8px;margin-top:6px;cursor:text}
+.ps-term-typeline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;min-height:24px}
 .ps-term-typeline .ps-term-prompt{white-space:nowrap}
-.ps-term-input{flex:1;min-width:60px;padding:0;margin:0;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;color:#72dfff;font:inherit;caret-color:#5be8c0}
-.ps-term-input::placeholder{color:#3f5675}
 .ps-term-chips{margin-top:14px}
 .ps-terminal.is-typing .ps-term-head-dot{animation:psTermBlink .5s steps(2) infinite}
 @media(max-width:650px){.ps-term-log{max-height:300px}.ps-term-row.art{font-size:9.5px}.ps-term-row.out .k{min-width:78px}}
-@media(pointer:coarse){.ps-term-input{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.ps-anim:not(.in){opacity:1!important}.ps-anim.in,.comment,.section-heading.in .line{animation:none!important}}
