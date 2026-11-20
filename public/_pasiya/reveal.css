@@ -1,0 +1,13 @@
+/* PASIYA shared scroll animation (QR, AI, Bot, API, Past Papers...). The portfolio has its own richer version in /pasiya-fx.css */
+.ps-anim:not(.in){opacity:0!important}
+.ps-anim.in{animation:psRise .85s cubic-bezier(.16,1,.3,1) var(--d,0s) backwards}
+.ps-anim.from-l.in{animation-name:psLeft}
+.ps-anim.from-r.in{animation-name:psRight}
+.ps-anim.pop.in{animation-name:psPop}
+.ps-anim.zoom.in{animation-name:psZoom}
+@keyframes psRise{from{opacity:0;transform:translateY(42px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes psLeft{from{opacity:0;transform:translateX(-50px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes psRight{from{opacity:0;transform:translateX(50px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes psPop{0%{opacity:0;transform:translateY(24px) scale(.72) rotate(-3deg)}60%{opacity:1;transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:none}}
+@keyframes psZoom{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.ps-anim:not(.in){opacity:1!important}.ps-anim.in{animation:none!important}}
