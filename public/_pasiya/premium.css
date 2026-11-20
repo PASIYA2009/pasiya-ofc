@@ -1,0 +1,37 @@
+/* PASIYA Premium Cyber Ecosystem — shared visual layer */
+:root{--px-bg:#070b18;--px-panel:rgba(13,21,42,.78);--px-line:rgba(119,155,255,.17);--px-cyan:#55e7ff;--px-violet:#9b83ff;--px-green:#55f0b0;--px-shadow:0 24px 70px rgba(0,0,0,.32)}
+html{scroll-behavior:smooth;scroll-padding-top:92px}body{background-color:var(--px-bg)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 8%,rgba(50,112,255,.14),transparent 36%),radial-gradient(ellipse at 88% 22%,rgba(151,75,255,.12),transparent 32%),linear-gradient(rgba(100,150,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,255,.035) 1px,transparent 1px);background-size:auto,auto,42px 42px,42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
+/* Shared shell */
+.ps-topbar,.ps-header,.ps-nav,.ps-drawer,.ps-menu,.ps-player,.ps-footer{backdrop-filter:blur(22px) saturate(145%)}
+.ps-topbar,.ps-header{border-color:var(--px-line)!important;box-shadow:0 12px 38px rgba(0,0,0,.2)}
+.ps-drawer,.ps-menu{border-color:var(--px-line)!important;box-shadow:var(--px-shadow)}
+.ps-links a,.ps-nav a,.ps-drawer a{transition:transform .28s cubic-bezier(.2,.8,.2,1),background .28s,border-color .28s,box-shadow .28s!important}
+.ps-links a:hover,.ps-nav a:hover,.ps-drawer a:hover{transform:translateX(5px);box-shadow:0 8px 24px rgba(70,145,255,.12)}
+/* Universal controls / panels on all local apps */
+button,.btn,.tab,.link-btn,[role=button]{transition:transform .24s cubic-bezier(.2,.8,.2,1),box-shadow .24s,border-color .24s,filter .24s!important}
+button:hover,.btn:hover,.tab:hover,.link-btn:hover,[role=button]:hover{filter:brightness(1.12);box-shadow:0 9px 28px rgba(72,150,255,.18)}
+button:active,.btn:active,.tab:active,.link-btn:active,[role=button]:active{transform:scale(.97)!important}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--px-cyan)!important;outline-offset:3px}
+.card,.link-card,.skill,.comment-box,.about-card,.panel,.welcome,.composer,.controls,.preview-col{transition:transform .32s cubic-bezier(.2,.8,.2,1),border-color .32s,box-shadow .32s,background .32s}
+.card:hover,.panel:hover{border-color:rgba(85,231,255,.3)!important;box-shadow:0 18px 48px rgba(0,0,0,.25),0 0 28px rgba(65,140,255,.08)}
+input,textarea,select{transition:border-color .2s,box-shadow .2s,background .2s!important}
+/* OFC homepage */
+.container{max-width:900px!important}.profile{position:relative}.profile:after{content:"PASIYA / DIGITAL ECOSYSTEM";display:inline-flex;align-items:center;gap:8px;margin-top:24px;padding:8px 13px;border:1px solid rgba(85,231,255,.18);border-radius:999px;background:rgba(85,231,255,.045);color:#83cddd;font-size:9px;font-weight:800;letter-spacing:2px;box-shadow:0 0 30px rgba(85,231,255,.06)}
+.link-card{position:relative;overflow:hidden;isolation:isolate;min-height:86px!important;border-color:rgba(125,160,255,.18)!important;background:linear-gradient(135deg,rgba(17,29,58,.86),rgba(9,15,31,.88))!important;box-shadow:inset 0 1px rgba(255,255,255,.04),0 12px 30px rgba(0,0,0,.13)!important}
+.link-card:before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;background:linear-gradient(110deg,transparent 15%,rgba(85,231,255,.12),transparent 70%);transform:translateX(-70%);transition:transform .65s,opacity .35s}
+.link-card:hover{transform:translateY(-7px) scale(1.012)!important;border-color:rgba(85,231,255,.48)!important;box-shadow:0 22px 45px rgba(0,0,0,.28),0 0 26px rgba(85,231,255,.1)!important}
+.link-card:hover:before{opacity:1;transform:translateX(70%)}.link-card .icon{box-shadow:0 0 22px rgba(85,231,255,.1)}
+.skill{border-color:rgba(125,160,255,.16)!important;background:linear-gradient(140deg,rgba(20,31,59,.7),rgba(10,16,33,.7))!important}.skill:hover{transform:translateY(-6px)!important;box-shadow:0 16px 35px rgba(0,0,0,.24),0 0 22px rgba(85,231,255,.1)!important}
+.about-card{border-color:rgba(85,231,255,.2)!important;background:linear-gradient(120deg,rgba(44,103,180,.14),rgba(108,75,190,.1))!important;box-shadow:var(--px-shadow)}
+/* Fake terminal: clearly a visual demo, no real shell execution */
+.ps-terminal{position:relative;margin:34px 0 10px;overflow:hidden;border:1px solid rgba(85,231,255,.24);border-radius:20px;background:linear-gradient(145deg,rgba(7,14,30,.97),rgba(11,19,39,.95));box-shadow:0 24px 70px rgba(0,0,0,.32),0 0 36px rgba(57,151,255,.08);text-align:left}
+.ps-terminal:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,rgba(85,231,255,.035),transparent 72%)}
+.ps-terminal-head{display:flex;align-items:center;gap:8px;padding:14px 17px;border-bottom:1px solid rgba(130,170,255,.13);background:rgba(255,255,255,.025)}.ps-term-dots{display:flex;gap:6px}.ps-term-dots i{width:8px;height:8px;border-radius:50%;background:#ff6b7b}.ps-term-dots i:nth-child(2){background:#ffc45e}.ps-term-dots i:nth-child(3){background:#54e6a8}.ps-term-title{margin-left:5px;color:#8ca6c8;font:700 10px/1.2 ui-monospace,monospace;letter-spacing:1.3px}.ps-term-live{margin-left:auto;color:#61e8b0;font:700 9px ui-monospace,monospace}.ps-terminal-body{padding:18px 20px 20px;font:12px/1.9 ui-monospace,SFMono-Regular,Consolas,monospace;color:#b7c9e6}.ps-term-line{display:flex;flex-wrap:wrap;gap:8px}.ps-term-prompt{color:#5be8c0}.ps-term-command{color:#72dfff}.ps-term-output{padding-left:18px;color:#91a8ca}.ps-term-output strong{color:#b99cff}.ps-term-cursor{display:inline-block;width:7px;height:14px;margin-left:4px;vertical-align:-2px;background:#5be8c0;animation:psTermBlink .85s steps(2) infinite}.ps-term-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.ps-term-chip{padding:7px 10px!important;border:1px solid rgba(85,231,255,.18)!important;border-radius:9px!important;background:rgba(85,231,255,.055)!important;color:#8eeaff!important;font:700 10px ui-monospace,monospace!important;cursor:pointer}.ps-term-chip:hover{border-color:rgba(85,231,255,.5)!important;transform:translateY(-2px)!important}.ps-term-note{margin-top:12px;color:#607897;font:9px/1.5 Inter,sans-serif;letter-spacing:.3px}
+@keyframes psTermBlink{50%{opacity:0}}
+/* Robust reveal: content stays visible if scripts/observers fail */
+.reveal{opacity:1!important;transform:none!important}.ps-reveal-ready .reveal{opacity:0!important;transform:translateY(24px)!important;transition:opacity .72s ease,transform .72s cubic-bezier(.2,.8,.2,1)!important}.ps-reveal-ready .reveal.visible{opacity:1!important;transform:translateY(0)!important}
+/* App-specific layouts */
+.wrap{max-width:1120px!important}.hero,.welcome{position:relative}.hero h1,.wrap>div>h1{letter-spacing:-.04em}.card{border-radius:20px!important}.layout{gap:20px!important}
+@media(max-width:650px){.ps-terminal-body{padding:15px;font-size:11px}.ps-terminal{margin-top:26px}.link-card:hover,.skill:hover{transform:translateY(-3px)!important}.container{padding-bottom:55px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.ps-reveal-ready .reveal{opacity:1!important;transform:none!important}}

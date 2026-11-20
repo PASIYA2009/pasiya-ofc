@@ -102,8 +102,6 @@
 </script>
 
 
-
-<link rel="stylesheet" href="/pasiya-premium.css">
 </head>
 <body>
     <div class="ps-loader" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Loading</div><div class="ps-bar"><span></span></div></div>
@@ -150,7 +148,8 @@
 
         <!-- Projects -->
         <section class="links-section reveal" id="projects">
-            <div class="section-heading"><span class="line"></span><h2>My Projects</h2><span class="line"></span></div>
+            <div class="section-heading"><span class="line"></span><h2>PASIYA Digital Ecosystem</h2><span class="line"></span></div>
+            <p class="section-subtitle">A connected collection of tools, platforms and experiments built by Pasidu Eshan.</p>
             <div class="link-grid">
                 <a class="link-card wide featured" href="/api"><span class="icon"><i class="fa-solid fa-bolt"></i></span><span><small>DEVELOPER PLATFORM</small>PASIYA API <b class="badge">FREE</b></span><span class="arrow">↗</span></a>
                 <a class="link-card" href="https://pastpaper-pro.vercel.app"><span class="icon"><i class="fa-solid fa-book-open"></i></span><span><small>EDUCATION</small>Past Papers</span><span class="arrow">↗</span></a>
@@ -160,9 +159,21 @@
             </div>
         </section>
 
+
+        <!-- Interactive visual terminal demo (simulated commands; never executes system commands) -->
+        <section class="ps-terminal reveal" id="terminal" aria-label="PASIYA terminal demo">
+            <div class="ps-terminal-head"><span class="ps-term-dots"><i></i><i></i><i></i></span><span class="ps-term-title">PASIYA_TERMINAL / OFC</span><span class="ps-term-live">● SYSTEM ONLINE</span></div>
+            <div class="ps-terminal-body" aria-live="polite">
+                <div class="ps-term-line"><span class="ps-term-prompt">pasidu@pasiya:~$</span><span class="ps-term-command" id="psTermCommand">whoami</span></div>
+                <div class="ps-term-output" id="psTermOutput">Creator: <strong>Pasidu Eshan</strong><br>Workspace: PASIYA Digital Ecosystem<br>Mode: Creative development <span class="ps-term-cursor"></span></div>
+                <div class="ps-term-chips"><button class="ps-term-chip" type="button" data-cmd="projects">projects</button><button class="ps-term-chip" type="button" data-cmd="skills">skills</button><button class="ps-term-chip" type="button" data-cmd="help">help</button><button class="ps-term-chip" type="button" data-cmd="clear">clear</button></div>
+                <div class="ps-term-note">INTERACTIVE DEMO · Safe simulated commands · No system access</div>
+            </div>
+        </section>
+
         <!-- About strip -->
         <section class="about-card reveal">
-            <div class="about-icon"><i class="fa-solid fa-terminal"></i></div>
+            <div class="about-icon"><i class="fa-solid fa-layer-group"></i></div>
             <div><small>WHAT I DO</small><h3>Code. Create. Learn. Build.</h3><p>Turning ideas into clean, modern and useful digital projects.</p></div>
         </section>
 
@@ -197,6 +208,19 @@
     <!-- Scroll progress / back to top -->
     <button class="to-top" id="toTop" aria-label="Back to top"><svg viewBox="0 0 44 44"><circle class="progress-bg" cx="22" cy="22" r="19"></circle><circle class="progress" id="scrollProgress" cx="22" cy="22" r="19"></circle></svg><i class="fa-solid fa-arrow-up"></i></button>
 
+
+    <script>
+    (function(){
+      const outputs={
+        whoami:'Creator: <strong>Pasidu Eshan</strong><br>Workspace: PASIYA Digital Ecosystem<br>Mode: Creative development',
+        projects:'<strong>PROJECT MODULES</strong><br>01 · PASIYA API<br>02 · PASIYA AI<br>03 · QR Editor<br>04 · WhatsApp Bot<br>05 · Past Papers',
+        skills:'<strong>TOOLKIT</strong><br>HTML · CSS · JavaScript<br>Python · PHP · MySQL<br>UI engineering · Web development',
+        help:'Available demo commands:<br><strong>projects</strong> · show ecosystem modules<br><strong>skills</strong> · show development toolkit<br><strong>clear</strong> · clear terminal output',
+        clear:''
+      };
+      document.querySelectorAll('.ps-term-chip').forEach(function(btn){btn.addEventListener('click',function(){var cmd=btn.dataset.cmd,command=document.getElementById('psTermCommand'),output=document.getElementById('psTermOutput');if(!command||!output)return;command.textContent=cmd;output.innerHTML=outputs[cmd]||'Unknown demo command. Type <strong>help</strong>.';if(cmd==='clear')output.innerHTML='<span style="color:#61e8b0">Terminal cleared.</span>';});});
+    })();
+    </script>
     <script src="pasiyaofc.js"></script>
     <script src="pasiyaofc-plus.js"></script>
 </body>

@@ -1,3 +1,4 @@
+@import url("/_pasiya/premium.css");
 /* PASIYA shared shell v2 - ONE file used by every site (OFC, API, QR, AI, Past Papers, Bot).
    top bar + left menu drawer + music player + footer + animated background. */
 :root{--psb-h:60px}
@@ -268,11 +269,3 @@ body{background:transparent!important}
 .psh-svg .lg{fill:var(--b);filter:drop-shadow(0 0 3px var(--b));animation:psPop 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .psh-svg .ln{fill:var(--a);transform-box:fill-box;transform-origin:left center;animation:psType 3.2s ease-in-out infinite}
 .psh-svg .l2{fill:var(--b);animation-delay:.6s}
-
-
-/* PASIYA shared interaction polish — consistent hover lift on every site using this shell. */
-@media(hover:hover) and (pointer:fine){
-  .psb-menu:hover,.psb-music:hover,.psd-close:hover,.psp-ctl button:hover,.ps-btn:hover,.ps-chip:hover,.ps-social a:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(var(--a-rgb),.18)}
-  .ps-links a:hover,.psd [data-ps-pagehost] .nav:hover{transform:translateX(4px)}
-}
-.psb-menu:active,.psb-music:active,.psd-close:active,.psp-ctl button:active,.ps-btn:active,.ps-chip:active{transform:scale(.97)}

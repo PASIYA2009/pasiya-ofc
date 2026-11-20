@@ -13,7 +13,7 @@ const typingText=document.getElementById("typingText"),words=["Web Developer","S
 function typeLoop(){const word=words[wi];typingText.textContent=deleting?word.slice(0,ci--):word.slice(0,ci++);let delay=deleting?55:90;if(!deleting&&ci>word.length){delay=1300;deleting=true}else if(deleting&&ci<0){deleting=false;wi=(wi+1)%words.length;ci=0;delay=350}setTimeout(typeLoop,delay)}typeLoop();
 
 // Reveal animations
-const revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.12});document.querySelectorAll(".reveal").forEach(el=>revealObserver.observe(el));
+(function(){const items=[...document.querySelectorAll(".reveal")];if(!items.length)return;const showAll=()=>items.forEach(el=>el.classList.add("visible"));if(!("IntersectionObserver" in window)){showAll();return;}try{const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}}),{threshold:0,rootMargin:"0px 0px 100px 0px"});document.documentElement.classList.add("ps-reveal-ready");items.forEach(el=>observer.observe(el));setTimeout(showAll,5000);window.addEventListener("error",showAll,{once:true});}catch(e){document.documentElement.classList.remove("ps-reveal-ready");showAll();}})();
 
 // Scroll progress + back to top button
 const toTop=document.getElementById("toTop"),progress=document.getElementById("scrollProgress"),circ=2*Math.PI*19;
