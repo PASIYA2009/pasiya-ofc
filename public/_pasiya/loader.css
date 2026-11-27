@@ -41,21 +41,3 @@
 .ps-loader.ps-auto{animation:ps-auto .4s ease 7s forwards}
 @keyframes ps-auto{to{opacity:0;visibility:hidden;pointer-events:none}}
 
-/* ===== link-click loading screen (same orb look, wipes in from the tapped point) ===== */
-.ps-loader.ps-nav{opacity:1;visibility:hidden;pointer-events:none;clip-path:circle(0px at var(--cx,50%) var(--cy,50%));-webkit-clip-path:circle(0px at var(--cx,50%) var(--cy,50%));transition:clip-path .62s cubic-bezier(.7,0,.2,1),-webkit-clip-path .62s cubic-bezier(.7,0,.2,1),visibility 0s linear .62s}
-.ps-loader.ps-nav.ps-on{visibility:visible;pointer-events:auto;clip-path:circle(150vmax at var(--cx,50%) var(--cy,50%));-webkit-clip-path:circle(150vmax at var(--cx,50%) var(--cy,50%));transition:clip-path .62s cubic-bezier(.7,0,.2,1),-webkit-clip-path .62s cubic-bezier(.7,0,.2,1),visibility 0s}
-.ps-nav .ps-orb,.ps-nav .ps-brand,.ps-nav .ps-sub,.ps-nav .ps-bar,.ps-nav .ps-pct{opacity:0;transform:translateY(14px) scale(.94);transition:opacity .4s ease,transform .5s cubic-bezier(.16,1,.3,1)}
-.ps-nav.ps-on .ps-orb{opacity:1;transform:none;transition-delay:.18s}
-.ps-nav.ps-on .ps-brand{opacity:1;transform:none;transition-delay:.26s}
-.ps-nav.ps-on .ps-sub{opacity:1;transform:none;transition-delay:.34s}
-.ps-nav.ps-on .ps-bar{opacity:1;transform:none;transition-delay:.42s}
-.ps-nav.ps-on .ps-pct{opacity:1;transform:none;transition-delay:.5s}
-.ps-nav .ps-sub{min-height:1.4em}
-.ps-nav .ps-sub::after{display:none}
-.ps-nav .ps-sub i{display:inline-block;width:7px;height:13px;margin-left:3px;vertical-align:-2px;background:var(--a,#3b9cf5);animation:ps-caret .8s steps(2) infinite}
-.ps-nav .ps-bar span{width:100%;transform-origin:left;animation:none;transform:scaleX(var(--p,0));transition:transform .25s ease-out}
-.ps-pct{margin-top:-8px;font:700 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:1.5px;color:#8b97b3}
-.ps-navtop{position:fixed;left:0;top:0;height:3px;width:100%;z-index:2147483601;pointer-events:none;transform-origin:left;transform:scaleX(0);opacity:0;background:linear-gradient(90deg,var(--a,#3b9cf5),var(--b,#6a5be6));box-shadow:0 0 12px rgba(var(--a-rgb,59,156,245),.8);transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .3s}
-.ps-navtop.ps-on{opacity:1;transform:scaleX(.82)}
-@keyframes ps-caret{50%{opacity:0}}
-@media(prefers-reduced-motion:reduce){.ps-loader.ps-nav,.ps-loader.ps-nav.ps-on{transition:none!important}.ps-nav .ps-orb,.ps-nav .ps-brand,.ps-nav .ps-sub,.ps-nav .ps-bar,.ps-nav .ps-pct{transition:none!important;transform:none}}

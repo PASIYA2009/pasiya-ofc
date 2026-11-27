@@ -75,7 +75,7 @@
   function renderDots() {
     var cur = H.dataset.accent || 'red';
     $$('[data-ps-dots]').forEach(function (el) {
-      el.innerHTML = '<div class="ps-theme"><span>' + ico('palette') + 'Theme</span><div class="ps-dots">' + ACCENTS.map(function (x) { return '<button type="button" class="ps-dot' + (x[0] === cur ? ' on' : '') + '" data-a="' + x[0] + '" style="--c:' + x[1] + '" aria-label="' + x[2] + ' theme"></button>'; }).join('') + '</div></div>';
+      el.innerHTML = '<div class="ps-theme"><span>' + ico('palette') + 'Settings</span><div class="ps-dots">' + ACCENTS.map(function (x) { return '<button type="button" class="ps-dot' + (x[0] === cur ? ' on' : '') + '" data-a="' + x[0] + '" style="--c:' + x[1] + '" aria-label="' + x[2] + ' theme"></button>'; }).join('') + '</div></div>';
     });
   }
   D.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.ps-dot'); if (b) setAccent(b.dataset.a); });
@@ -244,7 +244,6 @@
     b.classList.add('ps-hasbar');
     bar = D.createElement('header'); bar.className = 'psb'; bar.id = 'psb';
     bar.innerHTML =
-      '<button type="button" class="psb-menu" id="psMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="psd">' + ico('menu') + '</button>' +
       '<a class="psb-brand" data-ps-brandlink href="/" aria-label="' + esc(SITE.n) + '">' + '<span class="psb-logo">' + logo('psLgBar') + '</span><span><b>' + esc(SITE.n.toUpperCase()) + '</b><small>by Pasidu Eshan</small></span></a>' +
       '<nav class="psb-tabs" data-ps-tabs aria-label="Other services"></nav>' +
       '<div class="psb-right"><div class="psb-time" id="psTime" aria-label="Sri Lanka time"><span class="d"></span><span class="t"></span></div>' +
@@ -296,16 +295,18 @@
         (l.x ? ' data-ps-x="1"' : '') + (it.k === ROLE ? ' aria-current="page"' : '') + '>' +
         ico(it.ic) + '<span>' + esc(it.t) + '</span></a>';
     }).join('') +
-      '<button type="button" class="ps-md-more" id="psDockMore" aria-label="Open all services menu">' +
-      '<span class="ps-md-plus">+</span><span>More</span></button>';
+      '<button type="button" class="ps-md-item ps-md-settings" id="psDockSettings" aria-label="Open settings">' +
+      ico('palette') + '<span>Settings</span></button>';
     b.appendChild(dock);
-    $('#psDockMore').addEventListener('click', function () { openMenu(true); });
+    $('#psDockSettings').addEventListener('click', function () {
+      openMenu(true);
+      setTimeout(function () { var theme = $('[data-ps-dots]', drawer); if (theme) theme.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+    });
 
     // the page can hand over its own menu links (e.g. the API sections / the portfolio sections)
     var slot = $('[data-ps-page]');
     if (slot) { slot.hidden = false; $('[data-ps-pagehost]', drawer).appendChild(slot); }
 
-    $('#psMenuBtn').addEventListener('click', function () { openMenu(true); });
     $('#psdClose').addEventListener('click', function () { openMenu(false); });
     back.addEventListener('click', function () { openMenu(false); });
     D.addEventListener('keydown', function (e) { if (e.key === 'Escape') openMenu(false); });
@@ -318,7 +319,7 @@
     if (on) lastFocus = D.activeElement;
     if (on) $$('.ps-sec,.ps-links a,.psp,.ps-acct,[data-ps-pagehost] .nav', drawer).forEach(function (el, i) { el.style.setProperty('--i', Math.min(i, 14)); });
     drawer.classList.toggle('open', on); back.classList.toggle('open', on); H.classList.toggle('ps-lock', on);
-    drawer.setAttribute('aria-hidden', String(!on)); $('#psMenuBtn').setAttribute('aria-expanded', String(on));
+    drawer.setAttribute('aria-hidden', String(!on));
     if (on) { setTimeout(function () { var c = $('#psdClose'); if (c) c.focus(); }, 60); } else if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} lastFocus = null; }
   }
   // Sri Lanka live time
@@ -509,58 +510,8 @@
   // ====================================================================================
   function bootBg() {
     if (D.getElementById('psbg')) return;
-    var c = D.createElement('canvas'); c.id = 'psbg'; c.setAttribute('aria-hidden', 'true'); D.body.insertBefore(c, D.body.firstChild);
-    var x = c.getContext('2d'); if (!x) return;
-    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var W = 0, Hh = 0, nodes = [], last = 0, par = { x: 0, y: 0, tx: 0, ty: 0 };
-    var cur = { a: [240, 75, 91], b: [255, 122, 69] }, tgt = { a: [240, 75, 91], b: [255, 122, 69] };
-    function readColors() {
-      var cs = getComputedStyle(H), pa = cs.getPropertyValue('--a-rgb').split(',').map(Number), pb = cs.getPropertyValue('--b-rgb').split(',').map(Number);
-      if (pa.length === 3 && !pa.some(isNaN)) tgt.a = pa; if (pb.length === 3 && !pb.some(isNaN)) tgt.b = pb;
-    }
-    function resize(ev) {
-      // Mobile browsers fire 'resize' while scrolling (address bar hides/shows). Re-allocating the canvas clears it = white flash. Ignore height-only changes.
-      if (ev && W && Math.abs(innerWidth - W) < 2 && Math.abs(innerHeight - Hh) < 220) return;
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.5); W = innerWidth; Hh = innerHeight;
-      c.width = Math.round(W * dpr); c.height = Math.round(Hh * dpr); x.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var n = Math.round(Math.min(64, Math.max(20, W * Hh / 24000))); nodes = [];
-      for (var i = 0; i < n; i++) nodes.push({ x: Math.random() * W, y: Math.random() * Hh, vx: (Math.random() - .5) * .24, vy: (Math.random() - .5) * .24, r: Math.random() * 1.3 + .6, k: Math.random() });
-      draw(performance.now(), 1);
-    }
-    var rgb = function (v, a) { return 'rgba(' + (v[0] | 0) + ',' + (v[1] | 0) + ',' + (v[2] | 0) + ',' + a + ')'; };
-    var BL = [{ fx: .9, fy: 1.1, ph: 0, s: .62, w: 'a', al: .2 }, { fx: 1.2, fy: .8, ph: 2.1, s: .56, w: 'b', al: .19 }, { fx: .7, fy: 1.3, ph: 4.2, s: .5, w: 'm', al: .12 }];
-    function draw(now, dt) {
-      for (var k = 0; k < 3; k++) { cur.a[k] += (tgt.a[k] - cur.a[k]) * .06; cur.b[k] += (tgt.b[k] - cur.b[k]) * .06; }
-      par.x += (par.tx - par.x) * .05; par.y += (par.ty - par.y) * .05;
-      var g = x.createLinearGradient(0, 0, 0, Hh); g.addColorStop(0, '#070a14'); g.addColorStop(.55, '#0a1020'); g.addColorStop(1, '#05070e');
-      x.globalCompositeOperation = 'source-over'; x.fillStyle = g; x.fillRect(0, 0, W, Hh);
-      x.globalCompositeOperation = 'lighter';
-      var mix = [(cur.a[0] + cur.b[0]) / 2, (cur.a[1] + cur.b[1]) / 2, (cur.a[2] + cur.b[2]) / 2], t = now * .00009, m = Math.max(W, Hh);
-      for (var i = 0; i < BL.length; i++) {
-        var b = BL[i], col = b.w === 'a' ? cur.a : b.w === 'b' ? cur.b : mix;
-        var cx = W * (.5 + .42 * Math.sin(t * b.fx * 6 + b.ph)) + par.x * (18 + i * 10), cy = Hh * (.45 + .38 * Math.cos(t * b.fy * 5 + b.ph * 1.3)) + par.y * (18 + i * 10), r = m * b.s;
-        var rg = x.createRadialGradient(cx, cy, 0, cx, cy, r); rg.addColorStop(0, rgb(col, b.al)); rg.addColorStop(.55, rgb(col, b.al * .35)); rg.addColorStop(1, rgb(col, 0));
-        x.fillStyle = rg; x.fillRect(0, 0, W, Hh);
-      }
-      x.globalCompositeOperation = 'source-over';
-      var link = 130, i2, j, n = nodes.length;
-      for (i2 = 0; i2 < n; i2++) { var p = nodes[i2]; if (!reduce) { p.x += p.vx * dt; p.y += p.vy * dt; if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20; if (p.y < -20) p.y = Hh + 20; else if (p.y > Hh + 20) p.y = -20; } }
-      x.lineWidth = 1;
-      for (i2 = 0; i2 < n; i2++) for (j = i2 + 1; j < n; j++) {
-        var dx = nodes[i2].x - nodes[j].x, dy = nodes[i2].y - nodes[j].y, d = dx * dx + dy * dy;
-        if (d < link * link) { x.strokeStyle = rgb(cur.a, (1 - Math.sqrt(d) / link) * .17); x.beginPath(); x.moveTo(nodes[i2].x + par.x * 6 * nodes[i2].k, nodes[i2].y + par.y * 6 * nodes[i2].k); x.lineTo(nodes[j].x + par.x * 6 * nodes[j].k, nodes[j].y + par.y * 6 * nodes[j].k); x.stroke(); }
-      }
-      for (i2 = 0; i2 < n; i2++) { var q = nodes[i2]; x.fillStyle = rgb(q.k > .5 ? cur.a : cur.b, .35 + q.k * .35); x.beginPath(); x.arc(q.x + par.x * 6 * q.k, q.y + par.y * 6 * q.k, q.r, 0, 6.2832); x.fill(); }
-      var v = x.createRadialGradient(W / 2, Hh * .45, Math.min(W, Hh) * .35, W / 2, Hh * .45, m * .85); v.addColorStop(0, 'rgba(3,5,12,0)'); v.addColorStop(1, 'rgba(3,5,12,.55)'); x.fillStyle = v; x.fillRect(0, 0, W, Hh);
-    }
-    function frame(now) { requestAnimationFrame(frame); if (now - last < 36) return; var dt = Math.min(60, now - last) / 16.7; last = now; draw(now, dt); }
-    readColors(); cur.a = tgt.a.slice(); cur.b = tgt.b.slice(); resize();
-    addEventListener('resize', resize);
-    D.addEventListener('ps:accent', function () { readColors(); if (reduce) { for (var k = 0; k < 3; k++) { cur.a[k] = tgt.a[k]; cur.b[k] = tgt.b[k]; } draw(performance.now(), 0); } });
-    if (!reduce) {
-      addEventListener('pointermove', function (e) { par.tx = e.clientX / W - .5; par.ty = e.clientY / Hh - .5; }, { passive: true });
-      requestAnimationFrame(frame);
-    }
+    var bg = D.createElement('div'); bg.id = 'psbg'; bg.setAttribute('aria-hidden', 'true');
+    D.body.insertBefore(bg, D.body.firstChild);
   }
 
   // ====================================================================================
@@ -608,7 +559,6 @@
   function start() {
     H.dataset.accent = LS.get('pasiya_accent') || LS.get('pasiya_def_accent') || H.dataset.accent || 'blue'; loadDefaultAccent();
     if (!$('link[href*="family=Inter"]')) { var l = D.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'; D.head.appendChild(l); }
-    if (!window.__psNav) { var nl = D.createElement('script'); nl.src = '/_pasiya/navloader.js'; nl.defer = true; D.head.appendChild(nl); }
     if (!window.__psReveal && ROLE !== 'ofc') { var rv = D.createElement('script'); rv.src = '/_pasiya/reveal.js'; rv.defer = true; D.head.appendChild(rv); }
     updateFavicon(); bootBg(); buildChrome(); renderAll(); tick(); setInterval(tick, 1000); bootMusic(); renderFooter(); bootTop();
     fetch('/api/config').then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (c) { P.cfg = c || {}; renderAll(); });
