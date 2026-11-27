@@ -50,7 +50,7 @@
     chat: '<path d="M21 12a8 8 0 01-11.6 7.1L3 21l1.9-6A8 8 0 1121 12z"/>', globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>', pin: '<path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', term: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/>', head: '<path d="M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 002 2h1v-5H6a2 2 0 00-2 2zM20 14a2 2 0 01-2 2h-1v-5h1a2 2 0 012 2z"/>', hist: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     wa: '<path d="M20 12a8 8 0 01-11.8 7L3 20.5l1.6-5A8 8 0 1120 12z"/><path d="M9 9c0 3 3 6 6 6l1.2-1.4-2-1-1 .6c-.8-.4-1.6-1.2-2-2l.6-1-1-2z"/>', tg: '<path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/>',
-    menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', note: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>', shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'
+    menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5v.2h-2.4v-.2a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.9.3l-.1.1L8 17l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H6.7v-2.4h.2a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9L8 8.6l1.7-1.7.1.1a1.7 1.7 0 001.9.3 1.7 1.7 0 001-1.5v-.2h2.4v.2a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.5 1h.2V14h-.2a1.7 1.7 0 00-1.5 1z"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', note: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>', shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'
   };
   var ico = function (n) { return '<svg class="ps-ico" viewBox="0 0 24 24" aria-hidden="true">' + (IC[n] || '') + '</svg>'; };
   var PLAY_I = '<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>', PAUSE_I = '<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
@@ -118,6 +118,13 @@
       el.innerHTML = SITES.map(function (s) { var l = link(s.p); if (!l) return ''; return '<a href="' + esc(l.href) + '"' + (l.x ? ' data-ps-x="1"' : '') + (s.k === ROLE ? ' class="on" aria-current="page"' : '') + '>' + esc(s.t) + '</a>'; }).join('');
     });
     $$('[data-ps-brandlink]').forEach(function (a) { var l = link('/'); a.setAttribute('href', ROLE === 'ofc' ? '#home' : (l ? l.href : '/')); if (l && l.x) a.dataset.psX = '1'; });
+    var aiLink = link('/ai');
+    var aiButton = $('.ps-ai-fab');
+    if (aiButton) {
+      aiButton.href = aiLink ? aiLink.href : (ofcBase() ? ofcBase() + '/ai' : '/ai');
+      if (aiLink && aiLink.x) aiButton.dataset.psX = '1'; else delete aiButton.dataset.psX;
+    }
+    $$('.ps-ai-fab').forEach(function (a) { a.classList.toggle('on', ROLE === 'ai'); });
   }
   function renderAdmin() {
     $$('[data-ps-admin]').forEach(function (el) {
@@ -154,11 +161,34 @@
     });
     $$('[data-ps-out]').forEach(function (el) { el.hidden = !P.user; if (!el.dataset.b) { el.dataset.b = 1; el.innerHTML = '<div class="ps-sec"></div><button type="button" class="ps-btn danger full" data-ps-signout>' + ico('out') + 'Sign Out</button>'; } });
     $$('[data-ps-top]').forEach(function (el) {
-      el.innerHTML = P.user ? '<a class="ps-chip coins" href="' + accountHash('wallet') + '" title="Coin wallet">' + ico('coin') + '<span data-ps-coins>' + coins() + '</span>' + avatar() + '</a>' : '<a class="ps-chip login" href="' + loginUrl('login') + '">Log in</a>';
+      el.innerHTML = P.user
+        ? '<div class="ps-account-wrap"><a class="ps-chip coins" href="' + accountHash('wallet') + '" title="Coin wallet">' + ico('coin') + '<span data-ps-coins>' + coins() + '</span></a>' +
+          '<button type="button" class="ps-account-trigger" id="psAccountTrigger" aria-label="Account options" aria-expanded="false">' + avatar() + '</button>' +
+          '<div class="ps-account-menu" id="psAccountMenu" aria-hidden="true"><div class="ps-account-menu-user">' + avatar() + '<span><b>' + esc(nameOf()) + '</b><small>' + esc((P.user.email || 'Signed in')) + '</small></span></div>' +
+          '<a href="' + accountHash('profile') + '">' + ico('user') + '<span>My Account</span></a>' +
+          '<button type="button" data-ps-signout>' + ico('out') + '<span>Sign Out</span></button></div></div>'
+        : '<a class="ps-chip login" href="' + loginUrl('login') + '">Log in</a>';
     });
   }
   D.addEventListener('click', function (e) {
-    if (e.target.closest && e.target.closest('[data-ps-signout]') && P.auth) P.A.signOut(P.auth).then(function () { location.reload(); });
+    var accountTrigger = e.target.closest && e.target.closest('#psAccountTrigger');
+    var accountMenu = $('#psAccountMenu');
+    if (accountTrigger && accountMenu) {
+      e.stopPropagation();
+      var accountOpen = accountMenu.classList.toggle('open');
+      accountMenu.setAttribute('aria-hidden', String(!accountOpen));
+      accountTrigger.setAttribute('aria-expanded', String(accountOpen));
+      return;
+    }
+    if (accountMenu && !accountMenu.contains(e.target)) {
+      accountMenu.classList.remove('open'); accountMenu.setAttribute('aria-hidden', 'true');
+      var trigger = $('#psAccountTrigger'); if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+    if (e.target.closest && e.target.closest('[data-ps-signout]') && P.auth && P.A) {
+      var signoutButtons = $$('[data-ps-signout]'); signoutButtons.forEach(function (b) { b.disabled = true; });
+      P.A.signOut(P.auth).then(function () { P.user = null; P.me = null; renderAll(); location.reload(); })
+        .catch(function () { signoutButtons.forEach(function (b) { b.disabled = false; }); });
+    }
     var a = e.target.closest && e.target.closest('a[data-ps-x]');
     if (a && P.user && P.auth && P.auth.currentUser) { e.preventDefault(); handoff(a.href); }
   });
@@ -244,6 +274,7 @@
     b.classList.add('ps-hasbar');
     bar = D.createElement('header'); bar.className = 'psb'; bar.id = 'psb';
     bar.innerHTML =
+      '<button type="button" class="psb-menu" id="psDesktopMenu" aria-label="Open menu" title="Menu">' + ico('menu') + '</button>' +
       '<a class="psb-brand" data-ps-brandlink href="/" aria-label="' + esc(SITE.n) + '">' + '<span class="psb-logo">' + logo('psLgBar') + '</span><span><b>' + esc(SITE.n.toUpperCase()) + '</b><small>by Pasidu Eshan</small></span></a>' +
       '<nav class="psb-tabs" data-ps-tabs aria-label="Other services"></nav>' +
       '<div class="psb-right"><div class="psb-time" id="psTime" aria-label="Sri Lanka time"><span class="d"></span><span class="t"></span></div>' +
@@ -286,7 +317,7 @@
     var dockItems = [
       { k: 'ofc', t: 'Home', p: '/', ic: 'home' },
       { k: 'api', t: 'API', p: '/api', ic: 'bolt' },
-      { k: 'ai', t: 'AI', p: '/ai', ic: 'ai' },
+      { k: 'bot', t: 'WhatsApp', p: '/bot', ic: 'bot' },
       { k: 'papers', t: 'Papers', p: 'https://pastpaper-pro.vercel.app', ic: 'book' }
     ];
     dock.innerHTML = dockItems.map(function (it) {
@@ -302,8 +333,14 @@
     settingsPop.className = 'ps-settings-pop';
     settingsPop.id = 'psSettingsPop';
     settingsPop.setAttribute('aria-hidden', 'true');
-    settingsPop.innerHTML = '<div class="ps-settings-title">' + ico('palette') + '<b>Settings</b><button type="button" class="ps-settings-close" aria-label="Close settings">×</button></div><div data-ps-dots></div>';
+    settingsPop.innerHTML = '<div class="ps-settings-title">' + ico('settings') + '<b>Settings · ' + esc(SITE.n) + '</b><button type="button" class="ps-settings-close" aria-label="Close settings">×</button></div>' +
+      '<div class="ps-settings-page" data-ps-settings-page></div><div class="ps-settings-divider"></div><div class="ps-settings-theme-label">' + ico('palette') + '<span>Theme colour</span></div><div data-ps-dots></div>';
     b.appendChild(settingsPop);
+    var aiFab = D.createElement('a');
+    aiFab.className = 'ps-ai-fab'; aiFab.href = '/ai';
+    aiFab.setAttribute('aria-label', 'Open PASIYA AI'); aiFab.title = 'PASIYA AI';
+    aiFab.innerHTML = '<span class="ps-ai-fab-orbit"></span><span class="ps-ai-fab-core">' + ico('bot') + '</span><small>AI</small>';
+    b.appendChild(aiFab);
     $('#psDockSettings').addEventListener('click', function (e) {
       e.stopPropagation();
       var opened = settingsPop.classList.toggle('open');
@@ -323,8 +360,11 @@
 
     // the page can hand over its own menu links (e.g. the API sections / the portfolio sections)
     var slot = $('[data-ps-page]');
-    if (slot) { slot.hidden = false; $('[data-ps-pagehost]', drawer).appendChild(slot); }
+    if (slot) { slot.hidden = false; $('[data-ps-settings-page]', settingsPop).appendChild(slot); }
+    else { $('[data-ps-settings-page]', settingsPop).innerHTML = '<div class="ps-settings-page-empty">No extra settings for this page</div>'; }
 
+    var desktopMenu = $('#psDesktopMenu');
+    if (desktopMenu) desktopMenu.addEventListener('click', function () { openMenu(true); });
     $('#psdClose').addEventListener('click', function () { openMenu(false); });
     back.addEventListener('click', function () { openMenu(false); });
     D.addEventListener('keydown', function (e) { if (e.key === 'Escape') openMenu(false); });
