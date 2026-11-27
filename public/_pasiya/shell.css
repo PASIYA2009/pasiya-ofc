@@ -444,3 +444,31 @@ body::before{background-image:linear-gradient(rgba(var(--a-rgb),.025) 1px,transp
 .ps-account-menu>button{color:#ff8b98}
 .ps-account-menu>button .ps-ico{color:#ff8b98}
 .ps-account-menu>button:disabled{opacity:.5;cursor:wait}
+
+/* V5: dismissible AI shortcut and richer account settings */
+.ps-ai-dismiss{position:fixed;z-index:100001;right:12px;bottom:68px;width:21px;height:21px;border:1px solid rgba(var(--a-rgb),.55);border-radius:50%;background:#111a2c;color:#fff;font-size:17px;line-height:17px;padding:0;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px #0008}
+.ps-ai-fab[hidden],.ps-ai-dismiss[hidden],.ps-ai-restore[hidden]{display:none!important}
+.ps-ai-restore{display:block;width:100%;margin:7px 0;padding:8px 10px;border:1px solid rgba(var(--a-rgb),.35);border-radius:10px;background:rgba(var(--a-rgb),.09);color:#fff;font:600 12px Inter,system-ui,sans-serif;cursor:pointer}
+.ps-settings-music{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0}
+.ps-settings-music>div:first-child{display:grid;gap:3px;min-width:0}
+.ps-settings-music small,.ps-api-balance small{font-size:9px;letter-spacing:.12em;color:#9aa8c0;font-weight:800}
+.ps-settings-music b{font-size:12px;color:#f5f7ff;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ps-settings-music-controls{display:flex;gap:5px}
+.ps-settings-music-controls button{width:29px;height:29px;border-radius:9px;border:1px solid rgba(var(--a-rgb),.35);background:rgba(var(--a-rgb),.10);color:#fff;font-weight:800;cursor:pointer}
+.ps-api-settings{display:grid;gap:9px;padding:2px 0 10px}
+.ps-api-balance{display:grid;gap:2px;padding:10px;border-radius:12px;background:rgba(var(--a-rgb),.10);border:1px solid rgba(var(--a-rgb),.25)}
+.ps-api-balance strong{font-size:24px;line-height:1.1;color:#fff}
+.ps-api-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.ps-api-shortcuts button{padding:8px 7px;border:1px solid rgba(var(--a-rgb),.25);border-radius:9px;background:rgba(255,255,255,.035);color:#eaf0ff;font-size:11px;font-weight:700;cursor:pointer}
+.ps-api-shortcuts button:last-child{grid-column:1/-1}
+.ps-api-history-head,.ps-api-keys-head{font-size:11px;font-weight:800;color:#eaf0ff;margin-top:2px}
+.ps-api-history,.ps-api-keys{display:grid;gap:5px;color:#aab6cc;font-size:11px}
+.ps-api-row{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.035)}
+.ps-api-row b{color:#fff}.ps-api-row code{font-size:10px;color:var(--a)}
+.ps-api-settings small{font-size:10px;color:#9aa8c0}
+@media(max-width:650px){.ps-ai-dismiss{right:12px;bottom:calc(132px + env(safe-area-inset-bottom))}.ps-settings-pop{max-height:72vh;overflow:auto}}
+
+.psb-settings{flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(var(--a-rgb),.28);background:rgba(255,255,255,.04);color:var(--s-text);display:grid;place-items:center;cursor:pointer;padding:0;transition:.2s}
+.psb-settings:hover{border-color:var(--a);color:var(--a);background:rgba(var(--a-rgb),.1)}
+.psb-settings .ps-ico{width:20px;height:20px}
+@media(max-width:650px){.psb-settings{display:none!important}}

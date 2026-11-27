@@ -223,10 +223,12 @@
   function setCoins(n) {
     if (!P.me || typeof n !== 'number' || P.me.coins === n) return;
     P.me.coins = n; paintCoins(); D.dispatchEvent(new CustomEvent('ps:coins', { detail: { coins: n } }));
+    if (P.refreshSettings) P.refreshSettings();
   }
   P.setMe = function (m) { // a page that already fetched /api/me hands it over (keeps the chip in sync, no extra request)
     if (!m) return; var old = P.me; P.me = m;
     if (!old || old.role !== m.role || old.username !== m.username) renderAll(); else if (old.coins !== m.coins) { old.coins = m.coins; paintCoins(); }
+    if (P.refreshSettings) P.refreshSettings();
   };
   function pollCoins() {
     if (!P.user || !P.auth || !P.auth.currentUser || !P.me || isAdmin() || D.hidden) return;
@@ -279,6 +281,7 @@
       '<nav class="psb-tabs" data-ps-tabs aria-label="Other services"></nav>' +
       '<div class="psb-right"><div class="psb-time" id="psTime" aria-label="Sri Lanka time"><span class="d"></span><span class="t"></span></div>' +
       '<button type="button" class="psb-music" id="psMusicBtn" aria-label="Play music" title="Music">' + ico('note') + '</button>' +
+      '<button type="button" class="psb-settings" id="psTopSettings" aria-label="Open settings" title="Settings">' + ico('settings') + '</button>' +
       '<span class="psb-acct" data-ps-top></span></div>';
     back = D.createElement('div'); back.className = 'psd-back'; back.id = 'psdBack';
     drawer = D.createElement('aside'); drawer.className = 'psd'; drawer.id = 'psd'; drawer.setAttribute('aria-label', 'Main menu'); drawer.setAttribute('aria-hidden', 'true');
@@ -334,23 +337,99 @@
     settingsPop.id = 'psSettingsPop';
     settingsPop.setAttribute('aria-hidden', 'true');
     settingsPop.innerHTML = '<div class="ps-settings-title">' + ico('settings') + '<b>Settings · ' + esc(SITE.n) + '</b><button type="button" class="ps-settings-close" aria-label="Close settings">×</button></div>' +
-      '<div class="ps-settings-page" data-ps-settings-page></div><div class="ps-settings-divider"></div><div class="ps-settings-theme-label">' + ico('palette') + '<span>Theme colour</span></div><div data-ps-dots></div>';
+      (ROLE === 'api' ? '<section class="ps-api-settings" id="psApiSettings"><div class="ps-api-balance"><small>YOUR COIN BALANCE</small><strong id="psApiCoins">—</strong></div><div class="ps-api-shortcuts"><button type="button" data-go="wallet">Coin wallet</button><button type="button" data-go="history">Coin history</button><button type="button" data-go="profile">API keys & profile</button></div><div class="ps-api-history-head">Recent coin activity</div><div class="ps-api-history" id="psApiHistory">Sign in to view coin history.</div><div class="ps-api-keys-head">API keys</div><div class="ps-api-keys" id="psApiKeys">Sign in to view your API keys.</div></section><div class="ps-settings-divider"></div>' : '') +
+      '<div class="ps-settings-page" data-ps-settings-page></div><div class="ps-settings-divider"></div><div class="ps-settings-music"><div><small>BACKGROUND MUSIC</small><b id="psSettingsTrack">PASIYA Music Player</b></div><div class="ps-settings-music-controls"><button type="button" data-ps-music="prev" aria-label="Previous song">‹</button><button type="button" data-ps-music="play" aria-label="Play or pause">▶</button><button type="button" data-ps-music="next" aria-label="Next song">›</button></div></div><div class="ps-settings-divider"></div><div class="ps-settings-theme-label">' + ico('palette') + '<span>Theme colour</span></div><div data-ps-dots></div>';
     b.appendChild(settingsPop);
     var aiFab = D.createElement('a');
     aiFab.className = 'ps-ai-fab'; aiFab.href = '/ai';
     aiFab.setAttribute('aria-label', 'Open PASIYA AI'); aiFab.title = 'PASIYA AI';
     aiFab.innerHTML = '<span class="ps-ai-fab-orbit"></span><span class="ps-ai-fab-core">' + ico('bot') + '</span><small>AI</small>';
     b.appendChild(aiFab);
-    $('#psDockSettings').addEventListener('click', function (e) {
-      e.stopPropagation();
+    var aiDismiss = D.createElement('button');
+    aiDismiss.type = 'button'; aiDismiss.className = 'ps-ai-dismiss'; aiDismiss.setAttribute('aria-label', 'Hide AI shortcut'); aiDismiss.textContent = '×';
+    b.appendChild(aiDismiss);
+    function setAiShortcutVisible(show) {
+      aiFab.hidden = !show; aiDismiss.hidden = !show;
+      if (restoreAi) restoreAi.hidden = show;
+      try { LS.set('pasiya_ai_shortcut_hidden', show ? '0' : '1'); } catch (e) {}
+    }
+    var aiHidden = LS.get('pasiya_ai_shortcut_hidden') === '1';
+    setAiShortcutVisible(!aiHidden);
+    aiDismiss.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); setAiShortcutVisible(false); });
+    var restoreAi = D.createElement('button');
+    restoreAi.type = 'button'; restoreAi.className = 'ps-ai-restore'; restoreAi.textContent = 'Show AI shortcut';
+    restoreAi.hidden = !aiHidden;
+    restoreAi.addEventListener('click', function () { setAiShortcutVisible(true); restoreAi.hidden = true; });
+    b.appendChild(restoreAi);
+    var settingsTitle = $('.ps-settings-title', settingsPop);
+    if (settingsTitle) settingsPop.appendChild(restoreAi);
+    function toggleSettings(e) {
+      if (e) e.stopPropagation();
       var opened = settingsPop.classList.toggle('open');
       settingsPop.setAttribute('aria-hidden', String(!opened));
-    });
+      if (opened && P.refreshSettings) P.refreshSettings();
+    }
+    $('#psDockSettings').addEventListener('click', toggleSettings);
+    var topSettings = $('#psTopSettings');
+    if (topSettings) topSettings.addEventListener('click', toggleSettings);
     $('.ps-settings-close', settingsPop).addEventListener('click', function () {
       settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true');
     });
+    $$('[data-ps-music]', settingsPop).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = btn.getAttribute('data-ps-music');
+        var original = target === 'prev' ? $('#psPrev') : target === 'next' ? $('#psNext') : $('#psPlay');
+        if (original) original.click();
+      });
+    });
+    var trackNode = $('#psTitle');
+    var settingsTrack = $('#psSettingsTrack');
+    if (trackNode && settingsTrack && window.MutationObserver) {
+      new MutationObserver(function () { settingsTrack.textContent = trackNode.textContent || 'PASIYA Music Player'; }).observe(trackNode, { childList: true, characterData: true, subtree: true });
+      settingsTrack.textContent = trackNode.textContent || 'PASIYA Music Player';
+    }
+    function refreshApiSettings() {
+      if (ROLE !== 'api') return;
+      var coinNode = $('#psApiCoins'), historyNode = $('#psApiHistory'), keysNode = $('#psApiKeys');
+      if (coinNode) coinNode.textContent = P.me ? (isAdmin() ? '∞' : (typeof P.me.coins === 'number' ? P.me.coins.toLocaleString('en-US') : '—')) : 'Sign in';
+      if (!P.user || !P.auth || !P.auth.currentUser) {
+        if (historyNode) historyNode.textContent = 'Sign in to view coin history.';
+        if (keysNode) keysNode.textContent = 'Sign in to view your API keys.';
+        return;
+      }
+      P.auth.currentUser.getIdToken().then(function (token) {
+        return Promise.all([
+          fetch('/api/coins/history', { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }),
+          fetch('/api/keys', { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+        ]);
+      }).then(function (results) {
+        if (historyNode) {
+          var items = results[0] && results[0].items || [];
+          historyNode.innerHTML = items.slice(0, 3).map(function (item) {
+            var amount = Number(item.amount || 0), sign = amount > 0 ? '+' : '';
+            return '<div class="ps-api-row"><span>' + esc(item.reason || 'Coin activity') + '</span><b>' + sign + amount + '</b></div>';
+          }).join('') || '<small>No coin activity yet.</small>';
+        }
+        if (keysNode) {
+          var keys = results[1] && results[1].keys || [];
+          keysNode.innerHTML = keys.slice(0, 2).map(function (key) {
+            return '<div class="ps-api-row"><span>' + esc(key.label || 'API key') + '</span><code>' + esc(key.prefix || 'pasiya_') + '••••</code></div>';
+          }).join('') || '<small>No API key found.</small>';
+        }
+      }).catch(function () {
+        if (historyNode) historyNode.textContent = 'Could not load coin history.';
+        if (keysNode) keysNode.textContent = 'Could not load API keys.';
+      });
+    }
+    settingsPop.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-go]')) {
+        settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true');
+      }
+    });
+    if (ROLE === 'api') refreshApiSettings();
+    P.refreshSettings = refreshApiSettings;
     D.addEventListener('click', function (e) {
-      if (!settingsPop.contains(e.target) && !$('#psDockSettings').contains(e.target)) {
+      if (!settingsPop.contains(e.target) && !$('#psDockSettings').contains(e.target) && !($('#psTopSettings') && $('#psTopSettings').contains(e.target))) {
         settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true');
       }
     });
@@ -663,7 +742,7 @@
     upd();
   }
 
-  function renderAll() { renderDots(); renderSites(); renderAccount(); renderAdmin(); renderAccountLinks(); }
+  function renderAll() { renderDots(); renderSites(); renderAccount(); renderAdmin(); renderAccountLinks(); if (P.refreshSettings) P.refreshSettings(); }
   function start() {
     H.dataset.accent = LS.get('pasiya_accent') || LS.get('pasiya_def_accent') || H.dataset.accent || 'red'; loadDefaultAccent();
     if (!$('link[href*="family=Inter"]')) { var l = D.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'; D.head.appendChild(l); }
