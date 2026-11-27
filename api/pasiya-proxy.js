@@ -216,7 +216,7 @@ function inject(html, app) {
 function homeGuard(home) {
   return (
     "<script>(function(){var H=" + JSON.stringify(home) + ",pill=false;" +
-    'document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".psb a,.psd a"))pill=true},true);' +
+    'document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".psb a,.psd a,.ps-mobile-dock a,.ps-settings-pop a"))pill=true},true);' +
     "if(!window.navigation)return;" +
     'navigation.addEventListener("navigate",function(e){' +
     "if(!e.cancelable||e.hashChange||e.downloadRequest!==null||pill)return;" +
