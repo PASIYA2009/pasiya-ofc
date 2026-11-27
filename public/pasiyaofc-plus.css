@@ -81,3 +81,21 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 /* hero button as a pill card-button */
 .scroll-hint{display:inline-flex!important;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:13px!important;font-weight:700;color:var(--text)!important;border:1px solid rgba(var(--a-rgb),.42);background:rgba(var(--a-rgb),.12);backdrop-filter:blur(10px);text-decoration:none}
 .scroll-hint:hover{background:rgba(var(--a-rgb),.22);transform:translateY(-2px)}
+
+/* ---- v6.1: shared comments (account based, admin can delete) ---- */
+.comment-as{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-bottom:12px;font-size:13px;color:#b7c4ca}
+.comment-as b{color:var(--cyan)}
+.comment-login{display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:10px;border:1px solid rgba(var(--a-rgb),.45);background:rgba(var(--a-rgb),.12);color:var(--text);font-weight:700;font-size:12px;text-decoration:none;transition:.2s}
+.comment-login:hover{border-color:var(--a);transform:translateY(-1px)}
+.comment-login.alt{background:transparent;border-color:rgba(255,255,255,.14)}
+.comment-box.locked textarea,.comment-box.locked .comment-footer{display:none}
+.comment-box.locked .comment-as{margin-bottom:0}
+.comment-msg{min-height:18px;margin-top:10px;font-size:12px;color:#8b97b3}
+.comment-msg.good{color:#34d399}.comment-msg.bad{color:#fb7185}
+.comment-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.comment-badge{margin-left:8px;padding:3px 8px;border-radius:99px;border:1px solid #f472b666;background:#f472b61a;color:#f472b6;font:700 9px/1 ui-monospace,Menlo,monospace;letter-spacing:.06em;vertical-align:middle}
+.comment-del{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;border-radius:9px;border:1px solid rgba(251,113,133,.4);background:rgba(251,113,133,.08);color:#fb7185;font-weight:700;font-size:11px;font-family:inherit;cursor:pointer;transition:.2s}
+.comment-del:hover{background:rgba(251,113,133,.18);border-color:#fb7185}.comment-del:disabled{opacity:.5;cursor:wait}
+.comment-empty{text-align:center;color:#56666f;font-size:12px;padding:14px}.comment-empty a{color:var(--a)}
+.comments-list:empty:after{content:none}
+#commentBtn:disabled{opacity:.6;cursor:wait}

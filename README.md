@@ -61,3 +61,9 @@ Admin-only page: upload mp3 to GitHub (`public/music`), switch songs ON/OFF, reo
 
 ## v6 (UI fixes)
 - Loading screen now only on the portfolio (proxy no longer injects it into /api). AI page has a Close button. Portfolio buttons are cards. See the API repo README (v6) for the shared shell changes.
+
+## v6.1 (comments + admin)
+- **Comments are now shared:** they were saved only in each visitor's own browser (localStorage), so nobody else could see them and the admin could not delete anything. Now they live on the API worker (`/api/comments`, Firestore). Visitors must sign in to comment (name comes from the account); everybody can read. The **admin sees a Delete button on every comment**.
+- Files: `public/pasiya-comments.js` (new), comment box in `public/index.html`, styles at the end of `pasiyaofc-plus.css`; the old localStorage code was removed from `pasiyaofc.js`.
+- **Deploy order:** 1) deploy the API worker (it has the new `/api/comments`), 2) redeploy this site. Needs `FIREBASE_SERVICE_ACCOUNT_JSON` + `ADMIN_EMAIL` on the worker.
+- Settings popup now has an **Admin Panel** button for the admin (shared `shell.js` / `shell.css`, copied to both repos).

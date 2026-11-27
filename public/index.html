@@ -194,10 +194,11 @@
         <!-- Comments -->
         <section class="comments-section reveal" id="comments">
             <div class="section-heading"><span class="line"></span><h2>Comments</h2><span class="line"></span></div>
-            <div class="comment-box">
-                <input id="commentName" type="text" maxlength="40" placeholder="Your name">
+            <div class="comment-box" id="commentBox">
+                <div class="comment-as" id="commentAs">Loading…</div>
                 <textarea id="commentText" maxlength="250" rows="4" placeholder="Write a comment..."></textarea>
                 <div class="comment-footer"><span id="charCount">0 / 250</span><button id="commentBtn" type="button">Post Comment <i class="fa-solid fa-paper-plane"></i></button></div>
+                <p class="comment-msg" id="commentMsg" role="status"></p>
             </div>
             <div id="commentsList" class="comments-list"></div>
         </section>
@@ -212,6 +213,7 @@
     
     <script src="pasiyaofc.js"></script>
     <script src="pasiyaofc-plus.js"></script>
+    <script src="/pasiya-comments.js?v=20261127f" defer></script>
     <script src="/pasiya-fx.js" defer></script>
 </body>
 </html>
