@@ -219,3 +219,9 @@ body{background:transparent!important}
 
 /* v6: close button */
 .ai-close:hover{border-color:#ff6b7b!important;color:#ff6b7b;background:rgba(255,107,123,.12)!important}
+
+/* v6.3: on PC the site's bottom bar (dock) is fixed over the page, so keep the typing bar ABOVE it */
+@media(min-width:651px){
+  .layout .app,.app{padding-bottom:calc(98px + env(safe-area-inset-bottom))!important}
+  .side{margin-bottom:calc(98px + env(safe-area-inset-bottom))!important}
+}

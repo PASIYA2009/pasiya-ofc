@@ -16,7 +16,7 @@
     css();
     top = D.createElement('div'); top.className = 'ps-navtop'; top.setAttribute('aria-hidden', 'true');
     el = D.createElement('div'); el.id = 'psNav'; el.className = 'ps-loader ps-nav'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<div class="ps-orb"><i></i><i></i><i></i><b>P</b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub"><span></span><i></i></div><div class="ps-bar"><span></span></div><div class="ps-pct">0%</div>';
+    el.innerHTML = '<div class="ps-orb"><i></i><i></i><i></i><b class="pl"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="psLdB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--a)"/><stop offset="1" style="stop-color:var(--b)"/></linearGradient></defs><path d="M32 3l25 14.5v29L32 61 7 46.5v-29z" fill="#0b1220" stroke="url(#psLdB)" stroke-width="3"/><path d="M24 46V19h12a8.5 8.5 0 010 17H24" fill="none" stroke="url(#psLdB)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></b></div><div class="ps-brand">PASIYA OFC</div><div class="ps-sub"><span></span><i></i></div><div class="ps-bar"><span></span></div><div class="ps-pct">0%</div>';
     sub = el.querySelector('.ps-sub span'); bar = el.querySelector('.ps-bar span'); pct = el.querySelector('.ps-pct');
     D.body.appendChild(top); D.body.appendChild(el);
   }
