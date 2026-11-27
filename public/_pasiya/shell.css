@@ -342,8 +342,6 @@ html{
 
 
 /* ===== PASIYA clean theme refinement ===== */
-/* A still background: no moving canvas, floating dots, or animated aurora. */
-#psbg{position:fixed;inset:0;z-index:-1;pointer-events:none;display:block;background:radial-gradient(ellipse at 50% 0%,rgba(var(--a-rgb),.10),transparent 48%),linear-gradient(180deg,#090d18 0%,#070a12 100%);}
 /* Keep text to white/neutral plus the selected single accent colour. */
 .psb-brand b,.psh-txt b{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;-webkit-text-fill-color:var(--a)!important;color:var(--a)!important;animation:none!important}
 .psh-term,.psh-sy,.psh-svg .ln,.psh-svg .l2{color:var(--a)!important;fill:var(--a)!important}
@@ -356,8 +354,7 @@ html{
 
 /* Portfolio typography: white text + the selected theme accent only. */
 .profile h1{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:var(--a)!important;-webkit-text-fill-color:var(--a)!important;animation:none!important}
-.typing-line,.section-heading h2,.status-pill,.scroll-hint i,.icon,.about-icon,.skill>i,.comment-name,.to-top{color:var(--a)!important}
-.skill:nth-child(n)>i,.icon.whatsapp,.icon.ai{color:var(--a)!important}
+.typing-line,.section-heading h2,.status-pill,.scroll-hint i,.icon,.about-icon,.comment-name,.to-top{color:var(--a)!important}
 .status-pill span{background:var(--a)!important;box-shadow:0 0 10px rgba(var(--a-rgb),.45)!important}
 .photo-wrap{background:var(--a)!important;animation:none!important}
 .photo-ring{animation:none!important;border-style:solid!important;border-color:rgba(var(--a-rgb),.35)!important}
@@ -366,3 +363,27 @@ html{
 .section-heading .line,.section-heading .line:last-child{background:linear-gradient(90deg,transparent,rgba(var(--a-rgb),.32))!important}
 body::before{background-image:linear-gradient(rgba(var(--a-rgb),.025) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--a-rgb),.025) 1px,transparent 1px)!important}
 @media(min-width:651px){.psb-tabs{overflow-x:auto;max-width:min(56vw,760px);scrollbar-width:none}.psb-tabs::-webkit-scrollbar{display:none}}
+
+
+/* V3 fixes: restore animated canvas background and preserve original skill icon colours */
+#psbg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+@media(max-width:650px){
+  body.ps-hasbar{padding-bottom:calc(108px + env(safe-area-inset-bottom))!important}
+  .ps-mobile-dock{bottom:calc(10px + env(safe-area-inset-bottom));padding-bottom:7px}
+  .ps-top{bottom:calc(104px + env(safe-area-inset-bottom))!important}
+}
+/* Settings opens as a compact panel above its own dock icon */
+.ps-settings-pop{position:fixed;z-index:100002;right:14px;bottom:calc(88px + env(safe-area-inset-bottom));width:min(280px,calc(100vw - 28px));padding:14px;border:1px solid rgba(var(--a-rgb),.45);border-radius:18px;background:rgba(9,13,24,.97);box-shadow:0 18px 55px rgba(0,0,0,.48),0 0 24px rgba(var(--a-rgb),.12);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);opacity:0;visibility:hidden;transform:translateY(10px) scale(.98);transform-origin:bottom right;transition:opacity .2s,transform .2s,visibility .2s}
+.ps-settings-pop.open{opacity:1;visibility:visible;transform:none}
+.ps-settings-title{display:flex;align-items:center;gap:9px;margin-bottom:13px;color:#fff}
+.ps-settings-title .ps-ico{color:var(--a);width:19px;height:19px}
+.ps-settings-title b{font-size:14px}
+.ps-settings-close{margin-left:auto;border:0;background:transparent;color:#fff;font-size:24px;line-height:1;padding:0 4px;cursor:pointer}
+.ps-settings-pop .ps-theme{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.ps-settings-pop .ps-theme>span{display:none}
+.ps-settings-pop .ps-dots{display:flex;flex-wrap:wrap;gap:12px}
+.ps-settings-pop .ps-dot{width:27px;height:27px}
+.psd [data-ps-sites]{display:none!important}
+@media(max-width:650px){.ps-settings-pop{bottom:calc(91px + env(safe-area-inset-bottom))}}
+
+@media(max-width:900px){.layout .app{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}}

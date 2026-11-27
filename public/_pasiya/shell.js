@@ -298,9 +298,27 @@
       '<button type="button" class="ps-md-item ps-md-settings" id="psDockSettings" aria-label="Open settings">' +
       ico('palette') + '<span>Settings</span></button>';
     b.appendChild(dock);
-    $('#psDockSettings').addEventListener('click', function () {
-      openMenu(true);
-      setTimeout(function () { var theme = $('[data-ps-dots]', drawer); if (theme) theme.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+    var settingsPop = D.createElement('div');
+    settingsPop.className = 'ps-settings-pop';
+    settingsPop.id = 'psSettingsPop';
+    settingsPop.setAttribute('aria-hidden', 'true');
+    settingsPop.innerHTML = '<div class="ps-settings-title">' + ico('palette') + '<b>Settings</b><button type="button" class="ps-settings-close" aria-label="Close settings">×</button></div><div data-ps-dots></div>';
+    b.appendChild(settingsPop);
+    $('#psDockSettings').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var opened = settingsPop.classList.toggle('open');
+      settingsPop.setAttribute('aria-hidden', String(!opened));
+    });
+    $('.ps-settings-close', settingsPop).addEventListener('click', function () {
+      settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true');
+    });
+    D.addEventListener('click', function (e) {
+      if (!settingsPop.contains(e.target) && !$('#psDockSettings').contains(e.target)) {
+        settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true');
+      }
+    });
+    D.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { settingsPop.classList.remove('open'); settingsPop.setAttribute('aria-hidden', 'true'); }
     });
 
     // the page can hand over its own menu links (e.g. the API sections / the portfolio sections)
@@ -510,8 +528,58 @@
   // ====================================================================================
   function bootBg() {
     if (D.getElementById('psbg')) return;
-    var bg = D.createElement('div'); bg.id = 'psbg'; bg.setAttribute('aria-hidden', 'true');
-    D.body.insertBefore(bg, D.body.firstChild);
+    var c = D.createElement('canvas'); c.id = 'psbg'; c.setAttribute('aria-hidden', 'true'); D.body.insertBefore(c, D.body.firstChild);
+    var x = c.getContext('2d'); if (!x) return;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W = 0, Hh = 0, nodes = [], last = 0, par = { x: 0, y: 0, tx: 0, ty: 0 };
+    var cur = { a: [59, 156, 245], b: [106, 91, 230] }, tgt = { a: [59, 156, 245], b: [106, 91, 230] };
+    function readColors() {
+      var cs = getComputedStyle(H), pa = cs.getPropertyValue('--a-rgb').split(',').map(Number), pb = cs.getPropertyValue('--b-rgb').split(',').map(Number);
+      if (pa.length === 3 && !pa.some(isNaN)) tgt.a = pa; if (pb.length === 3 && !pb.some(isNaN)) tgt.b = pb;
+    }
+    function resize(ev) {
+      // Mobile browsers fire 'resize' while scrolling (address bar hides/shows). Re-allocating the canvas clears it = white flash. Ignore height-only changes.
+      if (ev && W && Math.abs(innerWidth - W) < 2 && Math.abs(innerHeight - Hh) < 220) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5); W = innerWidth; Hh = innerHeight;
+      c.width = Math.round(W * dpr); c.height = Math.round(Hh * dpr); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.round(Math.min(64, Math.max(20, W * Hh / 24000))); nodes = [];
+      for (var i = 0; i < n; i++) nodes.push({ x: Math.random() * W, y: Math.random() * Hh, vx: (Math.random() - .5) * .24, vy: (Math.random() - .5) * .24, r: Math.random() * 1.3 + .6, k: Math.random() });
+      draw(performance.now(), 1);
+    }
+    var rgb = function (v, a) { return 'rgba(' + (v[0] | 0) + ',' + (v[1] | 0) + ',' + (v[2] | 0) + ',' + a + ')'; };
+    var BL = [{ fx: .9, fy: 1.1, ph: 0, s: .62, w: 'a', al: .2 }, { fx: 1.2, fy: .8, ph: 2.1, s: .56, w: 'b', al: .19 }, { fx: .7, fy: 1.3, ph: 4.2, s: .5, w: 'm', al: .12 }];
+    function draw(now, dt) {
+      for (var k = 0; k < 3; k++) { cur.a[k] += (tgt.a[k] - cur.a[k]) * .06; cur.b[k] += (tgt.b[k] - cur.b[k]) * .06; }
+      par.x += (par.tx - par.x) * .05; par.y += (par.ty - par.y) * .05;
+      var g = x.createLinearGradient(0, 0, 0, Hh); g.addColorStop(0, '#070a14'); g.addColorStop(.55, '#0a1020'); g.addColorStop(1, '#05070e');
+      x.globalCompositeOperation = 'source-over'; x.fillStyle = g; x.fillRect(0, 0, W, Hh);
+      x.globalCompositeOperation = 'lighter';
+      var mix = [(cur.a[0] + cur.b[0]) / 2, (cur.a[1] + cur.b[1]) / 2, (cur.a[2] + cur.b[2]) / 2], t = now * .00009, m = Math.max(W, Hh);
+      for (var i = 0; i < BL.length; i++) {
+        var b = BL[i], col = b.w === 'a' ? cur.a : b.w === 'b' ? cur.b : mix;
+        var cx = W * (.5 + .42 * Math.sin(t * b.fx * 6 + b.ph)) + par.x * (18 + i * 10), cy = Hh * (.45 + .38 * Math.cos(t * b.fy * 5 + b.ph * 1.3)) + par.y * (18 + i * 10), r = m * b.s;
+        var rg = x.createRadialGradient(cx, cy, 0, cx, cy, r); rg.addColorStop(0, rgb(col, b.al)); rg.addColorStop(.55, rgb(col, b.al * .35)); rg.addColorStop(1, rgb(col, 0));
+        x.fillStyle = rg; x.fillRect(0, 0, W, Hh);
+      }
+      x.globalCompositeOperation = 'source-over';
+      var link = 130, i2, j, n = nodes.length;
+      for (i2 = 0; i2 < n; i2++) { var p = nodes[i2]; if (!reduce) { p.x += p.vx * dt; p.y += p.vy * dt; if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20; if (p.y < -20) p.y = Hh + 20; else if (p.y > Hh + 20) p.y = -20; } }
+      x.lineWidth = 1;
+      for (i2 = 0; i2 < n; i2++) for (j = i2 + 1; j < n; j++) {
+        var dx = nodes[i2].x - nodes[j].x, dy = nodes[i2].y - nodes[j].y, d = dx * dx + dy * dy;
+        if (d < link * link) { x.strokeStyle = rgb(cur.a, (1 - Math.sqrt(d) / link) * .17); x.beginPath(); x.moveTo(nodes[i2].x + par.x * 6 * nodes[i2].k, nodes[i2].y + par.y * 6 * nodes[i2].k); x.lineTo(nodes[j].x + par.x * 6 * nodes[j].k, nodes[j].y + par.y * 6 * nodes[j].k); x.stroke(); }
+      }
+      for (i2 = 0; i2 < n; i2++) { var q = nodes[i2]; x.fillStyle = rgb(q.k > .5 ? cur.a : cur.b, .35 + q.k * .35); x.beginPath(); x.arc(q.x + par.x * 6 * q.k, q.y + par.y * 6 * q.k, q.r, 0, 6.2832); x.fill(); }
+      var v = x.createRadialGradient(W / 2, Hh * .45, Math.min(W, Hh) * .35, W / 2, Hh * .45, m * .85); v.addColorStop(0, 'rgba(3,5,12,0)'); v.addColorStop(1, 'rgba(3,5,12,.55)'); x.fillStyle = v; x.fillRect(0, 0, W, Hh);
+    }
+    function frame(now) { requestAnimationFrame(frame); if (now - last < 36) return; var dt = Math.min(60, now - last) / 16.7; last = now; draw(now, dt); }
+    readColors(); cur.a = tgt.a.slice(); cur.b = tgt.b.slice(); resize();
+    addEventListener('resize', resize);
+    D.addEventListener('ps:accent', function () { readColors(); if (reduce) { for (var k = 0; k < 3; k++) { cur.a[k] = tgt.a[k]; cur.b[k] = tgt.b[k]; } draw(performance.now(), 0); } });
+    if (!reduce) {
+      addEventListener('pointermove', function (e) { par.tx = e.clientX / W - .5; par.ty = e.clientY / Hh - .5; }, { passive: true });
+      requestAnimationFrame(frame);
+    }
   }
 
   // ====================================================================================
@@ -557,7 +625,7 @@
 
   function renderAll() { renderDots(); renderSites(); renderAccount(); renderAdmin(); renderAccountLinks(); }
   function start() {
-    H.dataset.accent = LS.get('pasiya_accent') || LS.get('pasiya_def_accent') || H.dataset.accent || 'blue'; loadDefaultAccent();
+    H.dataset.accent = LS.get('pasiya_accent') || LS.get('pasiya_def_accent') || H.dataset.accent || 'red'; loadDefaultAccent();
     if (!$('link[href*="family=Inter"]')) { var l = D.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'; D.head.appendChild(l); }
     if (!window.__psReveal && ROLE !== 'ofc') { var rv = D.createElement('script'); rv.src = '/_pasiya/reveal.js'; rv.defer = true; D.head.appendChild(rv); }
     updateFavicon(); bootBg(); buildChrome(); renderAll(); tick(); setInterval(tick, 1000); bootMusic(); renderFooter(); bootTop();

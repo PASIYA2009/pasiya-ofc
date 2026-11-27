@@ -53,7 +53,7 @@ body{overflow-x:hidden;overflow-y:auto;background-color:transparent;font-family:
 #send:disabled{opacity:.45;cursor:not-allowed}
 button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 @media(max-width:560px){.bubble{max-width:94%}}
-@media(max-width:900px){.app{padding-bottom:calc(62px + env(safe-area-inset-bottom))}.ps-home{bottom:calc(12px + env(safe-area-inset-bottom))}}
+@media(max-width:900px){.app{padding-bottom:calc(112px + env(safe-area-inset-bottom))}.ps-home{bottom:calc(12px + env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* ---- modes, project bar, image/video, dialog ---- */
