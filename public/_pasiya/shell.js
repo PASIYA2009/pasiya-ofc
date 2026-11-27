@@ -57,7 +57,7 @@
   function logo(id) { return '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--a)"/><stop offset="1" style="stop-color:var(--b)"/></linearGradient></defs><path d="M32 3l25 14.5v29L32 61 7 46.5v-29z" fill="#0b1220" stroke="url(#' + id + ')" stroke-width="3"/><path d="M24 46V19h12a8.5 8.5 0 010 17H24" fill="none" stroke="url(#' + id + ')" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
 
   // ---------- theme accent (shared by every site) ----------
-  var ACCENTS = [['blue', '#3b9cf5', 'Blue'], ['purple', '#a371f7', 'Purple'], ['green', '#14c78a', 'Green'], ['amber', '#f5a524', 'Amber'], ['red', '#f04b5b', 'Red'], ['pink', '#ec4899', 'Pink'], ['cyan', '#22d3ee', 'Cyan'], ['lime', '#84cc16', 'Lime']];
+  var ACCENTS = [['red', '#f04b5b', 'Red'], ['blue', '#3b9cf5', 'Blue'], ['purple', '#a371f7', 'Purple'], ['green', '#14c78a', 'Green'], ['amber', '#f5a524', 'Amber'], ['pink', '#ec4899', 'Pink'], ['cyan', '#22d3ee', 'Cyan'], ['lime', '#84cc16', 'Lime']];
   var ACC_IDS = ACCENTS.map(function (x) { return x[0]; });
   // admin default colour (Admin Panel > Default theme): used ONLY while the visitor has not picked a colour themselves
   function applyDefaultAccent(a) {
@@ -73,7 +73,7 @@
     D.dispatchEvent(new CustomEvent('ps:accent', { detail: a }));
   }
   function renderDots() {
-    var cur = H.dataset.accent || 'blue';
+    var cur = H.dataset.accent || 'red';
     $$('[data-ps-dots]').forEach(function (el) {
       el.innerHTML = '<div class="ps-theme"><span>' + ico('palette') + 'Theme</span><div class="ps-dots">' + ACCENTS.map(function (x) { return '<button type="button" class="ps-dot' + (x[0] === cur ? ' on' : '') + '" data-a="' + x[0] + '" style="--c:' + x[1] + '" aria-label="' + x[2] + ' theme"></button>'; }).join('') + '</div></div>';
     });
@@ -281,6 +281,25 @@
       '<div class="psp-ctl"><button type="button" id="psPrev" aria-label="Previous song"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.500 12z"/></svg></button><button type="button" id="psPlay" class="main" aria-label="Play music"></button><button type="button" id="psNext" aria-label="Next song"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.500-7z"/></svg></button></div></div>' +
       '<div data-ps-dots></div><div data-ps-out hidden></div>';
     b.insertBefore(drawer, b.firstChild); b.insertBefore(back, b.firstChild); b.insertBefore(bar, b.firstChild);
+
+    // Mobile service dock: compact, fixed navigation shared by every PASIYA page.
+    var dock = D.createElement('nav'); dock.className = 'ps-mobile-dock'; dock.id = 'psMobileDock';
+    var dockItems = [
+      { k: 'ofc', t: 'Home', p: '/', ic: 'home' },
+      { k: 'api', t: 'API', p: '/api', ic: 'bolt' },
+      { k: 'ai', t: 'AI', p: '/ai', ic: 'ai' },
+      { k: 'papers', t: 'Papers', p: 'https://pastpaper-pro.vercel.app', ic: 'book' }
+    ];
+    dock.innerHTML = dockItems.map(function (it) {
+      var l = link(it.p); if (!l) return '';
+      return '<a class="ps-md-item' + (it.k === ROLE ? ' on' : '') + '" href="' + esc(l.href) + '"' +
+        (l.x ? ' data-ps-x="1"' : '') + (it.k === ROLE ? ' aria-current="page"' : '') + '>' +
+        ico(it.ic) + '<span>' + esc(it.t) + '</span></a>';
+    }).join('') +
+      '<button type="button" class="ps-md-more" id="psDockMore" aria-label="Open all services menu">' +
+      '<span class="ps-md-plus">+</span><span>More</span></button>';
+    b.appendChild(dock);
+    $('#psDockMore').addEventListener('click', function () { openMenu(true); });
 
     // the page can hand over its own menu links (e.g. the API sections / the portfolio sections)
     var slot = $('[data-ps-page]');
@@ -494,7 +513,7 @@
     var x = c.getContext('2d'); if (!x) return;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var W = 0, Hh = 0, nodes = [], last = 0, par = { x: 0, y: 0, tx: 0, ty: 0 };
-    var cur = { a: [59, 156, 245], b: [106, 91, 230] }, tgt = { a: [59, 156, 245], b: [106, 91, 230] };
+    var cur = { a: [240, 75, 91], b: [255, 122, 69] }, tgt = { a: [240, 75, 91], b: [255, 122, 69] };
     function readColors() {
       var cs = getComputedStyle(H), pa = cs.getPropertyValue('--a-rgb').split(',').map(Number), pb = cs.getPropertyValue('--b-rgb').split(',').map(Number);
       if (pa.length === 3 && !pa.some(isNaN)) tgt.a = pa; if (pb.length === 3 && !pb.some(isNaN)) tgt.b = pb;
