@@ -216,3 +216,6 @@ body{background:transparent!important}
 @keyframes micpulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.55)}100%{box-shadow:0 0 0 12px rgba(229,72,77,0)}}
 .mic-lang{height:26px;padding:0 9px;border:1px solid var(--border);border-radius:999px;background:transparent;font:700 11px "Inter",sans-serif}
 .mic[hidden],.mic-lang[hidden]{display:none}
+
+/* v6: close button */
+.ai-close:hover{border-color:#ff6b7b!important;color:#ff6b7b;background:rgba(255,107,123,.12)!important}

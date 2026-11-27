@@ -197,18 +197,16 @@ function swap(str, from, to) {
 // Every proxied project gets the SAME shell as the portfolio: animated background, top bar (P logo + site name + site tabs + live time),
 // left menu (account / admin / sites / music / colour), footer. Colour + music + login are shared because everything is on one domain.
 function inject(html, app) {
-  const { theme, home, title, keepIcon, autoTheme } = app;
+  const { theme, home, keepIcon, autoTheme } = app;
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
     '<link rel="stylesheet" href="/_pasiya/palette.css"><script>' + ACCENT_BOOT + '</script>' +
-    '<link rel="stylesheet" href="/_pasiya/loader.css">' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (app.native ? "" : '<link rel="stylesheet" href="/_pasiya/shell.css"><script>window.PS_ROLE=' + JSON.stringify(app.role || "") + '</script><script defer src="/_pasiya/shell.js"></script>') +
     (home ? homeGuard(home) : "") +
     (autoTheme ? '<script defer src="/_pasiya/autotheme.js"></script>' : "");
-  const loader = loaderHtml(title);
-  html = /<body[^>]*>/i.test(html) ? html.replace(/<body[^>]*>/i, (m) => m + loader) : html;
+  // NOTE: no loading screen on proxied sites any more - the loading animation belongs to the OFC portfolio only (public/index.html)
   html = /<\/head>/i.test(html) ? html.replace(/<\/head>/i, () => css + "</head>") : css + html;
   return html;
 }
@@ -225,19 +223,6 @@ function homeGuard(home) {
     "var u=new URL(e.destination.url);" +
     'if(u.origin===location.origin&&u.pathname==="/"&&!u.searchParams.has("ps_ok")){e.preventDefault();location.replace(H+u.search)}' +
     "})})();</script>"
-  );
-}
-
-// loading animation (project eka load wela iwara wenakan penawa)
-function loaderHtml(title) {
-  return (
-    '<div class="ps-loader ps-auto" id="ps-loader"><div class="ps-orb"><i></i><i></i><i></i><b>P</b></div>' +
-    '<div class="ps-brand">PASIYA OFC</div><div class="ps-sub">Opening ' + (title || "page") + '</div>' +
-    '<div class="ps-bar"><span></span></div></div>' +
-    "<script>(function(){var l=document.getElementById('ps-loader'),t=Date.now(),d=0;" +
-    "function h(){if(d||!l)return;d=1;var e=l,w=Math.max(0,350-(Date.now()-t));" +
-    "setTimeout(function(){e.classList.add('ps-hide');setTimeout(function(){e.remove()},700)},w)}" +
-    "if(document.readyState==='complete')h();else addEventListener('load',h);setTimeout(h,4000)})();</script>"
   );
 }
 

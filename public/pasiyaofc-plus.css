@@ -56,3 +56,28 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 
 /* profile logo follows the chosen colour (hue shift per accent, see --logo-hue in _pasiya/palette.css) */
 .profile-photo{filter:hue-rotate(var(--logo-hue,0deg));transition:filter .45s ease}
+
+/* =========================================================================
+   v6: portfolio buttons as proper cards (icon on top, title, arrow in the corner)
+   ========================================================================= */
+.link-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:14px!important}
+@media(max-width:600px){.link-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}}
+.link-card{position:relative;display:flex!important;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:22px;min-height:148px!important;padding:18px!important;border-radius:22px!important;
+  border:1px solid rgba(var(--a-rgb),.2)!important;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 60%,rgba(var(--a-rgb),.06))!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06)!important}
+.link-card:hover{transform:translateY(-6px)!important;border-color:rgba(var(--a-rgb),.55)!important;box-shadow:0 22px 48px rgba(0,0,0,.34),0 0 30px rgba(var(--a-rgb),.16)!important}
+.link-card .icon{width:50px!important;height:50px!important;border-radius:16px!important;display:grid;place-items:center;font-size:20px!important;color:var(--a);
+  background:linear-gradient(135deg,rgba(var(--a-rgb),.3),rgba(var(--a-rgb),.08))!important;border:1px solid rgba(var(--a-rgb),.38)!important;box-shadow:0 8px 22px rgba(var(--a-rgb),.18)}
+.link-card>span:nth-child(2){display:block;font-size:16px!important;font-weight:800!important;line-height:1.25;letter-spacing:-.01em}
+.link-card small{display:block;margin-bottom:5px;font-size:10px!important;font-weight:800;letter-spacing:.16em!important;color:var(--a)!important;opacity:.85}
+.link-card .arrow{position:absolute;top:16px;right:16px;width:34px;height:34px;display:grid!important;place-items:center;border-radius:50%;font-size:15px!important;color:var(--text);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);transition:.25s}
+.link-card:hover .arrow{background:var(--a);color:var(--on-a)!important;border-color:transparent;transform:translate(2px,-2px)!important}
+.link-card .badge{margin-left:6px;vertical-align:middle}
+.link-card.wide{grid-column:1/-1!important;flex-direction:row;align-items:center;gap:16px;min-height:104px!important;padding-right:62px!important;
+  background:linear-gradient(120deg,rgba(var(--a-rgb),.22),rgba(255,255,255,.03) 65%)!important}
+.link-card.wide .arrow{top:50%;margin-top:-17px}
+.link-card.featured .icon{color:var(--on-a)!important;background:linear-gradient(135deg,var(--a),var(--b))!important}
+@media(max-width:600px){.link-card{min-height:136px!important;padding:15px!important;gap:16px}.link-card>span:nth-child(2){font-size:15px!important}.link-card.wide{min-height:96px!important}}
+/* hero button as a pill card-button */
+.scroll-hint{display:inline-flex!important;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;font-size:13px!important;font-weight:700;color:var(--text)!important;border:1px solid rgba(var(--a-rgb),.42);background:rgba(var(--a-rgb),.12);backdrop-filter:blur(10px);text-decoration:none}
+.scroll-hint:hover{background:rgba(var(--a-rgb),.22);transform:translateY(-2px)}

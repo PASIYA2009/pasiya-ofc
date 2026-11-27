@@ -14,7 +14,7 @@
     qr:  [['.hero'], ['.layout .card', 'side'], ['.preview-col', 'zoom'], ['.history', 'zoom']],
     bot: [['.top'], ['.card', 'side'], ['.steps', 'zoom']],
     ai:  [['.welcome', 'zoom']],
-    api: [['.hero'], ['.card', 'side'], ['.panel', 'zoom'], ['.grid > *', 'pop']],
+    api: [], // the API dashboard has its own light reveal (fx.js); running both hid panels / left them blank while scrolling
     '':  [['.hero'], ['.card', 'side'], ['.panel', 'zoom']]
   };
   var SPEC = (BY_ROLE[ROLE] || BY_ROLE['']).concat(ROLE === 'ai' ? [] : FOOT);
@@ -29,7 +29,7 @@
     es.forEach(function (en) {
       var el = en.target;
       if (en.isIntersecting) { if (!el.classList.contains('in') && pending.indexOf(el) < 0) pending.push(el); }
-      else { var i = pending.indexOf(el); if (i > -1) pending.splice(i, 1); el.classList.remove('in'); }
+      else { var i = pending.indexOf(el); if (i > -1) pending.splice(i, 1); }
     });
     if (pending.length && !flushT) flushT = setTimeout(flush, 16);
   }
@@ -43,8 +43,12 @@
       });
     });
   }
+  function sweep() { // safety net: anything on or above the screen is shown, even if the observer missed it (fast scroll, tall elements, restored scroll position)
+    var h = innerHeight; D.querySelectorAll('.ps-anim:not(.in)').forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < h * 1.05) { el.style.setProperty('--d', '0s'); el.classList.add('in'); } });
+  }
   function init() {
     try {
+      var sw; addEventListener('scroll', function () { clearTimeout(sw); sw = setTimeout(sweep, 160); }, { passive: true }); setTimeout(sweep, 1500); setInterval(sweep, 4000);
       io = new IntersectionObserver(onHit, { threshold: [0, 0.12], rootMargin: '0px 0px -4% 0px' });
       prep(); addEventListener('load', prep); setTimeout(prep, 1200); setTimeout(prep, 3500); // footer / late-built elements
       addEventListener('error', function () { D.querySelectorAll('.ps-anim').forEach(function (e) { e.classList.add('in'); }); }, { once: true });

@@ -58,3 +58,6 @@ mp3 files -> `public/music/`, then list them in `public/music/tracks.json` (see 
 
 ## Music admin (/music-admin)
 Admin-only page: upload mp3 to GitHub (`public/music`), switch songs ON/OFF, reorder, delete. Needs a GitHub fine-grained token (Contents: Read and write) typed once on that page (kept only in that browser). The site updates after Vercel redeploys.
+
+## v6 (UI fixes)
+- Loading screen now only on the portfolio (proxy no longer injects it into /api). AI page has a Close button. Portfolio buttons are cards. See the API repo README (v6) for the shared shell changes.
