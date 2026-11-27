@@ -201,7 +201,7 @@ function inject(html, app) {
   if (!keepIcon) html = html.replace(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi, "");
   const css =
     (keepIcon ? "" : '<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">') +
-    '<link rel="stylesheet" href="/_pasiya/palette.css"><script>' + ACCENT_BOOT + '</script>' +
+    '<style>html{background:#070a14}</style><link rel="stylesheet" href="/_pasiya/palette.css"><script>' + ACCENT_BOOT + '</script>' +
     (theme ? '<link rel="stylesheet" href="/_pasiya/theme.css">' : "") +
     (app.native ? "" : '<link rel="stylesheet" href="/_pasiya/shell.css"><script>window.PS_ROLE=' + JSON.stringify(app.role || "") + '</script><script defer src="/_pasiya/shell.js"></script>') +
     (home ? homeGuard(home) : "") +
